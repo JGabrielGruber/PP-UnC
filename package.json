@@ -1,0 +1,53 @@
+{
+  "name": "pp-unc",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.4.2",
+    "@material-ui/icons": "^4.4.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-scripts": "3.1.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "description": "É uma Plataforma de Provas da Universidade do Contestado, do qual tem por intuito fornecer uma ferramenta para que docentes da universidade possam aplicar provas aos seus alunos, tendo o controle de: * Matérias - matérias que o docente leciona, bem como Provas Bases para estas matérias; * Turmas - turmas de respectiva matéria; * Alunos - alunos de respectiva turma; * Provas - provas de respectiva turma;",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JGabrielGruber/PP-UnC.git"
+  },
+  "keywords": [
+    "react",
+    "webapp"
+  ],
+  "author": "J. Gabriel Gruber",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/JGabrielGruber/PP-UnC/issues"
+  },
+  "homepage": "https://github.com/JGabrielGruber/PP-UnC#readme"
+}
