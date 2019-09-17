@@ -2,13 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import App from './App.component'
+import { ThemeProvider } from '@material-ui/styles'
+
+import Dashboard from './Dashboard.component';
+import LogIn from './LogIn.component'
+import theme from '../theme'
 
 const Root = ({ store }) => (
-	<Provider store={store}>
-		<Router>
-			<Route path="/:filter?" component={App} />
-		</Router>
+	<Provider store={ store }>
+		<ThemeProvider theme={ theme }>
+			<Router>
+				<Route path="/dashboard" component={ Dashboard } />
+				<Route path="/login:filter?" component={ LogIn } />
+			</Router>
+		</ThemeProvider>
 	</Provider>
 )
 
