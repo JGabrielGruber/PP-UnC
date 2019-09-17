@@ -21,6 +21,11 @@ const theme = createMuiTheme({
 			containedPrimary: {
 				background: 'linear-gradient(to right, #0E2580, #297CFB)'
 			}
+		},
+		MuiBadge: {
+			colorSecondary: {
+				color: '#FFF'
+			}
 		}
 	}
 })
