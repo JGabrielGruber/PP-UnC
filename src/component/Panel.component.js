@@ -20,12 +20,13 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import PersonIcon from '@material-ui/icons/Person';
 import { Avatar, Paper, Breadcrumbs, Link } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
 
 import Copyright from './Copyright.component';
 import Dashboard from './Dashboard.component';
 import ListaMateria from './ListaMateria.component';
 import Materia from './Materia.component';
-import { withStyles } from '@material-ui/styles';
+import Turma from './Turma.component';
 
 const drawerWidth = 240;
 
@@ -129,7 +130,6 @@ class Panel extends Component {
 		}
 	}
 
-
 	handleDrawerOpen = () => {
 		this.setState({ open: true })
 	};
@@ -222,8 +222,16 @@ class Panel extends Component {
 							/>
 							<Route
 								path={'/panel/materias/:materiaId'}
+								exact={true}
 								render={props => (
 									<Materia {...props} />
+								)}
+							/>
+							<Route
+								path={'/panel/materias/:materiaId/turmas/:turmaId'}
+								exact={true}
+								render={props => (
+									<Turma {...props} />
 								)}
 							/>
 						</Switch>
