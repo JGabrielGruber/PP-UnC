@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import MaterialTable from 'material-table'
 import { makeStyles } from '@material-ui/core/styles'
 
+import localization from '../library/localizationMaterialTable'
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -59,32 +60,7 @@ class ListaMateria extends Component {
 						}
 					}
 				]}
-				localization={{
-					pagination: {
-						labelDisplayedRows: '{from}-{to} de {count}',
-						labelRowsSelect: 'linhas',
-						labelRowsPerPage: 'Linhas por página:',
-						firstTooltip: 'Primera página',
-						lastTooltip: 'Última página',
-						nextTooltip: 'Próxima página',
-						previousTooltip: 'Página anterior'
-					},
-					toolbar: {
-						nRowsSelected: '{0} linha(s) selecionadas',
-						searchTooltip: 'Buscar',
-						searchPlaceholder: 'Buscar por...'
-					},
-					header: {
-						actions: 'Opções'
-					},
-					body: {
-						addTooltip: 'Adicionar matéria',
-						emptyDataSourceMessage: 'Não há matérias... Adicione uma!',
-						filterRow: {
-							filterTooltip: 'Filtrar'
-						}
-					}
-				}}
+				localization={localization}
 			/>
 		)
 	}

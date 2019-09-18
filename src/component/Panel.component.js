@@ -109,6 +109,9 @@ const styles = theme => ({
 		overflow: 'auto',
 		flexDirection: 'column',
 	},
+	paperBread: {
+		padding: theme.spacing(1, 2),
+	},
 	fixedHeight: {
 		height: 240,
 	},
@@ -154,7 +157,7 @@ class Panel extends Component {
 						</IconButton>
 						<Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
 							Dashboard
-					</Typography>
+						</Typography>
 						<IconButton color="inherit">
 							<Avatar className={classes.avatar}>
 								<PersonIcon />
@@ -197,7 +200,7 @@ class Panel extends Component {
 				</Drawer>
 				<main className={classes.content}>
 					<div className={classes.appBarSpacer} />
-					<Paper elevation={0}>
+					<Paper className={classes.paperBread} elevation={0}>
 						<Breadcrumbs aria-label="breadcrumb" separator="›">
 							{AppBreadCrumb(this.props.location.pathname, this.props.history)}
 						</Breadcrumbs>
