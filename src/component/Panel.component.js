@@ -1,7 +1,7 @@
-import React from 'react';
-import { Switch, Route, withRouter } from 'react-router-dom'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Switch, Route } from 'react-router-dom'
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -19,16 +19,17 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import PersonIcon from '@material-ui/icons/Person';
-
+import { Avatar, Paper, Breadcrumbs, Link } from '@material-ui/core';
 
 import Copyright from './Copyright.component';
 import Dashboard from './Dashboard.component';
+import ListaMateria from './ListaMateria.component';
 import Materia from './Materia.component';
-import { Avatar } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
 	root: {
 		display: 'flex',
 	},
@@ -111,97 +112,157 @@ const useStyles = makeStyles(theme => ({
 	fixedHeight: {
 		height: 240,
 	},
-}));
+});
 
-function Panel({ history }) {
-	const classes = useStyles();
-	const [open, setOpen] = React.useState(true);
-	const handleDrawerOpen = () => {
-		setOpen(true);
+class Panel extends Component {
+
+	constructor(props) {
+		super(props);
+
+		this.handleDrawerOpen = this.handleDrawerOpen.bind(this)
+		this.handleDrawerClose = this.handleDrawerClose.bind(this)
+		this.state = {
+			open: false
+		}
+	}
+
+
+	handleDrawerOpen = () => {
+		this.setState({ open: true })
 	};
-	const handleDrawerClose = () => {
-		setOpen(false);
+	handleDrawerClose = () => {
+		this.setState({ open: false })
 	};
 
-	return (
-		<div className={classes.root}>
-			<CssBaseline />
-			<AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-				<Toolbar className={classes.toolbar}>
-					<IconButton
-						edge="start"
-						color="inherit"
-						aria-label="open drawer"
-						onClick={handleDrawerOpen}
-						className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-					>
-						<MenuIcon />
-					</IconButton>
-					<Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-						Dashboard
+	render() {
+
+		const classes = this.props.classes;
+
+		return (
+			<div className={classes.root}>
+				<CssBaseline />
+				<AppBar position="absolute" className={clsx(classes.appBar, this.state.open && classes.appBarShift)}>
+					<Toolbar className={classes.toolbar}>
+						<IconButton
+							edge="start"
+							color="inherit"
+							aria-label="open drawer"
+							onClick={this.handleDrawerOpen}
+							className={clsx(classes.menuButton, this.state.open && classes.menuButtonHidden)}
+						>
+							<MenuIcon />
+						</IconButton>
+						<Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+							Dashboard
 					</Typography>
-					<IconButton color="inherit">
-						<Avatar className={classes.avatar}>
-							<PersonIcon />
-						</Avatar>
-					</IconButton>
-				</Toolbar>
-			</AppBar>
-			<Drawer
-				variant="permanent"
-				classes={{
-					paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-				}}
-				open={open}
-			>
-				<div className={classes.toolbarIcon}>
-					<img src="/PPUnCLogo.png" alt="PP-UnC" className={classes.brandLogo} />
-					<IconButton onClick={handleDrawerClose}>
-						<ChevronLeftIcon />
-					</IconButton>
-				</div>
-				<Divider />
-				<List>
-					<ListItem button onClick={ () => {
-						history.push("/panel/dashboard")
-					}}>
-						<ListItemIcon>
-							<DashboardIcon />
-						</ListItemIcon>
-						<ListItemText primary="Dashboard" />
-					</ListItem>
-					<ListItem button onClick={ () => {
-						history.push("/panel/materias")
-					}}>
-						<ListItemIcon>
-							<LocalLibraryIcon />
-						</ListItemIcon>
-						<ListItemText primary="Matérias" />
-					</ListItem>
-				</List>
-			</Drawer>
-			<main className={classes.content}>
-				<div className={classes.appBarSpacer} />
-				<Container maxWidth="lg" className={classes.container}>
-					<Switch>
-						<Route
-							path={'/panel/dashboard'}
-							render={props => (
-								<Dashboard {...props} />
-							)}
-						/>
-						<Route
-							path={'/panel/materias'}
-							render={props => (
-								<Materia {...props} />
-							)}
-						/>
-					</Switch>
-				</Container>
-				<Copyright />
-			</main>
-		</div>
-	);
+						<IconButton color="inherit">
+							<Avatar className={classes.avatar}>
+								<PersonIcon />
+							</Avatar>
+						</IconButton>
+					</Toolbar>
+				</AppBar>
+				<Drawer
+					variant="permanent"
+					classes={{
+						paper: clsx(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+					}}
+					open={this.state.open}
+				>
+					<div className={classes.toolbarIcon}>
+						<img src="/PPUnCLogo.png" alt="PP-UnC" className={classes.brandLogo} />
+						<IconButton onClick={this.handleDrawerClose}>
+							<ChevronLeftIcon />
+						</IconButton>
+					</div>
+					<Divider />
+					<List>
+						<ListItem button onClick={() => {
+							this.props.history.push("/panel/dashboard")
+						}}>
+							<ListItemIcon>
+								<DashboardIcon />
+							</ListItemIcon>
+							<ListItemText primary="Dashboard" />
+						</ListItem>
+						<ListItem button onClick={() => {
+							this.props.history.push("/panel/materias")
+						}}>
+							<ListItemIcon>
+								<LocalLibraryIcon />
+							</ListItemIcon>
+							<ListItemText primary="Matérias" />
+						</ListItem>
+					</List>
+				</Drawer>
+				<main className={classes.content}>
+					<div className={classes.appBarSpacer} />
+					<Paper elevation={0}>
+						<Breadcrumbs aria-label="breadcrumb" separator="›">
+							{AppBreadCrumb(this.props.location.pathname, this.props.history)}
+						</Breadcrumbs>
+					</Paper>
+					<Container maxWidth="lg" className={classes.container}>
+						<Switch>
+							<Route
+								path={'/panel/dashboard'}
+								render={props => (
+									<Dashboard {...props} />
+								)}
+							/>
+							<Route
+								path={'/panel/materias'}
+								exact={true}
+								render={props => (
+									<ListaMateria {...props} />
+								)}
+							/>
+							<Route
+								path={'/panel/materias/:materiaId'}
+								render={props => (
+									<Materia {...props} />
+								)}
+							/>
+						</Switch>
+					</Container>
+					<Copyright />
+				</main>
+			</div>
+		);
+	}
 }
 
-export default withRouter(Panel)
+Panel.propTypes = {
+	classes: PropTypes.object.isRequired
+}
+
+const AppBreadCrumb = (path, history) => {
+	let list = []
+	let breads = []
+	path.split('/').reduce((path, part) => {
+		if (list.length) {
+			list.push(list[list.length - 1] + "/" + part)
+		} else {
+			list.push("/" + part)
+		}
+		return null
+	})
+
+	list.forEach((item, key) => {
+		breads.push((
+			<Link color="inherit" key={key} onClick={() => { history.push(item) }}>
+				{item}
+			</Link>
+		))
+	})
+
+	breads[breads.length - 1] = (
+		<Typography color="textPrimary" key={breads.length}>{breads[breads.length - 1].props.children}</Typography>
+	)
+
+	breads.splice(0, 1)
+
+	return breads
+}
+
+export default withStyles(styles)(Panel)
