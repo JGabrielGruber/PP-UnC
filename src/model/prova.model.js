@@ -1,17 +1,17 @@
-import { schema } from 'normalizr'
-
-import Questao from './questao.model'
-import Realizacao from './realizacao.model'
-
-const Prova = new schema.Entity('provas', {
+const Prova = () => ({
 	_id: '',
 	titulo: '',
 	descricao: '',
 	duracao: '',
-	questoes: [Questao],
-	realizacoes: [Realizacao],
+	questoes: [],
+	realizacoes: [],
 	timestamp: '',
 	timeupdate: ''
 })
 
-export default Prova
+const Provas = () => ({
+	provas: [],
+	ids: []
+})
+
+export default { Prova, Provas }

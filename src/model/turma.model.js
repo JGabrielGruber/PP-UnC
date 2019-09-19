@@ -1,20 +1,19 @@
-import { schema } from 'normalizr'
-
-import Aluno from './aluno.model'
-import Curso from './curso.model'
-import Prova from './prova.model'
-
-const Turma = new schema.Entity('turmas', {
+const Turma = () => ({
 	_id: '',
 	titulo: '',
 	descricao: '',
-	curso: Curso,
+	curso: {},
 	ano: '',
 	semestre: '',
-	alunos: [Aluno],
-	questoes: [Prova],
+	alunos: [],
+	questoes: [],
 	timestamp: '',
 	timeupdate: ''
 })
 
-export default Turma
+const Turmas = () => ({
+	turmas: [],
+	ids: []
+})
+
+export default { Turma, Turmas }

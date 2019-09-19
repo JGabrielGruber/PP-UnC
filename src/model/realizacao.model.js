@@ -1,16 +1,16 @@
-import { schema } from 'normalizr'
-
-import Aluno from './aluno.model'
-import Resposta from './resposta.model'
-
-const Realizacao = new schema.Entity('realizacoes', {
+const Realizacao = () => ({
 	_id: '',
-	aluno: Aluno,
-	respostas: [Resposta],
+	aluno: {},
+	respostas: [],
 	finalizada: false,
 	total: '',
 	timestamp: '',
 	timeupdate: ''
 })
 
-export default Realizacao
+const Realizacoes = () => ({
+	realizacoes: [],
+	ids: []
+})
+
+export default { Realizacao, Realizacoes }

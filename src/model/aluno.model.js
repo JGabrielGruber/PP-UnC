@@ -1,6 +1,4 @@
-import { schema } from 'normalizr'
-
-const Aluno = new schema.Entity('alunos', {
+const Aluno = () => ({
 	_id: '',
 	nome: '',
 	email: '',
@@ -8,4 +6,9 @@ const Aluno = new schema.Entity('alunos', {
 	timeupdate: ''
 })
 
-export default Aluno
+const Alunos = () => ({
+	alunos: [],
+	ids: []
+})
+
+export default { Aluno, Alunos }

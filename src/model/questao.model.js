@@ -1,14 +1,17 @@
-import { schema } from 'normalizr'
-
-const Questao = new schema.Entity('questoes', {
+const Questao = () => ({
 	_id: '',
 	descricao: '',
 	isAlternativa: false,
-	alternativas: [''],
+	alternativas: [],
 	isMultipla: false,
-	corretas: [''],
+	corretas: [],
 	esperado: '',
 	peso: ''
 })
 
-export default Questao
+const Questoes = () => ({
+	questoes: [],
+	ids: []
+})
+
+export default { Questao, Questoes }

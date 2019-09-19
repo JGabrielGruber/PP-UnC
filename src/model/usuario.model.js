@@ -1,12 +1,8 @@
-import { schema } from 'normalizr'
-
-import Materia from './materia.model'
-
-const Usuario = new schema.Entity('usuarios', {
+const Usuario = () => ({
 	id: '',
 	nome: '',
 	email: '',
-	materias: [Materia],
+	materias: [],
 	timestamp: '',
 	timeupdate: ''
 })

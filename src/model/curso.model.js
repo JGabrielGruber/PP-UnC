@@ -1,8 +1,11 @@
-import { schema } from 'normalizr'
-
-const Curso = new schema.Entity('cursos', {
-	_id: '',
-	titulo: ''
+const Curso = () => ({
+	_id: "",
+	titulo: ""
 })
 
-export default Curso
+const Cursos = () => ({
+	cursos: [],
+	ids: []
+})
+
+export { Curso, Cursos }

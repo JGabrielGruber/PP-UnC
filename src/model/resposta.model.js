@@ -1,8 +1,6 @@
-import { schema } from 'normalizr'
-
-const Resposta = new schema.Entity('respostas', {
+const Resposta = () => ({
 	_id: '',
-	escolhas: [''],
+	escolhas: [],
 	resposta: '',
 	correta: false,
 	meioCorreta: false,
@@ -10,4 +8,9 @@ const Resposta = new schema.Entity('respostas', {
 	peso: ''
 })
 
-export default Resposta
+const Respostas = () => ({
+	respostas: [],
+	ids: []
+})
+
+export default { Resposta, Respostas }
