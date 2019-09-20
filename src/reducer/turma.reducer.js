@@ -4,6 +4,7 @@ const turma = (
 	state = {
 		isFetching: false,
 		didInvalidate: false,
+		error: '',
 		modified: false,
 		turmas: Turmas()
 	},
@@ -26,18 +27,14 @@ const turma = (
 			} else {
 				return Object.assign({}, state, {
 					isFetching: false,
-					didInvalidate: true
+					didInvalidate: true,
+					error: action.errror
 				})
 			}
 		case 'UPDATE':
 			return Object.assign({}, state, {
 				modified: true,
 				turmas: action.turmas
-			})
-		case 'SEND':
-			return Object.assign({}, state, {
-				isFetching: true,
-				didInvalidate: false
 			})
 		default:
 			return state

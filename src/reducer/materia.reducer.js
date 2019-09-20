@@ -4,6 +4,7 @@ const materia = (
 	state = {
 		isFetching: false,
 		didInvalidate: false,
+		error: '',
 		modified: false,
 		materias: Materias()
 	},
@@ -26,18 +27,14 @@ const materia = (
 			} else {
 				return Object.assign({}, state, {
 					isFetching: false,
-					didInvalidate: true
+					didInvalidate: true,
+					error: action.errror
 				})
 			}
 		case 'UPDATE':
 			return Object.assign({}, state, {
 				modified: true,
 				materias: action.materias
-			})
-		case 'SEND':
-			return Object.assign({}, state, {
-				isFetching: true,
-				didInvalidate: false
 			})
 		default:
 			return state

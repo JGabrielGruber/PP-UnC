@@ -4,6 +4,7 @@ const usuario = (
 	state = {
 		isFetching: false,
 		didInvalidate: false,
+		error: '',
 		modified: false,
 		usuario: Usuario()
 	},
@@ -26,18 +27,14 @@ const usuario = (
 			} else {
 				return Object.assign({}, state, {
 					isFetching: false,
-					didInvalidate: true
+					didInvalidate: true,
+					error: action.errror
 				})
 			}
 		case 'UPDATE':
 			return Object.assign({}, state, {
 				modified: true,
 				usuario: action.usuario
-			})
-		case 'SEND':
-			return Object.assign({}, state, {
-				isFetching: true,
-				didInvalidate: false
 			})
 		default:
 			return state
