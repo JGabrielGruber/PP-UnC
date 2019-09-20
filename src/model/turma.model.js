@@ -16,4 +16,4 @@ const Turmas = () => ({
 	ids: []
 })
 
-export default { Turma, Turmas }
+export { Turma, Turmas }

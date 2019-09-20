@@ -13,4 +13,4 @@ const Materias = () => ({
 	ids: []
 })
 
-export default { Materia, Materias }
+export { Materia, Materias }

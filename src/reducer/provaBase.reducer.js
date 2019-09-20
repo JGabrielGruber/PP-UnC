@@ -1,4 +1,4 @@
-import ProvasBases from '../model/provaBase.model'
+import { ProvasBases } from '../model/provaBase.model'
 
 const provaBase = (
 	state = {

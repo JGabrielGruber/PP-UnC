@@ -13,4 +13,4 @@ const Respostas = () => ({
 	ids: []
 })
 
-export default { Resposta, Respostas }
+export { Resposta, Respostas }

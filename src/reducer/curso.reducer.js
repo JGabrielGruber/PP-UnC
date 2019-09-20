@@ -1,4 +1,4 @@
-import Cursos from '../model/curso.model'
+import { Cursos } from '../model/curso.model'
 
 const curso = (
 	state = {

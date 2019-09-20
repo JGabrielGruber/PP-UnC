@@ -1,4 +1,4 @@
-import Turmas from '../model/turma.model'
+import { Turmas } from '../model/turma.model'
 
 const turma = (
 	state = {

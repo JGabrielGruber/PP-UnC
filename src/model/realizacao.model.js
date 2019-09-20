@@ -13,4 +13,4 @@ const Realizacoes = () => ({
 	ids: []
 })
 
-export default { Realizacao, Realizacoes }
+export { Realizacao, Realizacoes }

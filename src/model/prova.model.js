@@ -14,4 +14,4 @@ const Provas = () => ({
 	ids: []
 })
 
-export default { Prova, Provas }
+export { Prova, Provas }

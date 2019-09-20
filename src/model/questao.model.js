@@ -14,4 +14,4 @@ const Questoes = () => ({
 	ids: []
 })
 
-export default { Questao, Questoes }
+export { Questao, Questoes }

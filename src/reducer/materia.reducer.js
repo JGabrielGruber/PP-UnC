@@ -1,4 +1,4 @@
-import Materias from '../model/materia.model'
+import { Materias } from '../model/materia.model'
 
 const materia = (
 	state = {

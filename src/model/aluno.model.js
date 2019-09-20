@@ -11,4 +11,4 @@ const Alunos = () => ({
 	ids: []
 })
 
-export default { Aluno, Alunos }
+export { Aluno, Alunos }

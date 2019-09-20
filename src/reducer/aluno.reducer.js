@@ -1,4 +1,4 @@
-import Alunos from '../model/aluno.model'
+import { Alunos } from '../model/aluno.model'
 
 const aluno = (
 	state = {

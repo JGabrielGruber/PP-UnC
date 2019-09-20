@@ -1,4 +1,4 @@
-import Realizacoes from '../model/realizacao.model'
+import { Realizacoes } from '../model/realizacao.model'
 
 const realizacao = (
 	state = {

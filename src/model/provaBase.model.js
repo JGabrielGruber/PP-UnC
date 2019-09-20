@@ -12,4 +12,4 @@ const ProvasBases = () => ({
 	ids: []
 })
 
-export default { ProvaBase, ProvasBases }
+export { ProvaBase, ProvasBases }
