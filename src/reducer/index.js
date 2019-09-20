@@ -1,3 +1,21 @@
 import { combineReducers } from 'redux'
 
-export default combineReducers({})
+import aluno from './aluno.reducer'
+import curso from './curso.reducer'
+import materia from './materia.reducer'
+import prova from './prova.reducer'
+import provaBase from './provaBase.reducer'
+import realizacao from './realizacao.reducer'
+import turma from './turma.reducer'
+import usuario from './usuario.reducer'
+
+export default combineReducers({
+	aluno,
+	curso,
+	materia,
+	prova,
+	provaBase,
+	realizacao,
+	turma,
+	usuario
+})
