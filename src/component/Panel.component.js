@@ -112,7 +112,8 @@ const styles = theme => ({
 	},
 	paperBread: {
 		padding: theme.spacing(1, 2),
-		borderBottom: '1px solid #0003'
+		borderBottom: '1px solid #0003',
+		borderRadius: 'inherit'
 	},
 	fixedHeight: {
 		height: 240,
