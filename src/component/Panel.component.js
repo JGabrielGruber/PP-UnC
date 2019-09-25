@@ -19,7 +19,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import PersonIcon from '@material-ui/icons/Person';
-import { Avatar, Paper, Breadcrumbs, Link } from '@material-ui/core';
+import { Avatar, Paper, Breadcrumbs, Link, Tooltip, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 
 import Copyright from './Copyright.component';
@@ -112,6 +112,7 @@ const styles = theme => ({
 	},
 	paperBread: {
 		padding: theme.spacing(1, 2),
+		borderBottom: '1px solid #0003'
 	},
 	fixedHeight: {
 		height: 240,
@@ -183,17 +184,21 @@ class Panel extends Component {
 						<ListItem button onClick={() => {
 							this.props.history.push("/panel/dashboard")
 						}}>
-							<ListItemIcon>
-								<DashboardIcon />
-							</ListItemIcon>
+							<Tooltip title="Dashboard">
+								<ListItemIcon>
+									<DashboardIcon />
+								</ListItemIcon>
+							</Tooltip>
 							<ListItemText primary="Dashboard" />
 						</ListItem>
 						<ListItem button onClick={() => {
 							this.props.history.push("/panel/materias")
 						}}>
-							<ListItemIcon>
-								<LocalLibraryIcon />
-							</ListItemIcon>
+							<Tooltip title="Matérias">
+								<ListItemIcon>
+									<LocalLibraryIcon />
+								</ListItemIcon>
+							</Tooltip>
 							<ListItemText primary="Matérias" />
 						</ListItem>
 					</List>
@@ -261,14 +266,18 @@ const AppBreadCrumb = (path, history) => {
 
 	list.forEach((item, key) => {
 		breads.push((
-			<Link color="inherit" key={key} onClick={() => { history.push(item) }}>
-				{item}
-			</Link>
+			<Tooltip title={"Voltar para " + item}>
+				<Button size="small" color="inherit" key={key} onClick={() => { history.push(item) }}>
+					{item}
+				</Button>
+			</Tooltip>
 		))
 	})
 
 	breads[breads.length - 1] = (
-		<Typography color="textPrimary" key={breads.length}>{breads[breads.length - 1].props.children}</Typography>
+		<Button disabled size="small" color="textPrimary" key={breads.length}>
+			{breads[breads.length - 1].props.children}
+		</Button>
 	)
 
 	breads.splice(0, 1)
