@@ -52,8 +52,8 @@ class Turma extends Component {
 			},
 			provas: {
 				columns: [
-					{ title: 'Título', field: 'titulo' },
-					{ title: 'Descrição', field: 'descricao' },
+					{ title: 'Nome', field: 'nome' },
+					{ title: 'E-mail', field: 'email' },
 					{ title: 'Modificada', field: 'timeupdate', type: 'datetime' },
 					{ title: 'Criada', field: 'timestamp', type: 'datetime' }
 				],
@@ -180,7 +180,38 @@ class Turma extends Component {
 									tooltip: 'Ver Turma',
 									onClick: (event, rowData) => {
 										this.props.history.push(
-											'/panel/materias/' + this.state.materia._id + '/alunos/' + rowData._id
+											'/panel/materias/' + this.state.materia._id + '/turmas/' + this.state.turma._id + '/provas/' + rowData._id
+										)
+									}
+								}
+							]}
+							localization={localization}
+							components={fixedTableComponents}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<MaterialTable
+							title="Lista de Provas"
+							columns={this.state.provas.columns}
+							data={this.state.provas.data}
+							editable={{
+								onRowAdd: this.state.edit ? newData =>
+									new Promise(resolve => {
+										setTimeout(() => {
+											resolve();
+											const provas = this.state.provas;
+											provas.data.push(newData);
+											this.setState({ ...this.state, provas });
+										}, 600);
+									}) : null
+							}}
+							actions={[
+								{
+									icon: 'more_horiz',
+									tooltip: 'Ver Turma',
+									onClick: (event, rowData) => {
+										this.props.history.push(
+											'/panel/materias/' + this.state.materia._id + '/turmas/' + this.state.turma._id + '/provas/' + rowData._id
 										)
 									}
 								}

@@ -267,16 +267,14 @@ const AppBreadCrumb = (path, history) => {
 
 	list.forEach((item, key) => {
 		breads.push((
-			<Tooltip title={"Voltar para " + item}>
-				<Button size="small" color="inherit" key={key} onClick={() => { history.push(item) }}>
-					{item}
-				</Button>
-			</Tooltip>
+			<Button title={"Voltar para " + item} size="small" color="inherit" key={key} onClick={() => { history.push(item) }}>
+				{item}
+			</Button>
 		))
 	})
 
 	breads[breads.length - 1] = (
-		<Button disabled size="small" color="textPrimary" key={breads.length}>
+		<Button disabled size="small" key={breads.length}>
 			{breads[breads.length - 1].props.children}
 		</Button>
 	)

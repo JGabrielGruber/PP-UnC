@@ -107,7 +107,10 @@ class Materia extends Component {
 										<CheckIcon />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Cancelar">
+								<Tooltip title="Cancelar" onClick={() => {
+									this.switchEdit()
+									this.getMateria()
+								}}>
 									<IconButton>
 										<CloseIcon />
 									</IconButton>
