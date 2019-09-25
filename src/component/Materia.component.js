@@ -9,7 +9,7 @@ import MaterialTable, { MTableToolbar } from 'material-table';
 
 import localization from '../library/localizationMaterialTable'
 import fixedTableComponents from '../library/fixedTableComponents'
-import { inherits } from 'util';
+import { Materia as MateriaModel } from '../model/materia.model'
 
 const style = theme => ({
 	paper: {
@@ -34,12 +34,8 @@ class Materia extends Component {
 
 		this.state = {
 			edit: false,
-			materia: {
-				titulo: 'Materia de Teste',
-				descricao: 'Uma matéria criada para testes',
-				timeupdate: '2019-08-08 12:12:00',
-				timestamp: '2019-07-08 12:12:12'
-			},
+			materia: MateriaModel(),
+			id: {},
 			turmas: {
 				columns: [
 					{ title: 'Título', field: 'titulo' },
@@ -60,6 +56,31 @@ class Materia extends Component {
 				data: []
 			}
 		}
+	}
+
+	componentWillMount() {
+		this.getMateria()
+	}
+
+	getMateria = async () => {
+		this.setState({
+			id: this.props.match.params.materiaId
+		})
+		await this.props.requestMaterias()
+		let index = this.props.ids.indexOf(this.state.id)
+		if (index >= 0) {
+			this.setState({
+				materia: this.props.materias[index]
+			})
+		}
+	}
+
+	updateValue = (event) => {
+		let materia = this.state.materia
+		materia[event.target.id] = event.target.value
+		this.setState({
+			...this.state, materia
+		})
 	}
 
 	switchEdit = () => {
@@ -119,6 +140,7 @@ class Materia extends Component {
 									label="Título"
 									fullWidth
 									value={this.state.materia.titulo}
+									onChange={this.updateValue}
 								/>
 							) : (
 									<div>
@@ -145,6 +167,7 @@ class Materia extends Component {
 									label="Descrição"
 									fullWidth
 									value={this.state.materia.descricao}
+									onChange={this.updateValue}
 								/>
 							) : (
 									<div>

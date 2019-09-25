@@ -19,19 +19,12 @@ class ListaMateria extends Component {
 			columns: [
 				{ title: 'Título', field: 'titulo' },
 				{ title: 'Descrição', field: 'descricao' },
-				{ title: 'Modificada', field: 'timeupdate', type: 'datetime' },
+				{ title: 'Modificada', field: 'timeupdate', type: 'datetime', initialEditValue: '' },
 				{ title: 'Criada', field: 'timestamp', type: 'datetime' }
-			],
-			data: [
-				{
-					_id: 'asdasdasdasd',
-					titulo: 'Materia de Teste',
-					descricao: 'Uma matéria criada para testes',
-					timeupdate: '2019-08-08 12:12:00',
-					timestamp: '2019-07-08 12:12:12'
-				},
-			],
+			]
 		}
+
+		this.props.requestMaterias()
 	}
 
 	render() {
@@ -39,15 +32,13 @@ class ListaMateria extends Component {
 			<MaterialTable
 				title="Lista de Matérias"
 				columns={this.state.columns}
-				data={this.state.data}
+				data={this.props.materias}
 				editable={{
 					onRowAdd: newData =>
 						new Promise(resolve => {
+							this.props.updateMateria(newData)
 							setTimeout(() => {
 								resolve();
-								const data = [...this.state.data];
-								data.push(newData);
-								this.setState({ ...this.state, data });
 							}, 600);
 						})
 				}}

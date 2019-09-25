@@ -24,8 +24,8 @@ import { withStyles } from '@material-ui/styles';
 
 import Copyright from './Copyright.component';
 import Dashboard from './Dashboard.component';
-import ListaMateria from './ListaMateria.component';
-import Materia from './Materia.component';
+import ListaMateria from '../container/listaMateria.container';
+import Materia from '../container/materia.container';
 import Turma from './Turma.component';
 
 const drawerWidth = 240;
