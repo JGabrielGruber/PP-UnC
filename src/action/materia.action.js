@@ -1,7 +1,7 @@
 import {
-	requestMaterias as requests,
-	requestMateria as request,
-	updateMateria as update
+	loadLocalMaterias,
+	updateLocalMateria,
+	requestMaterias as request
 } from '../controller/materia.controller'
 
 const requestAction = () => ({
@@ -22,16 +22,23 @@ const updateAction = (materias) => ({
 function requestMaterias() {
 	return function(dispatch) {
 		dispatch(requestAction())
-		requests()
-		.then((materias) => {
+		loadLocalMaterias().then((materias) => {
+			console.log(materias);
+			
 			dispatch(receiveAction(true, materias))
+		})
+		dispatch(requestAction())
+		request().then((materias) => {
+			console.log(materias);
+			
+			dispatch(receiveAction(materias ? true : false, { "materias": materias } ? materias : []))
 		})
 	}
 }
 
 function updateMateria(materia) {
 	return function(dispatch) {
-		update(materia)
+		updateLocalMateria(materia)
 		.then((materias) => {
 			dispatch(updateAction(materias))
 		})
