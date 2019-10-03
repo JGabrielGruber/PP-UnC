@@ -60,6 +60,7 @@ class Materia extends Component {
 
 	componentWillMount() {
 		this.getMateria()
+		this.getTurmas()
 	}
 
 	getMateria = async () => {
@@ -78,6 +79,16 @@ class Materia extends Component {
 			this.setState({
 				materia: this.props.materias[index]
 			})
+		}
+	}
+
+	getTurmas = async () => {
+		if (!this.props.usuario_id) {
+			await setTimeout(async () => {
+				this.getTurmas()
+			}, 1000)
+		} else {
+			await this.props.requestTurmas(this.props.usuario_id, this.state.id)
 		}
 	}
 
@@ -194,7 +205,7 @@ class Materia extends Component {
 						<MaterialTable
 							title="Lista de Turmas"
 							columns={this.state.turmas.columns}
-							data={this.state.turmas.data}
+							data={this.props.turmas}
 							editable={{
 								onRowAdd: this.state.edit ? newData =>
 									new Promise(resolve => {
