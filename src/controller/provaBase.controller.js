@@ -1,0 +1,48 @@
+import axios from 'axios'
+
+import { ProvasBases } from '../model/provaBase.model'
+
+async function loadLocalProvasBases() {
+	let provasBases = localStorage.getItem('provasBases')
+	if (provasBases) {
+		return JSON.parse(provasBases)
+	} else {
+		provasBases = ProvasBases()
+		localStorage.setItem('provasBases', JSON.stringify(provasBases))
+		return provasBases
+	}
+}
+
+async function requestProvasBases(usuario_id, materia_id) {
+	let axiosConf = {
+		url: "usuarios/" + usuario_id + "/materias/" + materia_id + "/provasBases/"
+	}
+	let provasBases = await axios(axiosConf).then((response) => {
+		return response.data
+	}).catch((error) => {
+		console.log(error.response)
+		return false
+	})
+	if (provasBases) {
+		await provasBases.forEach(provaBase => {
+			updateLocalTurma(provaBase)
+		})
+		return await loadLocalProvasBases()
+	}
+	return null
+}
+
+async function updateLocalTurma(provaBase) {
+	let provasBases = await loadLocalProvasBases()
+	let index = provasBases.ids.indexOf(provaBase._id)
+	if (index >= 0) {
+		provasBases.provasBases[index] = provaBase
+	} else {
+		provasBases.provasBases.push(provaBase)
+		provasBases.ids.push(provaBase._id)
+	}
+	localStorage.setItem('provasBases', JSON.stringify(provasBases))
+	return provasBases
+}
+
+export { loadLocalProvasBases, updateLocalTurma, requestProvasBases }
