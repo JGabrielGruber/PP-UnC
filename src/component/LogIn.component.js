@@ -20,7 +20,7 @@ import { requestToken, requestId } from '../controller/login.controller'
 const styles = theme => ({
 	'@global': {
 		body: {
-			backgroundColor: theme.palette.common.white,
+			backgroundColor: "#FAFAFA",
 		},
 	},
 	paper: {

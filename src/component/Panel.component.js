@@ -28,6 +28,7 @@ import ListaMateria from '../container/listaMateria.container';
 import Materia from '../container/materia.container';
 import Turma from './Turma.component';
 import { loadLocalLogin } from '../controller/login.controller'
+import Axios from 'axios';
 
 const drawerWidth = 240;
 
@@ -136,6 +137,10 @@ class Panel extends Component {
 	componentDidMount() {
 		loadLocalLogin()
 		this.getUsuario()
+		if (!Axios.defaults.headers.AUTHORIZATION) {
+			this.props.history.push('/login')
+		}
+		
 	}
 
 	getUsuario = () => {
