@@ -70,12 +70,12 @@ class LogIn extends Component {
 		this.setState({ ...this.state, waiting: true })
 		if (await requestToken(this.state.email, this.state.senha, this.state.keep)) {
 			await requestId()
-			await setTimeout(() => {
-				this.setState({ ...this.state, ok: true })
+			this.setState({ ...this.state, ok: true })
+			setTimeout(() => {
+				this.setState({ ...this.state, waiting: false })
+				this.setState({ ...this.state, ok: false })
+				this.props.history.push('/panel/dashboard')
 			}, 500)
-			this.setState({ ...this.state, waiting: false })
-			this.setState({ ...this.state, ok: false })
-			this.props.history.push('/panel/dashboard')
 		} else {
 			this.setState({ ...this.state, waiting: false })
 		}
