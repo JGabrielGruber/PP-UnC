@@ -25,14 +25,14 @@ async function requestProvasBases(usuario_id, materia_id) {
 	})
 	if (provasBases) {
 		await provasBases.forEach(provaBase => {
-			updateLocalTurma(provaBase)
+			updateLocalProvaBase(provaBase)
 		})
 		return await loadLocalProvasBases()
 	}
 	return null
 }
 
-async function updateLocalTurma(provaBase) {
+async function updateLocalProvaBase(provaBase) {
 	let provasBases = await loadLocalProvasBases()
 	let index = provasBases.ids.indexOf(provaBase._id)
 	if (index >= 0) {
@@ -45,4 +45,4 @@ async function updateLocalTurma(provaBase) {
 	return provasBases
 }
 
-export { loadLocalProvasBases, updateLocalTurma, requestProvasBases }
+export { loadLocalProvasBases, updateLocalProvaBase, requestProvasBases }
