@@ -10,6 +10,7 @@ import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined'
 import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
 import Copyright from './Copyright.component'
@@ -55,7 +56,8 @@ class LogIn extends Component {
 			email: "",
 			senha: "",
 			keep: true,
-			waiting: false
+			waiting: false,
+			ok: false
 		}
 	}
 
@@ -68,7 +70,11 @@ class LogIn extends Component {
 		this.setState({ ...this.state, waiting: true })
 		if (await requestToken(this.state.email, this.state.senha, this.state.keep)) {
 			await requestId()
+			await setTimeout(() => {
+				this.setState({ ...this.state, ok: true })
+			}, 500)
 			this.setState({ ...this.state, waiting: false })
+			this.setState({ ...this.state, ok: false })
 			this.props.history.push('/panel/dashboard')
 		} else {
 			this.setState({ ...this.state, waiting: false })
@@ -84,7 +90,7 @@ class LogIn extends Component {
 				<CssBaseline />
 				<div className={classes.paper}>
 					<Avatar className={classes.avatar}>
-						<LockOutlinedIcon />
+						{this.state.ok ? <LockOpenOutlinedIcon /> : <LockOutlinedIcon />}
 						{this.state.waiting && <CircularProgress className={classes.avatarProgress} />}
 					</Avatar>
 					<Typography component="h1" variant="h5">
