@@ -8,11 +8,11 @@ import ListaMateria from '../component/ListaMateria.component'
 
 function mapDispatchToProps(dispatch) {
 	return({
-		requestMaterias: () => {
-			dispatch(requestMaterias());
+		requestMaterias: (usuario_id) => {
+			dispatch(requestMaterias(usuario_id))
 		},
 		updateMateria: (materia) => {
-			dispatch(updateMateria(materia));
+			dispatch(updateMateria(materia))
 		}
 	})
 }
@@ -23,7 +23,8 @@ const mapStateToProps = (state) => {
 		didInvalidate: state.materia.didInvalidate,
 		error: state.materia.error,
 		modified: state.materia.modified,
-		materias: state.materia.materias.materias
+		materias: state.materia.materias.materias,
+		usuario_id: state.usuario.usuario._id
 	};
 }
 
