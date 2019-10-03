@@ -66,7 +66,13 @@ class Materia extends Component {
 		this.setState({
 			id: this.props.match.params.materiaId
 		})
-		await this.props.requestMaterias(this.props.usuario_id)
+		if (!this.props.usuario_id) {
+			await setTimeout(async () => {
+				await this.props.requestMaterias(this.props.usuario_id)
+			}, 1000)
+		} else {
+			await this.props.requestMaterias(this.props.usuario_id)
+		}
 		let index = this.props.ids.indexOf(this.state.id)
 		if (index >= 0) {
 			this.setState({

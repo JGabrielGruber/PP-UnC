@@ -26,9 +26,9 @@ async function requestMaterias(usuario_id) {
 		return false
 	})
 	if (materias) {
-		materias.forEach(materia => {
+		await materias.forEach(materia => {
 			updateLocalMateria(materia)
-		});
+		})
 		return await loadLocalMaterias()
 	}
 	return null

@@ -19,7 +19,17 @@ class ListaMateria extends Component {
 	}
 
 	componentDidMount() {
-		this.props.requestMaterias(this.props.usuario_id)
+		this.getMaterias()
+	}
+
+	getMaterias = async () => {
+		if (this.props.usuario_id === "") {
+			await setTimeout(async () => {
+				this.getMaterias()
+			}, 1000)
+		} else {
+			await this.props.requestMaterias(this.props.usuario_id)
+		}
 	}
 
 	render() {
