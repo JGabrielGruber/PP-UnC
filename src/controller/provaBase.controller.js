@@ -15,7 +15,7 @@ async function loadLocalProvasBases() {
 
 async function requestProvasBases(usuario_id, materia_id) {
 	let axiosConf = {
-		url: "usuarios/" + usuario_id + "/materias/" + materia_id + "/provasBases/"
+		url: "usuarios/" + usuario_id + "/materias/" + materia_id + "/provas/"
 	}
 	let provasBases = await axios(axiosConf).then((response) => {
 		return response.data
