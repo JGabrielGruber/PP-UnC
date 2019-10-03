@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { ThemeProvider } from '@material-ui/styles'
 
 import LogIn from './LogIn.component'
-import Panel from './Panel.component';
+import Panel from '../container/panel.container';
 import theme from '../theme'
 
 const Root = ({ store }) => (

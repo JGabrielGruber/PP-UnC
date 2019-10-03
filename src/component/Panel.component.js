@@ -19,7 +19,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import PersonIcon from '@material-ui/icons/Person';
-import { Avatar, Paper, Breadcrumbs, Link, Tooltip, Button } from '@material-ui/core';
+import { Avatar, Paper, Breadcrumbs, Tooltip, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 
 import Copyright from './Copyright.component';
@@ -27,6 +27,7 @@ import Dashboard from './Dashboard.component';
 import ListaMateria from '../container/listaMateria.container';
 import Materia from '../container/materia.container';
 import Turma from './Turma.component';
+import { loadLocalLogin } from '../controller/login.controller'
 
 const drawerWidth = 240;
 
@@ -123,7 +124,7 @@ const styles = theme => ({
 class Panel extends Component {
 
 	constructor(props) {
-		super(props);
+		super(props)
 
 		this.handleDrawerOpen = this.handleDrawerOpen.bind(this)
 		this.handleDrawerClose = this.handleDrawerClose.bind(this)
@@ -132,12 +133,21 @@ class Panel extends Component {
 		}
 	}
 
+	componentDidMount() {
+		loadLocalLogin()
+		this.getUsuario()
+	}
+
+	getUsuario = () => {
+		this.props.requestUsuario()
+	}
+
 	handleDrawerOpen = () => {
 		this.setState({ open: true })
-	};
+	}
 	handleDrawerClose = () => {
 		this.setState({ open: false })
-	};
+	}
 
 	render() {
 
