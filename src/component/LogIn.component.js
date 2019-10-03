@@ -1,20 +1,23 @@
-import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Copyright from './Copyright.component';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import Avatar from '@material-ui/core/Avatar'
+import Button from '@material-ui/core/Button'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import TextField from '@material-ui/core/TextField'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
+import Link from '@material-ui/core/Link'
+import Grid from '@material-ui/core/Grid'
+import Box from '@material-ui/core/Box'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import Typography from '@material-ui/core/Typography'
+import Container from '@material-ui/core/Container'
+import Copyright from './Copyright.component'
+import { CircularProgress, withStyles } from '@material-ui/core'
 
-const useStyles = makeStyles(theme => ({
+import { requestToken, requestId } from '../controller/login.controller'
+
+const styles = theme => ({
 	'@global': {
 		body: {
 			backgroundColor: theme.palette.common.white,
@@ -30,6 +33,10 @@ const useStyles = makeStyles(theme => ({
 		margin: theme.spacing(1),
 		backgroundColor: theme.palette.secondary.main,
 	},
+	avatarProgress: {
+		position: 'absolute',
+		zIndex: 1,
+	},
 	form: {
 		width: '100%', // Fix IE 11 issue.
 		marginTop: theme.spacing(1),
@@ -37,76 +44,114 @@ const useStyles = makeStyles(theme => ({
 	submit: {
 		margin: theme.spacing(3, 0, 2),
 	},
-}));
+})
 
-function LogIn() {
-	const classes = useStyles();
+class LogIn extends Component {
 
-	return (
-		<Container component="main" maxWidth="xs">
-			<CssBaseline />
-			<div className={classes.paper}>
-				<Avatar className={classes.avatar}>
-					<LockOutlinedIcon />
-				</Avatar>
-				<Typography component="h1" variant="h5">
-					Sign in
-				</Typography>
-				<form className={classes.form} noValidate>
-					<TextField
-						variant="outlined"
-						margin="normal"
-						required
-						fullWidth
-						id="email"
-						label="Email Address"
-						name="email"
-						autoComplete="email"
-						autoFocus
-					/>
-					<TextField
-						variant="outlined"
-						margin="normal"
-						required
-						fullWidth
-						name="password"
-						label="Password"
-						type="password"
-						id="password"
-						autoComplete="current-password"
-					/>
-					<FormControlLabel
-						control={<Checkbox value="remember" color="primary" />}
-						label="Remember me"
-					/>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-					>
-						Sign In
-					</Button>
-					<Grid container>
-						<Grid item xs>
-							<Link href="#" variant="body2">
-								Forgot password?
-							</Link>
+	constructor(props) {
+		super(props)
+
+		this.state = {
+			email: "",
+			senha: "",
+			keep: true,
+			waiting: false
+		}
+	}
+
+	handleChange = name => event => {
+		this.setState({ ...this.state, [name]: (name !== "keep") ? event.target.value : event.target.checked })
+	}
+
+	handleSubmit = async event => {
+		event.preventDefault()
+		this.setState({ ...this.state, waiting: true })
+		if (await requestToken(this.state.email, this.state.senha, this.state.keep)) {
+			await requestId()
+			this.setState({ ...this.state, waiting: false })
+			this.props.history.push('/panel/dashboard')
+		} else {
+			this.setState({ ...this.state, waiting: false })
+		}
+	}
+
+	render() {
+
+		const { classes } = this.props
+
+		return (
+			<Container component="main" maxWidth="xs">
+				<CssBaseline />
+				<div className={classes.paper}>
+					<Avatar className={classes.avatar}>
+						<LockOutlinedIcon />
+						{this.state.waiting && <CircularProgress className={classes.avatarProgress} />}
+					</Avatar>
+					<Typography component="h1" variant="h5">
+						Acesso
+					</Typography>
+					<form className={classes.form} onSubmit={this.handleSubmit}>
+						<TextField
+							variant="outlined"
+							margin="normal"
+							required
+							fullWidth
+							id="email"
+							label="Endereço de E-mail"
+							name="email"
+							value={this.state.email}
+							onChange={this.handleChange('email')}
+							autoComplete="email"
+							autoFocus
+						/>
+						<TextField
+							variant="outlined"
+							margin="normal"
+							required
+							fullWidth
+							name="senha"
+							label="Senha"
+							type="password"
+							id="senha"
+							value={this.state.senha}
+							onChange={this.handleChange('senha')}
+							autoComplete="current-password"
+						/>
+						<FormControlLabel
+							control={<Checkbox value="remember" color="primary" />}
+							label="Manter-me conectado"
+							checked={this.state.keep}
+							onChange={this.handleChange('keep')}
+						/>
+						<Button
+							type="submit"
+							fullWidth
+							variant="contained"
+							color="primary"
+							className={classes.submit}
+							disabled={this.state.waiting}
+						>
+							Acessar
+						</Button>
+						<Grid container>
+							<Grid item xs>
+								<Link href="#" variant="body2">
+									Esqueceu a senha?
+								</Link>
+							</Grid>
 						</Grid>
-						<Grid item>
-							<Link href="#" variant="body2">
-								{"Don't have an account? Sign Up"}
-							</Link>
-						</Grid>
-					</Grid>
-				</form>
-			</div>
-			<Box mt={8}>
-				<Copyright />
-			</Box>
-		</Container>
-	);
+					</form>
+				</div>
+				<Box mt={8}>
+					<Copyright />
+				</Box>
+			</Container>
+		)
+	}
 }
 
-export default LogIn
+LogIn.propType = {
+	classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(LogIn)
