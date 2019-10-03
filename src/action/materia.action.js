@@ -4,9 +4,9 @@ import {
 	requestMaterias as request
 } from '../controller/materia.controller'
 
-export const REQUEST	= 'REQUEST_MATERIA'
-export const RECEIVE	= 'RECEIVE_MATERIA'
-export const UPDATE		= 'UPDATE_MATERIA'
+export const REQUEST = 'REQUEST_MATERIA'
+export const RECEIVE = 'RECEIVE_MATERIA'
+export const UPDATE = 'UPDATE_MATERIA'
 
 const requestAction = () => ({
 	type: REQUEST
@@ -24,7 +24,7 @@ const updateAction = (materias) => ({
 })
 
 function requestMaterias(usuario_id) {
-	return function(dispatch) {
+	return function (dispatch) {
 		dispatch(requestAction())
 		loadLocalMaterias().then((materias) => {
 			dispatch(receiveAction(true, materias))
@@ -37,11 +37,11 @@ function requestMaterias(usuario_id) {
 }
 
 function updateMateria(materia) {
-	return function(dispatch) {
+	return function (dispatch) {
 		updateLocalMateria(materia)
-		.then((materias) => {
-			dispatch(updateAction(materias))
-		})
+			.then((materias) => {
+				dispatch(updateAction(materias))
+			})
 	}
 }
 

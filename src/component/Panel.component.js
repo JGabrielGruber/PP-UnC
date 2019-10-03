@@ -140,7 +140,7 @@ class Panel extends Component {
 		if (!Axios.defaults.headers.AUTHORIZATION) {
 			this.props.history.push('/login')
 		}
-		
+
 	}
 
 	getUsuario = () => {

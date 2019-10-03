@@ -20,8 +20,6 @@ async function requestMaterias(usuario_id) {
 	let materias = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		console.log(error);
-		
 		console.log(error.response)
 		return false
 	})

@@ -22,8 +22,6 @@ const materia = (
 				didInvalidate: false
 			})
 		case RECEIVE:
-			console.log("Nope");
-			
 			if (action.status) {
 				return Object.assign({}, state, {
 					isFetching: false,
