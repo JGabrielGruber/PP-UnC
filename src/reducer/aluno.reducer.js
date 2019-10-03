@@ -1,4 +1,9 @@
 import { Alunos } from '../model/aluno.model'
+import {
+	REQUEST,
+	RECEIVE,
+	UPDATE
+} from '../action/aluno.action'
 
 const aluno = (
 	state = {
@@ -11,12 +16,12 @@ const aluno = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST':
+		case REQUEST:
 			return Object.assign({}, state, {
 				isFetching: true,
 				didInvalidate: false
 			})
-		case 'RECEIVE':
+		case RECEIVE:
 			if (action.status) {
 				return Object.assign({}, state, {
 					isFetching: false,
@@ -31,7 +36,7 @@ const aluno = (
 					error: action.errror
 				})
 			}
-		case 'UPDATE':
+		case UPDATE:
 			return Object.assign({}, state, {
 				modified: true,
 				alunos: action.alunos
