@@ -7,6 +7,10 @@ import {
 	requestTurmas,
 	updateTurma
 } from '../action/turma.action'
+import {
+	requestProvasBases,
+	updateProvaBase
+} from '../action/provaBase.action'
 
 import Materia from '../component/Materia.component'
 
@@ -23,6 +27,12 @@ function mapDispatchToProps(dispatch) {
 		},
 		updateTurma: (turma) => {
 			dispatch(updateTurma(turma))
+		},
+		requestProvasBases: (usuario_id, materia_id) => {
+			dispatch(requestProvasBases(usuario_id, materia_id))
+		},
+		updateProvaBase: (turma) => {
+			dispatch(updateProvaBase(turma))
 		}
 	})
 }
@@ -36,7 +46,8 @@ const mapStateToProps = (state) => {
 		materias: state.materia.materias.materias,
 		ids: state.materia.materias.ids,
 		usuario_id: state.usuario.usuario._id,
-		turmas: state.turma.turmas.turmas
+		turmas: state.turma.turmas.turmas,
+		provasBases: state.provaBase.provasBases.provasBases
 	};
 }
 

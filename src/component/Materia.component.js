@@ -61,6 +61,7 @@ class Materia extends Component {
 	componentWillMount() {
 		this.getMateria()
 		this.getTurmas()
+		this.getProvasBases()
 	}
 
 	getMateria = async () => {
@@ -89,6 +90,16 @@ class Materia extends Component {
 			}, 1000)
 		} else {
 			await this.props.requestTurmas(this.props.usuario_id, this.state.id)
+		}
+	}
+
+	getProvasBases = async () => {
+		if (!this.props.usuario_id) {
+			await setTimeout(async () => {
+				this.getProvasBases()
+			}, 1000)
+		} else {
+			await this.props.requestProvasBases(this.props.usuario_id, this.state.id)
 		}
 	}
 
@@ -236,7 +247,7 @@ class Materia extends Component {
 						<MaterialTable
 							title="Lista de Provas Bases"
 							columns={this.state.provas.columns}
-							data={this.state.provas.data}
+							data={this.props.provasBases}
 							editable={{
 								onRowAdd: this.state.edit ? newData =>
 									new Promise(resolve => {
