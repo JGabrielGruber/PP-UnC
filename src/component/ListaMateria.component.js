@@ -1,14 +1,7 @@
 import React, { Component } from 'react'
 import MaterialTable from 'material-table'
-import { makeStyles } from '@material-ui/core/styles'
 
 import localization from '../library/localizationMaterialTable'
-
-const useStyles = makeStyles(theme => ({
-	root: {
-		display: 'flex',
-	}
-}))
 
 class ListaMateria extends Component {
 
@@ -23,8 +16,10 @@ class ListaMateria extends Component {
 				{ title: 'Criada', field: 'timestamp', type: 'datetime' }
 			]
 		}
+	}
 
-		this.props.requestMaterias()
+	componentDidMount() {
+		this.props.requestMaterias(this.props.usuario_id)
 	}
 
 	render() {

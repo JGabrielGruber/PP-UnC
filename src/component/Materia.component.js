@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
-import MaterialTable, { MTableToolbar } from 'material-table';
+import MaterialTable from 'material-table';
 
 import localization from '../library/localizationMaterialTable'
 import fixedTableComponents from '../library/fixedTableComponents'
@@ -66,7 +66,7 @@ class Materia extends Component {
 		this.setState({
 			id: this.props.match.params.materiaId
 		})
-		await this.props.requestMaterias()
+		await this.props.requestMaterias(this.props.usuario_id)
 		let index = this.props.ids.indexOf(this.state.id)
 		if (index >= 0) {
 			this.setState({

@@ -1,4 +1,9 @@
 import { Materias } from '../model/materia.model'
+import {
+	REQUEST,
+	RECEIVE,
+	UPDATE
+} from '../action/materia.action'
 
 const materia = (
 	state = {
@@ -11,12 +16,14 @@ const materia = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST':
+		case REQUEST:
 			return Object.assign({}, state, {
 				isFetching: true,
 				didInvalidate: false
 			})
-		case 'RECEIVE':
+		case RECEIVE:
+			console.log("Nope");
+			
 			if (action.status) {
 				return Object.assign({}, state, {
 					isFetching: false,
@@ -31,7 +38,7 @@ const materia = (
 					error: action.errror
 				})
 			}
-		case 'UPDATE':
+		case UPDATE:
 			return Object.assign({}, state, {
 				modified: true,
 				materias: action.materias

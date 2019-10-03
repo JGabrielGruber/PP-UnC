@@ -8,8 +8,8 @@ import Materia from '../component/Materia.component'
 
 function mapDispatchToProps(dispatch) {
 	return({
-		requestMaterias: () => {
-			dispatch(requestMaterias());
+		requestMaterias: (usuario_id) => {
+			dispatch(requestMaterias(usuario_id));
 		},
 		updateMateria: (materia) => {
 			dispatch(updateMateria(materia));
@@ -24,7 +24,8 @@ const mapStateToProps = (state) => {
 		error: state.materia.error,
 		modified: state.materia.modified,
 		materias: state.materia.materias.materias,
-		ids: state.materia.materias.ids
+		ids: state.materia.materias.ids,
+		usuario_id: state.usuario.usuario._id
 	};
 }
 

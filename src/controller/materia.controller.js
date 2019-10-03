@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { Materia, Materias } from '../model/materia.model'
+import { Materias } from '../model/materia.model'
 
 async function loadLocalMaterias() {
 	let materias = localStorage.getItem('materias')
@@ -13,20 +13,25 @@ async function loadLocalMaterias() {
 	}
 }
 
-async function requestMaterias(id) {
+async function requestMaterias(usuario_id) {
 	let axiosConf = {
-		url: "usuarios/5d764977386c205a246c2c29/materias/"
+		url: "usuarios/" + usuario_id + "/materias/"
 	}
 	let materias = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
+		console.log(error);
+		
 		console.log(error.response)
 		return false
 	})
-	materias.forEach(materia => {
-		updateLocalMateria(materia)
-	});
-	return await loadLocalMaterias()
+	if (materias) {
+		materias.forEach(materia => {
+			updateLocalMateria(materia)
+		});
+		return await loadLocalMaterias()
+	}
+	return null
 }
 
 async function updateLocalMateria(materia) {
