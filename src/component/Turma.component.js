@@ -66,6 +66,7 @@ class Turma extends Component {
 	componentWillMount() {
 		this.getTurma()
 		this.getAlunos()
+		this.getProvas()
 	}
 
 	switchEdit = () => {
@@ -101,6 +102,16 @@ class Turma extends Component {
 			}, 1000)
 		} else {
 			await this.props.requestAlunos(this.props.usuario_id, this.state.materia_id, this.state.turma._id)
+		}
+	}
+
+	getProvas = async () => {
+		if (!this.props.usuario_id || !this.state.materia_id || !this.state.turma._id) {
+			setTimeout(async () => {
+				this.getProvas()
+			}, 1000)
+		} else {
+			await this.props.requestProvas(this.props.usuario_id, this.state.materia_id, this.state.turma._id)
 		}
 	}
 
@@ -199,6 +210,7 @@ class Turma extends Component {
 							title="Lista de Alunos"
 							columns={this.state.alunos.columns}
 							data={this.props.alunos}
+							isLoading={this.props.isFetching}
 							editable={{
 								onRowAdd: this.state.edit ? newData =>
 									new Promise(resolve => {
@@ -229,7 +241,7 @@ class Turma extends Component {
 						<MaterialTable
 							title="Lista de Provas"
 							columns={this.state.provas.columns}
-							data={this.state.provas.data}
+							data={this.props.provas}
 							editable={{
 								onRowAdd: this.state.edit ? newData =>
 									new Promise(resolve => {

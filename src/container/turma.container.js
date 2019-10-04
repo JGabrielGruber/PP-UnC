@@ -7,6 +7,10 @@ import {
 	requestAlunos,
 	updateAluno
 } from '../action/aluno.action'
+import {
+	requestProvas,
+	updateProva
+} from '../action/prova.action'
 
 import Turma from '../component/Turma.component'
 
@@ -24,6 +28,12 @@ function mapDispatchToProps(dispatch) {
 		updateAluno: (aluno) => {
 			dispatch(updateAluno(aluno))
 		},
+		requestProvas: (usuario_id, materia_id, turma_id) => {
+			dispatch(requestProvas(usuario_id, materia_id, turma_id))
+		},
+		updateProva: (prova) => {
+			dispatch(updateProva(prova))
+		},
 	})
 }
 
@@ -37,6 +47,7 @@ const mapStateToProps = (state) => {
 		usuario_id: state.usuario.usuario._id,
 		turmas: state.turma.turmas.turmas,
 		alunos: state.aluno.alunos.alunos,
+		provas: state.prova.provas.provas,
 	};
 }
 
