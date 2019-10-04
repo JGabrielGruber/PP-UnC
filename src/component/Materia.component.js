@@ -35,7 +35,7 @@ class Materia extends Component {
 		this.state = {
 			edit: false,
 			materia: MateriaModel(),
-			id: {},
+			id: "",
 			turmas: {
 				columns: [
 					{ title: 'Título', field: 'titulo' },
