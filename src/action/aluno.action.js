@@ -23,14 +23,14 @@ const updateAction = (alunos) => ({
 	alunos: alunos
 })
 
-function requestAlunos(usuario_id, materia_id) {
+function requestAlunos(usuario_id, materia_id, turma_id) {
 	return function(dispatch) {
 		dispatch(requestAction())
 		loadLocalAlunos().then((alunos) => {
 			dispatch(receiveAction(true, alunos))
 		})
 		dispatch(requestAction())
-		request(usuario_id, materia_id).then((alunos) => {
+		request(usuario_id, materia_id, turma_id).then((alunos) => {
 			dispatch(receiveAction(alunos ? true : false, alunos ? alunos : []))
 		})
 	}
