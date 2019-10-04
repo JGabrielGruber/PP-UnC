@@ -1,4 +1,9 @@
 import { Provas } from '../model/prova.model'
+import {
+	REQUEST,
+	RECEIVE,
+	UPDATE
+} from '../action/prova.action'
 
 const prova = (
 	state = {
@@ -11,12 +16,12 @@ const prova = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST':
+		case REQUEST:
 			return Object.assign({}, state, {
 				isFetching: true,
 				didInvalidate: false
 			})
-		case 'RECEIVE':
+		case RECEIVE:
 			if (action.status) {
 				return Object.assign({}, state, {
 					isFetching: false,
@@ -31,7 +36,7 @@ const prova = (
 					error: action.errror
 				})
 			}
-		case 'UPDATE':
+		case UPDATE:
 			return Object.assign({}, state, {
 				modified: true,
 				provas: action.provas
