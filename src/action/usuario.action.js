@@ -24,16 +24,18 @@ const updateAction = (usuario) => ({
 })
 
 function requestUsuario() {
-	return async function(dispatch) {
-		dispatch(requestAction())
-		let id = await loadLocalUsuario().then((usuario) => {
-			dispatch(receiveAction(true, usuario))
-			return usuario._id
-		})
-		dispatch(requestAction())
-		request(id).then((usuario) => {
-			dispatch(receiveAction(usuario ? true : false, { "usuario": usuario } ? usuario : []))
-		})
+	return async function(dispatch, getState) {
+		if (!getState().usuario.isFetching) {
+			dispatch(requestAction())
+			let id = await loadLocalUsuario().then((usuario) => {
+				dispatch(receiveAction(true, usuario))
+				return usuario._id
+			})
+			dispatch(requestAction())
+			request(id).then((usuario) => {
+				dispatch(receiveAction(usuario ? true : false, { "usuario": usuario } ? usuario : []))
+			})
+		}
 	}
 }
 
