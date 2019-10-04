@@ -4,9 +4,9 @@ import {
 	requestTurmas as request
 } from '../controller/turma.controller'
 
-export const REQUEST	= 'REQUEST_TURMA'
-export const RECEIVE	= 'RECEIVE_TURMA'
-export const UPDATE		= 'UPDATE_TURMA'
+export const REQUEST = 'REQUEST_TURMA'
+export const RECEIVE = 'RECEIVE_TURMA'
+export const UPDATE = 'UPDATE_TURMA'
 
 const requestAction = () => ({
 	type: REQUEST
@@ -24,24 +24,26 @@ const updateAction = (turmas) => ({
 })
 
 function requestTurmas(usuario_id, materia_id) {
-	return function(dispatch) {
-		dispatch(requestAction())
-		loadLocalTurmas().then((turmas) => {
-			dispatch(receiveAction(true, turmas))
-		})
-		dispatch(requestAction())
-		request(usuario_id, materia_id).then((turmas) => {
-			dispatch(receiveAction(turmas ? true : false, turmas ? turmas : []))
-		})
+	return async function (dispatch, getState) {
+		if (!getState().turma.isFetching) {
+			dispatch(requestAction())
+			loadLocalTurmas().then((turmas) => {
+				dispatch(receiveAction(true, turmas))
+			})
+			dispatch(requestAction())
+			request(usuario_id, materia_id).then((turmas) => {
+				dispatch(receiveAction(turmas ? true : false, turmas ? turmas : []))
+			})
+		}
 	}
 }
 
 function updateTurma(turma) {
-	return function(dispatch) {
+	return function (dispatch) {
 		updateLocalTurma(turma)
-		.then((turmas) => {
-			dispatch(updateAction(turmas))
-		})
+			.then((turmas) => {
+				dispatch(updateAction(turmas))
+			})
 	}
 }
 
