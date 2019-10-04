@@ -15,7 +15,7 @@ function mapDispatchToProps(dispatch) {
 
 const mapStateToProps = (state) => {
 	return {
-		isfetching: state.usuario.isfetching,
+		isFetching: state.usuario.isFetching,
 		didInvalidate: state.usuario.didInvalidate,
 		error: state.usuario.error,
 		modified: state.usuario.modified,

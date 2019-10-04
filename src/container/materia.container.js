@@ -39,7 +39,7 @@ function mapDispatchToProps(dispatch) {
 
 const mapStateToProps = (state) => {
 	return {
-		isfetching: state.materia.isfetching,
+		isFetching: state.materia.isFetching,
 		didInvalidate: state.materia.didInvalidate,
 		error: state.materia.error,
 		modified: state.materia.modified,

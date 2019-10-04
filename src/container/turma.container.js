@@ -39,7 +39,7 @@ function mapDispatchToProps(dispatch) {
 
 const mapStateToProps = (state) => {
 	return {
-		isfetching: state.turma.isfetching,
+		isFetching: state.turma.isFetching,
 		didInvalidate: state.turma.didInvalidate,
 		error: state.turma.error,
 		modified: state.turma.modified,
