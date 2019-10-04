@@ -68,24 +68,24 @@ class Materia extends Component {
 		this.setState({
 			id: this.props.match.params.materiaId
 		})
-		if (!this.props.usuario_id) {
-			await setTimeout(async () => {
-				await this.props.requestMaterias(this.props.usuario_id)
+		if (!this.props.usuario_id || !this.state.id) {
+			setTimeout(async () => {
+				this.getMateria()
 			}, 1000)
 		} else {
 			await this.props.requestMaterias(this.props.usuario_id)
-		}
-		let index = this.props.ids.indexOf(this.state.id)
-		if (index >= 0) {
-			this.setState({
-				materia: this.props.materias[index]
-			})
+			let index = this.props.ids.indexOf(this.state.id)
+			if (index >= 0) {
+				this.setState({
+					materia: this.props.materias[index]
+				})
+			}
 		}
 	}
 
 	getTurmas = async () => {
-		if (!this.props.usuario_id) {
-			await setTimeout(async () => {
+		if (!this.props.usuario_id || !this.state.id) {
+			setTimeout(async () => {
 				this.getTurmas()
 			}, 1000)
 		} else {
@@ -94,8 +94,8 @@ class Materia extends Component {
 	}
 
 	getProvasBases = async () => {
-		if (!this.props.usuario_id) {
-			await setTimeout(async () => {
+		if (!this.props.usuario_id || !this.state.id) {
+			setTimeout(async () => {
 				this.getProvasBases()
 			}, 1000)
 		} else {
