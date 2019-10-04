@@ -26,7 +26,7 @@ import Copyright from './Copyright.component';
 import Dashboard from './Dashboard.component';
 import ListaMateria from '../container/listaMateria.container';
 import Materia from '../container/materia.container';
-import Turma from './Turma.component';
+import Turma from '../container/turma.container';
 import { loadLocalLogin } from '../controller/login.controller'
 import Axios from 'axios';
 
