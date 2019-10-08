@@ -12,7 +12,10 @@ const Root = ({ store }) => (
 	<Provider store={ store }>
 		<ThemeProvider theme={ theme }>
 			<Router>
-				<Redirect exact from="/" to="/panel" />
+				<Redirect
+					exact
+					from="/" to="/panel/dashboard"
+				/>
 				<Route path="/panel" component={ Panel } />
 				<Route path="/login:filter?" component={ LogIn } />
 			</Router>
