@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import MaterialTable from 'material-table'
-import { Paper } from '@material-ui/core'
+import { Paper, Snackbar } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 
 import localization from '../library/localizationMaterialTable'
@@ -58,6 +58,8 @@ class ListaMateria extends Component {
 
 		return (
 			<Paper className={classes.paper}>
+				<Snackbar open={this.props.isFetching} message="Carregando lista de matérias...">
+				</Snackbar>
 				<MaterialTable
 					title="Lista de Matérias"
 					columns={this.state.columns}

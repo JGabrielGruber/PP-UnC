@@ -24,9 +24,9 @@ const updateAction = (materias) => ({
 })
 
 function requestMaterias(usuario_id) {
-	return function (dispatch) {
+	return async function (dispatch) {
 		dispatch(requestAction())
-		loadLocalMaterias().then((materias) => {
+		await loadLocalMaterias().then((materias) => {
 			dispatch(receiveAction(true, materias))
 		})
 		dispatch(requestAction())

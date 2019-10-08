@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Typography, Grid, TextField, Paper, withStyles, Toolbar, Tooltip, IconButton } from '@material-ui/core'
+import { Typography, Grid, TextField, Paper, withStyles, Toolbar, Tooltip, IconButton, Snackbar } from '@material-ui/core'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import CheckIcon from '@material-ui/icons/Check'
@@ -120,6 +120,8 @@ class Turma extends Component {
 
 		return (
 			<Paper className={classes.paper}>
+				<Snackbar open={this.props.isFetching} message="Carregando turma...">
+				</Snackbar>
 				<Toolbar>
 					<Typography component="h1" variant="h5" className={classes.title}>
 						Turma - {this.state.turma._id}

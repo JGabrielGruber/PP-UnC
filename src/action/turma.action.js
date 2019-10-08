@@ -27,7 +27,7 @@ function requestTurmas(usuario_id, materia_id) {
 	return async function (dispatch, getState) {
 		if (!getState().turma.isFetching) {
 			dispatch(requestAction())
-			loadLocalTurmas().then((turmas) => {
+			await loadLocalTurmas().then((turmas) => {
 				dispatch(receiveAction(true, turmas))
 			})
 			dispatch(requestAction())
