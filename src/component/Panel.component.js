@@ -1,36 +1,42 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
-import clsx from 'clsx';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
-import PersonIcon from '@material-ui/icons/Person';
-import { Avatar, Paper, Breadcrumbs, Tooltip, Button } from '@material-ui/core';
-import { withStyles } from '@material-ui/styles';
+import clsx from 'clsx'
+import Axios from 'axios'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Drawer from '@material-ui/core/Drawer'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import List from '@material-ui/core/List'
+import Typography from '@material-ui/core/Typography'
+import Divider from '@material-ui/core/Divider'
+import IconButton from '@material-ui/core/IconButton'
+import Container from '@material-ui/core/Container'
+import MenuIcon from '@material-ui/icons/Menu'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import DashboardIcon from '@material-ui/icons/Dashboard'
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary'
+import PersonIcon from '@material-ui/icons/Person'
+import { Avatar, Paper, Breadcrumbs, Tooltip, Button, SnackbarContent, Icon, Snackbar } from '@material-ui/core'
+import { withStyles, makeStyles } from '@material-ui/styles'
+import CloseIcon from '@material-ui/icons/Close'
+import { amber, green } from '@material-ui/core/colors'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import ErrorIcon from '@material-ui/icons/Error'
+import InfoIcon from '@material-ui/icons/Info'
+import WarningIcon from '@material-ui/icons/Warning'
 
-import Copyright from './Copyright.component';
-import Dashboard from './Dashboard.component';
-import ListaMateria from '../container/listaMateria.container';
-import Materia from '../container/materia.container';
-import Turma from '../container/turma.container';
+import Copyright from './Copyright.component'
+import Dashboard from './Dashboard.component'
+import ListaMateria from '../container/listaMateria.container'
+import Materia from '../container/materia.container'
+import Turma from '../container/turma.container'
 import { loadLocalLogin } from '../controller/login.controller'
-import Axios from 'axios';
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 const styles = theme => ({
 	root: {
@@ -297,6 +303,76 @@ const AppBreadCrumb = (path, history) => {
 	breads.splice(0, 1)
 
 	return breads
+}
+
+const variantIcon = {
+	success: CheckCircleIcon,
+	warning: WarningIcon,
+	error: ErrorIcon,
+	info: InfoIcon,
+};
+
+const useStylesSM = makeStyles(theme => ({
+	success: {
+		backgroundColor: green[600],
+	},
+	error: {
+		backgroundColor: theme.palette.error.dark,
+	},
+	info: {
+		backgroundColor: theme.palette.primary.main,
+	},
+	warning: {
+		backgroundColor: amber[700],
+	},
+	icon: {
+		fontSize: 20,
+	},
+	iconVariant: {
+		opacity: 0.9,
+		marginRight: theme.spacing(1),
+	},
+	message: {
+		display: 'flex',
+		alignItems: 'center',
+	},
+}));
+
+const handleSnackClose = (event, reason) => {
+		console.log("Fechado", event);
+		
+}
+
+const SnackbarMessages = (props) => {
+	const classes = useStylesSM()
+	const { className, message, onClose, variant, ...other } = props;
+
+	return (
+		<Snackbar
+			anchorOrigin={{
+				vertical: 'bottom',
+				horizontal: 'left',
+			}}
+			open={true}
+			autoHideDuration={6000}
+			onClose={handleSnackClose}
+		>
+			<SnackbarContent
+				aria-describedby="client-snackbar"
+				message={
+					<span id="client-snackbar">
+						<Icon className={clsx(classes.icon, classes.iconVariant)} />
+						{message}
+					</span>
+				}
+				action={[
+					<IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+						<CloseIcon className={classes.icon} />
+					</IconButton>,
+				]}
+			/>
+		</Snackbar>
+	)
 }
 
 export default withStyles(styles)(Panel)
