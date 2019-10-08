@@ -52,8 +52,7 @@ class Turma extends Component {
 			provas: {
 				columns: [
 					{ title: 'Título', field: 'titulo' },
-					{ title: 'Ano', field: 'ano' },
-					{ title: 'Semestre', field: 'semestre' },
+					{ title: 'Duração', field: 'duracao' },
 					{ title: 'Modificada', field: 'timeupdate', type: 'datetime' },
 					{ title: 'Criada', field: 'timestamp', type: 'datetime' }
 				],

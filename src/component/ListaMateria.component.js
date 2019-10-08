@@ -82,6 +82,7 @@ class ListaMateria extends Component {
 					]}
 					localization={localization}
 					components={fixedTableComponents}
+					isLoading={this.props.isFetching}
 				/>
 			</Paper>
 		)
