@@ -46,7 +46,7 @@ class ListaMateria extends Component {
 		if (this.props.usuario_id === "") {
 			await setTimeout(async () => {
 				this.getMaterias()
-			}, 1000)
+			}, 100)
 		} else {
 			await this.props.requestMaterias(this.props.usuario_id)
 		}

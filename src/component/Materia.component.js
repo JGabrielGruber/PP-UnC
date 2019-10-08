@@ -71,7 +71,7 @@ class Materia extends Component {
 		if (!this.props.usuario_id || !this.state.id) {
 			setTimeout(async () => {
 				this.getMateria()
-			}, 1000)
+			}, 100)
 		} else {
 			await this.props.requestMaterias(this.props.usuario_id)
 			let index = this.props.ids.indexOf(this.state.id)
@@ -87,7 +87,7 @@ class Materia extends Component {
 		if (!this.props.usuario_id || !this.state.id) {
 			setTimeout(async () => {
 				this.getTurmas()
-			}, 1000)
+			}, 100)
 		} else {
 			await this.props.requestTurmas(this.props.usuario_id, this.state.id)
 		}
@@ -97,7 +97,7 @@ class Materia extends Component {
 		if (!this.props.usuario_id || !this.state.id) {
 			setTimeout(async () => {
 				this.getProvasBases()
-			}, 1000)
+			}, 100)
 		} else {
 			await this.props.requestProvasBases(this.props.usuario_id, this.state.id)
 		}

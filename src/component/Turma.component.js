@@ -82,7 +82,7 @@ class Turma extends Component {
 		if (!this.props.usuario_id || !this.state.materia_id) {
 			setTimeout(async () => {
 				this.getTurma()
-			}, 1000)
+			}, 100)
 		} else {
 			await this.props.requestTurmas(this.props.usuario_id, this.state.materia_id)
 			let index = this.props.ids.indexOf(this.state.turma._id)
@@ -98,7 +98,7 @@ class Turma extends Component {
 		if (!this.props.usuario_id || !this.state.materia_id || !this.state.turma._id) {
 			setTimeout(async () => {
 				this.getAlunos()
-			}, 1000)
+			}, 100)
 		} else {
 			await this.props.requestAlunos(this.props.usuario_id, this.state.materia_id, this.state.turma._id)
 		}
@@ -108,7 +108,7 @@ class Turma extends Component {
 		if (!this.props.usuario_id || !this.state.materia_id || !this.state.turma._id) {
 			setTimeout(async () => {
 				this.getProvas()
-			}, 1000)
+			}, 100)
 		} else {
 			await this.props.requestProvas(this.props.usuario_id, this.state.materia_id, this.state.turma._id)
 		}
