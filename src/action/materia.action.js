@@ -1,8 +1,14 @@
+import { number } from 'prop-types';
+
 import {
 	loadLocalMaterias,
 	updateLocalMateria,
 	requestMaterias as request
 } from '../controller/materia.controller'
+import {
+	addMensagem,
+	delMensagem
+} from './mensagem.action'
 
 export const REQUEST = 'REQUEST_MATERIA'
 export const RECEIVE = 'RECEIVE_MATERIA'
@@ -31,7 +37,12 @@ function requestMaterias(usuario_id) {
 		})
 		dispatch(requestAction())
 		request(usuario_id).then((materias) => {
-			dispatch(receiveAction(materias ? true : false, materias ? materias : []))
+			if (materias && materias !== number) {
+				dispatch(receiveAction(true, materias))
+			} else {
+				dispatch(receiveAction(false, {}))
+				dispatch(addMensagem(materias, "matéria"))
+			}
 		})
 	}
 }
