@@ -6,9 +6,9 @@ const addAction = (mensagem) => ({
 	mensagem: mensagem
 })
 
-const delAction = (mensagem) => ({
+const delAction = (index) => ({
 	type: DEL,
-	mensagem: mensagem
+	index: index
 })
 
 function addMensagem(statusCode, conteudo = "") {
@@ -50,14 +50,19 @@ function addMensagem(statusCode, conteudo = "") {
 				}))
 				break
 			default:
+				dispatch(addAction({
+					open: true,
+					variant: 'error',
+					message: `Problema de conexão com o servidor de dados`
+				}))
 				break
 		}
 	}
 }
 
-function delMensagem(mensagem) {
-	return function(dispatch) {
-		dispatch(delAction(mensagem))
+function delMensagem(index) {
+	return function (dispatch) {
+		dispatch(delAction(index))
 	}
 }
 
