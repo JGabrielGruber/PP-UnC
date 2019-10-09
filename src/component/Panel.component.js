@@ -160,6 +160,12 @@ class Panel extends Component {
 		this.setState({ open: false })
 	}
 
+	handleSnackClose = (event, reason) => {
+		if (reason !== "clickaway") {
+			this.props.delMensagem(event.key)
+		}
+	}
+
 	render() {
 
 		const classes = this.props.classes;
@@ -233,6 +239,7 @@ class Panel extends Component {
 						</Breadcrumbs>
 					</Paper>
 					<Container maxWidth="lg" className={classes.container}>
+						<SnackbarMessages mensagens={this.props.mensagens} onClose={this.handleSnackClose} />
 						<Switch>
 							<Route
 								path={'/panel/dashboard'}
@@ -338,40 +345,46 @@ const useStylesSM = makeStyles(theme => ({
 	},
 }));
 
-const handleSnackClose = (event, reason) => {
-		console.log("Fechado", event);
-		
-}
-
 const SnackbarMessages = (props) => {
 	const classes = useStylesSM()
-	const { className, message, onClose, variant, ...other } = props;
+	const { className, mensagens, onClose, ...other } = props;
+
+	let snacks = []
+	mensagens.forEach((item, key) => {
+		snacks.push((
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'top',
+					horizontal: 'center',
+				}}
+				open={item.open}
+				autoHideDuration={6000}
+				onClose={() => {onClose({key: key}, "auto")}}
+				key={key}
+			>
+				<SnackbarContent
+					className={clsx(classes[item.variant], className)}
+					aria-describedby="client-snackbar"
+					message={
+						<span id="client-snackbar">
+							<Icon className={clsx(classes.icon, classes.iconVariant)} />
+							{item.message}
+						</span>
+					}
+					action={[
+						<IconButton key="close" aria-label="close" color="inherit" onClick={() => {onClose({key: key}, "click")}}>
+							<CloseIcon className={classes.icon} />
+						</IconButton>,
+					]}
+				/>
+			</Snackbar>
+		))
+	});
 
 	return (
-		<Snackbar
-			anchorOrigin={{
-				vertical: 'bottom',
-				horizontal: 'left',
-			}}
-			open={true}
-			autoHideDuration={6000}
-			onClose={handleSnackClose}
-		>
-			<SnackbarContent
-				aria-describedby="client-snackbar"
-				message={
-					<span id="client-snackbar">
-						<Icon className={clsx(classes.icon, classes.iconVariant)} />
-						{message}
-					</span>
-				}
-				action={[
-					<IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
-						<CloseIcon className={classes.icon} />
-					</IconButton>,
-				]}
-			/>
-		</Snackbar>
+		<div>
+			{snacks}
+		</div>
 	)
 }
 
