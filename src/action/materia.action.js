@@ -6,8 +6,7 @@ import {
 	requestMaterias as request
 } from '../controller/materia.controller'
 import {
-	addMensagem,
-	delMensagem
+	addMensagem
 } from './mensagem.action'
 
 export const REQUEST = 'REQUEST_MATERIA'

@@ -3,6 +3,8 @@ import {
 	updateLocalTurma,
 	requestTurmas as request
 } from '../controller/turma.controller'
+import { addMensagem } from './mensagem.action';
+import { number } from 'prop-types';
 
 export const REQUEST = 'REQUEST_TURMA'
 export const RECEIVE = 'RECEIVE_TURMA'
@@ -32,7 +34,12 @@ function requestTurmas(usuario_id, materia_id) {
 			})
 			dispatch(requestAction())
 			request(usuario_id, materia_id).then((turmas) => {
-				dispatch(receiveAction(turmas ? true : false, turmas ? turmas : []))
+				if (turmas && turmas !== number) {
+					dispatch(receiveAction(true, turmas))
+				} else {
+					dispatch(receiveAction(false, {}))
+					dispatch(addMensagem(turmas, "turmas"))
+				}
 			})
 		}
 	}

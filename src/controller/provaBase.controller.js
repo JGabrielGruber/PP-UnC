@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { ProvasBases } from '../model/provaBase.model'
+import { number } from 'prop-types';
 
 async function loadLocalProvasBases() {
 	let provasBases = localStorage.getItem('provasBases')
@@ -20,16 +21,18 @@ async function requestProvasBases(usuario_id, materia_id) {
 	let provasBases = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		console.log(error.response)
-		return false
+		if (!error.status) {
+			return false
+		}
+		return error.status
 	})
-	if (provasBases) {
+	if (provasBases !== number && provasBases) {
 		await provasBases.forEach(provaBase => {
 			updateLocalProvaBase(provaBase)
 		})
 		return await loadLocalProvasBases()
 	}
-	return null
+	return provasBases
 }
 
 async function updateLocalProvaBase(provaBase) {

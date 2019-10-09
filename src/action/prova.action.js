@@ -3,6 +3,8 @@ import {
 	updateLocalProva,
 	requestProvas as request
 } from '../controller/prova.controller'
+import { number } from 'prop-types';
+import { addMensagem } from './mensagem.action';
 
 export const REQUEST	= 'REQUEST_PROVA'
 export const RECEIVE	= 'RECEIVE_PROVA'
@@ -31,7 +33,12 @@ function requestProvas(usuario_id, materia_id, turma_id) {
 		})
 		dispatch(requestAction())
 		request(usuario_id, materia_id, turma_id).then((provas) => {
-			dispatch(receiveAction(provas ? true : false, provas ? provas : []))
+			if (provas && provas !== number) {
+				dispatch(receiveAction(true, provas))
+			} else {
+				dispatch(receiveAction(false, {}))
+				dispatch(addMensagem(provas, "provas"))
+			}
 		})
 	}
 }

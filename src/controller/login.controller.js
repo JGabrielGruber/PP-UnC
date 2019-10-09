@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import Usuario from '../model/usuario.model'
 import { updateLocalUsuario } from './usuario.controller'
+import { number, bool } from 'prop-types';
 
 function defineAxios(token) {
 	axios.defaults.headers = {
@@ -37,11 +38,13 @@ async function requestToken(client_id, client_secret, keep = true, grant_type = 
 	let data = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		console.log(error.response)
-		return false
+		if (!error.status) {
+			return false
+		}
+		return error.status
 	})
-	if (!data) {
-		return false
+	if (data === number || data === bool) {
+		return data
 	}
 	let login = {
 		"access_token": data.access_token,

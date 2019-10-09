@@ -3,6 +3,11 @@ import {
 	updateLocalUsuario,
 	requestUsuario as request
 } from '../controller/usuario.controller'
+import {
+	addMensagem,
+	delMensagem
+} from './mensagem.action'
+import { number } from 'prop-types';
 
 export const REQUEST	= 'REQUEST_USUARIO'
 export const RECEIVE	= 'RECEIVE_USUARIO'
@@ -33,7 +38,12 @@ function requestUsuario() {
 			})
 			dispatch(requestAction())
 			request(id).then((usuario) => {
-				dispatch(receiveAction(usuario ? true : false, { "usuario": usuario } ? usuario : []))
+				if (usuario && usuario !== number) {
+					dispatch(receiveAction(true, usuario))
+				} else {
+					dispatch(receiveAction(false, {}))
+					dispatch(addMensagem(usuario, "usuário"))
+				}
 			})
 		}
 	}

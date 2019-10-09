@@ -342,6 +342,7 @@ const useStylesSM = makeStyles(theme => ({
 	message: {
 		display: 'flex',
 		alignItems: 'center',
+		verticalAlign: 'middle'
 	},
 }));
 
@@ -351,6 +352,7 @@ const SnackbarMessages = (props) => {
 
 	let snacks = []
 	mensagens.forEach((item, key) => {
+		let Icon = variantIcon[item.variant];
 		snacks.push((
 			<Snackbar
 				anchorOrigin={{
@@ -366,7 +368,7 @@ const SnackbarMessages = (props) => {
 					className={clsx(classes[item.variant], className)}
 					aria-describedby="client-snackbar"
 					message={
-						<span id="client-snackbar">
+						<span id="client-snackbar" className={classes.message}>
 							<Icon className={clsx(classes.icon, classes.iconVariant)} />
 							{item.message}
 						</span>

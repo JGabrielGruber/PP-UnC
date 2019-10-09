@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { Turmas } from '../model/turma.model'
+import { number } from 'prop-types';
 
 async function loadLocalTurmas() {
 	let turmas = localStorage.getItem('turmas')
@@ -20,16 +21,18 @@ async function requestTurmas(usuario_id, materia_id) {
 	let turmas = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		console.log(error.response)
-		return false
+		if (!error.status) {
+			return false
+		}
+		return error.status
 	})
-	if (turmas) {
+	if (turmas !== number && turmas) {
 		await turmas.forEach(turma => {
 			updateLocalTurma(turma)
 		})
 		return await loadLocalTurmas()
 	}
-	return null
+	return turmas
 }
 
 async function updateLocalTurma(turma) {

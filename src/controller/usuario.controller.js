@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import Usuario from '../model/usuario.model'
+import { number } from 'prop-types';
 
 async function loadLocalUsuario() {
 	let usuario = localStorage.getItem('usuario')
@@ -20,13 +21,15 @@ async function requestUsuario(id_usuario) {
 	let usuario = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		console.log(error.response)
-		return false
+		if (!error.status) {
+			return false
+		}
+		return error.status
 	})
-	if (usuario) {
+	if (usuario !== number && usuario) {
 		return await updateLocalUsuario(usuario)
 	}
-	return null
+	return usuario
 }
 
 async function updateLocalUsuario(usuario) {
