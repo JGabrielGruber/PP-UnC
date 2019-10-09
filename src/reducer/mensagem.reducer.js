@@ -12,13 +12,13 @@ const mensagem = (
 	let mensagens
 	switch (action.type) {
 		case ADD:
-			mensagens = state.mensagens
-			mensagens.push(action.mensagem)
-			return Object.assign({}, state, mensagens)
+			mensagens = state.mensagens.slice()
+			mensagens.splice(state.mensagens.length, 0, action.mensagem)
+			return Object.assign({}, state, { mensagens: mensagens })
 		case DEL:
-			mensagens = state.mensagens
-			mensagens.pop(action.mensagem)
-			return Object.assign({}, state, mensagens)
+			mensagens = state.mensagens.slice()
+			mensagens.splice(action.index, 1)
+			return Object.assign({}, state, { mensagens: mensagens })
 		default:
 			return state
 	}
