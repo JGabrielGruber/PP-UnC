@@ -285,6 +285,7 @@ Panel.propTypes = {
 
 const AppBreadCrumb = (path, history) => {
 	let list = []
+	let titles = []
 	let breads = []
 	path.split('/').reduce((path, part) => {
 		if (list.length) {
@@ -292,13 +293,20 @@ const AppBreadCrumb = (path, history) => {
 		} else {
 			list.push("/" + part)
 		}
+		titles.push(part)
 		return null
 	})
 
 	list.forEach((item, key) => {
 		breads.push((
-			<Button title={"Voltar para " + item} size="small" color="inherit" key={key} onClick={() => { history.push(item) }}>
-				{item}
+			<Button
+				title={"Voltar para " + titles[key]}
+				size="small"
+				color="inherit"
+				key={key}
+				onClick={() => { history.push(item) }}
+			>
+				{titles[key]}
 			</Button>
 		))
 	})
