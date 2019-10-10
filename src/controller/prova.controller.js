@@ -26,7 +26,7 @@ async function requestProvas(usuario_id, materia_id, turma_id) {
 		}
 		return error.response.status
 	})
-	if (provas !== number && provas) {
+	if (isNaN(provas) && provas) {
 		await provas.forEach(prova => {
 			updateLocalProva(prova)
 		})
