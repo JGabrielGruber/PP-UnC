@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import Usuario from '../model/usuario.model'
-import { number } from 'prop-types';
+
 
 async function loadLocalUsuario() {
 	let usuario = localStorage.getItem('usuario')
@@ -26,7 +26,7 @@ async function requestUsuario(id_usuario) {
 		}
 		return error.status
 	})
-	if (usuario !== number && usuario) {
+	if (isNaN(usuario) && usuario) {
 		return await updateLocalUsuario(usuario)
 	}
 	return usuario

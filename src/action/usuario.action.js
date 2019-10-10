@@ -7,7 +7,7 @@ import {
 	addMensagem,
 	delMensagem
 } from './mensagem.action'
-import { number } from 'prop-types';
+
 
 export const REQUEST	= 'REQUEST_USUARIO'
 export const RECEIVE	= 'RECEIVE_USUARIO'
@@ -38,7 +38,7 @@ function requestUsuario() {
 			})
 			dispatch(requestAction())
 			request(id).then((usuario) => {
-				if (usuario && usuario !== number) {
+				if (usuario && isNaN(usuario)) {
 					dispatch(receiveAction(true, usuario))
 				} else {
 					dispatch(receiveAction(false, {}))

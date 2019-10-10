@@ -4,7 +4,7 @@ import {
 	requestTurmas as request
 } from '../controller/turma.controller'
 import { addMensagem } from './mensagem.action';
-import { number } from 'prop-types';
+
 
 export const REQUEST = 'REQUEST_TURMA'
 export const RECEIVE = 'RECEIVE_TURMA'
@@ -34,7 +34,7 @@ function requestTurmas(usuario_id, materia_id) {
 			})
 			dispatch(requestAction())
 			request(usuario_id, materia_id).then((turmas) => {
-				if (turmas && turmas !== number) {
+				if (turmas && isNaN(turmas)) {
 					dispatch(receiveAction(true, turmas))
 				} else {
 					dispatch(receiveAction(false, {}))

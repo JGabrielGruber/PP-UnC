@@ -3,7 +3,7 @@ import {
 	updateLocalAluno,
 	requestAlunos as request
 } from '../controller/aluno.controller'
-import { number } from 'prop-types';
+
 import { addMensagem } from './mensagem.action';
 
 export const REQUEST	= 'REQUEST_ALUNO'
@@ -33,7 +33,7 @@ function requestAlunos(usuario_id, materia_id, turma_id) {
 		})
 		dispatch(requestAction())
 		request(usuario_id, materia_id, turma_id).then((alunos) => {
-			if (alunos && alunos !== number) {
+			if (alunos && isNaN(alunos)) {
 				dispatch(receiveAction(true, alunos))
 			} else {
 				dispatch(receiveAction(false, {}))

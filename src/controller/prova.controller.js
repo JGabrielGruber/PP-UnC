@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { Provas } from '../model/prova.model'
-import { number } from 'prop-types';
+
 
 async function loadLocalProvas() {
 	let provas = localStorage.getItem('provas')
@@ -21,10 +21,10 @@ async function requestProvas(usuario_id, materia_id, turma_id) {
 	let provas = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		if (!error.status) {
+		if (!error.response.status) {
 			return false
 		}
-		return error.status
+		return error.response.status
 	})
 	if (provas !== number && provas) {
 		await provas.forEach(prova => {

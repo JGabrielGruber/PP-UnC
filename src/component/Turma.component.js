@@ -226,7 +226,7 @@ class Turma extends Component {
 							actions={[
 								{
 									icon: 'more_horiz',
-									tooltip: 'Ver Turma',
+									tooltip: 'Ver Aluno',
 									onClick: (event, rowData) => {
 										this.props.history.push(
 											'/panel/materias/' + this.state.materia_id + '/turmas/' + this.state.turma._id + '/provas/' + rowData._id
@@ -257,7 +257,7 @@ class Turma extends Component {
 							actions={[
 								{
 									icon: 'more_horiz',
-									tooltip: 'Ver Turma',
+									tooltip: 'Ver Prova',
 									onClick: (event, rowData) => {
 										this.props.history.push(
 											'/panel/materias/' + this.state.materia_id + '/turmas/' + this.state.turma._id + '/provas/' + rowData._id

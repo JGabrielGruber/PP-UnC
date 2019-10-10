@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { Alunos } from '../model/aluno.model'
-import { number } from 'prop-types';
+
 
 async function loadLocalAlunos() {
 	let alunos = localStorage.getItem('alunos')
@@ -21,12 +21,12 @@ async function requestAlunos(usuario_id, materia_id, turma_id) {
 	let alunos = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		if (!error.status) {
+		if (!error.response.status) {
 			return false
 		}
-		return error.status
+		return error.response.status
 	})
-	if (alunos !== number && alunos) {
+	if (isNaN(alunos) && alunos) {
 		await alunos.forEach(aluno => {
 			updateLocalAluno(aluno)
 		})

@@ -1,4 +1,4 @@
-import { number } from 'prop-types';
+
 
 import {
 	loadLocalMaterias,
@@ -29,20 +29,30 @@ const updateAction = (materias) => ({
 })
 
 function requestMaterias(usuario_id) {
-	return async function (dispatch) {
-		dispatch(requestAction())
-		await loadLocalMaterias().then((materias) => {
-			dispatch(receiveAction(true, materias))
-		})
-		dispatch(requestAction())
-		request(usuario_id).then((materias) => {
-			if (materias && materias !== number) {
+	return async function (dispatch, getState) {
+		if (shouldRequest(getState)) {
+			dispatch(requestAction())
+			await loadLocalMaterias().then((materias) => {
 				dispatch(receiveAction(true, materias))
-			} else {
-				dispatch(receiveAction(false, {}))
-				dispatch(addMensagem(materias, "matéria"))
-			}
-		})
+			})
+			dispatch(requestAction())
+			request(usuario_id).then((materias) => {
+				if (materias && isNaN(materias)) {
+					dispatch(receiveAction(true, materias))
+				} else {
+					dispatch(receiveAction(false, {}))
+					dispatch(addMensagem(materias, "matéria"))
+				}
+			})
+		}
+	}
+}
+
+function shouldRequest(getState) {
+	if (getState().materia.isFetching || getState().materia.modified) {
+		return false
+	} else {
+		return true
 	}
 }
 

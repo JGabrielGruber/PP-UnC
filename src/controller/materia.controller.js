@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { Materias } from '../model/materia.model'
-import { number } from 'prop-types';
+
 
 async function loadLocalMaterias() {
 	let materias = localStorage.getItem('materias')
@@ -21,13 +21,13 @@ async function requestMaterias(usuario_id) {
 	let materias = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		if (!error.status) {
+		if (!error.response.status) {
 			return false
 		}
-		return error.status
+		return error.response.status
 	})
 	
-	if (materias !== number && materias) {
+	if (isNaN(materias) && materias) {
 		await materias.forEach(materia => {
 			updateLocalMateria(materia)
 		})

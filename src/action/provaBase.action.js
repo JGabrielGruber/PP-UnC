@@ -4,7 +4,7 @@ import {
 	requestProvasBases as request
 } from '../controller/provaBase.controller'
 import { addMensagem } from './mensagem.action';
-import { number } from 'prop-types';
+
 
 export const REQUEST	= 'REQUEST_PROVABASE'
 export const RECEIVE	= 'RECEIVE_PROVABASE'
@@ -33,7 +33,7 @@ function requestProvasBases(usuario_id, materia_id) {
 		})
 		dispatch(requestAction())
 		request(usuario_id, materia_id).then((provasBases) => {
-			if (provasBases && provasBases !== number) {
+			if (provasBases && isNaN(provasBases)) {
 				dispatch(receiveAction(true, provasBases))
 			} else {
 				dispatch(receiveAction(false, {}))
