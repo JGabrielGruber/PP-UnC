@@ -18,7 +18,9 @@ function addMensagem(statusCode, conteudo = "") {
 				dispatch(addAction({
 					open: true,
 					variant: 'success',
-					message: `Adicionado(a) ${conteudo} com sucesso`
+					message: `Adicionado${conteudo.slice(-1) === 's' ?
+						(conteudo.slice(-2) === 'es' ? 'as' : conteudo.slice(-2)) :
+						(conteudo.slice(-1) === 'e' ? 'a' : conteudo.slice(-1))} ${conteudo} com sucesso`
 				}))
 				break
 			case 403:
@@ -32,7 +34,9 @@ function addMensagem(statusCode, conteudo = "") {
 				dispatch(addAction({
 					open: true,
 					variant: 'warning',
-					message: `${conteudo} não encontrado(a)`
+					message: `${conteudo.charAt(0).toUpperCase() + conteudo.slice(1)} não encontrad${conteudo.slice(-1) === 's' ?
+						(conteudo.slice(-2) === 'es' ? 'as' : conteudo.slice(-2)) :
+						(conteudo.slice(-1) === 'e' ? 'a' : conteudo.slice(-1))}`
 				}))
 				break
 			case 500:
