@@ -239,7 +239,9 @@ class Panel extends Component {
 						</Breadcrumbs>
 					</Paper>
 					<Container maxWidth="lg" className={classes.container}>
-						<SnackbarMessages mensagens={this.props.mensagens} onClose={this.handleSnackClose} />
+						<div style={{top: '24px', left: '50%', right: 'auto', transform: 'translateX(-50%)', position: 'fixed', zIndex: 1400}}>
+							<SnackbarMessages mensagens={this.props.mensagens} onClose={this.handleSnackClose} />
+						</div>
 						<Switch>
 							<Route
 								path={'/panel/dashboard'}
@@ -351,7 +353,13 @@ const SnackbarMessages = (props) => {
 	const { className, mensagens, onClose, ...other } = props;
 
 	let snacks = []
+	let count = 0
 	mensagens.forEach((item, key) => {
+		if (count === 3) {
+			return
+		} else {
+			count++
+		}
 		let Icon = variantIcon[item.variant];
 		snacks.push((
 			<Snackbar
@@ -359,10 +367,11 @@ const SnackbarMessages = (props) => {
 					vertical: 'top',
 					horizontal: 'center',
 				}}
-				open={item.open}
 				autoHideDuration={6000}
+				open={item.open}
 				onClose={() => {onClose({key: key}, "auto")}}
 				key={key}
+				style={{position: 'relative', margin: '10px'}}
 			>
 				<SnackbarContent
 					className={clsx(classes[item.variant], className)}
