@@ -2,7 +2,6 @@ import axios from 'axios'
 
 import { Alunos } from '../model/aluno.model'
 
-
 async function loadLocalAlunos() {
 	let alunos = localStorage.getItem('alunos')
 	if (alunos) {

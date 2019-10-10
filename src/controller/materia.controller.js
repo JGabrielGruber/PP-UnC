@@ -2,7 +2,6 @@ import axios from 'axios'
 
 import { Materias } from '../model/materia.model'
 
-
 async function loadLocalMaterias() {
 	let materias = localStorage.getItem('materias')
 	if (materias) {

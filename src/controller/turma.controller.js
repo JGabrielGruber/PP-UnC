@@ -2,7 +2,6 @@ import axios from 'axios'
 
 import { Turmas } from '../model/turma.model'
 
-
 async function loadLocalTurmas() {
 	let turmas = localStorage.getItem('turmas')
 	if (turmas) {

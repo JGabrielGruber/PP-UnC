@@ -2,7 +2,6 @@ import axios from 'axios'
 
 import { ProvasBases } from '../model/provaBase.model'
 
-
 async function loadLocalProvasBases() {
 	let provasBases = localStorage.getItem('provasBases')
 	if (provasBases) {

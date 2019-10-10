@@ -2,7 +2,6 @@ import axios from 'axios'
 
 import Usuario from '../model/usuario.model'
 import { updateLocalUsuario } from './usuario.controller'
-import { number, bool } from 'prop-types';
 import { isBoolean } from 'util';
 
 function defineAxios(token) {
