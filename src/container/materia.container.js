@@ -22,6 +22,9 @@ function mapDispatchToProps(dispatch) {
 		updateMateria: (materia) => {
 			dispatch(materiaAction.update(materia))
 		},
+		deleteMateria: (materia) => {
+			dispatch(materiaAction.delete(materia))
+		},
 		requestTurmas: (usuario_id, materia_id) => {
 			dispatch(requestTurmas(usuario_id, materia_id))
 		},

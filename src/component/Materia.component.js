@@ -117,6 +117,18 @@ class Materia extends Component {
 		})
 	}
 
+	updateMateria = () => {
+		this.props.updateMateria(this.state.materia)
+		this.switchEdit()
+	}
+
+	removeMateria = () => {
+		this.props.deleteMateria(this.state.materia)
+		this.props.history.push(
+			'/panel/materias/'
+		)
+	}
+
 	render() {
 
 		const { classes } = this.props
@@ -132,7 +144,7 @@ class Materia extends Component {
 					{
 						this.state.edit ? (
 							<div>
-								<Tooltip title="Confirmar" onClick={this.switchEdit}>
+								<Tooltip title="Confirmar" onClick={this.updateMateria}>
 									<IconButton>
 										<CheckIcon />
 									</IconButton>
@@ -153,7 +165,7 @@ class Materia extends Component {
 											<EditIcon />
 										</IconButton>
 									</Tooltip>
-									<Tooltip title="Remover">
+									<Tooltip title="Remover" onClick={this.removeMateria}>
 										<IconButton>
 											<DeleteIcon />
 										</IconButton>
