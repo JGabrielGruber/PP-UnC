@@ -18,7 +18,7 @@ async function request(url, slug, Model) {
 	let items = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		if (!error.response && !error.response.status) {
+		if (!error.hasOwnProperty('reponse')) {
 			return false
 		}
 		return error.response.status
@@ -37,9 +37,9 @@ async function updateLocal(item, slug, Model) {
 	let items = await loadLocal(slug, Model)
 	let index = items.ids.indexOf(item._id)
 	if (index >= 0) {
-		items.items[index] = item
+		items[slug][index] = item
 	} else {
-		items.items.push(item)
+		items[slug].push(item)
 		items.ids.push(item._id)
 	}
 	localStorage.setItem(slug, JSON.stringify(items))

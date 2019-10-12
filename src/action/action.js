@@ -8,14 +8,17 @@ import {
 } from './mensagem.action'
 
 class Action {
-	constructor() {
-		this.REQUEST	= ''
-		this.RECEIVE	= ''
-		this.UPDATE		= ''
-		this.nome		= ''
-		this.url		= ''
-		this.slug		= ''
-		this.Model		= {}
+
+	constructor(REQUEST, RECEIVE, UPDATE, nome, url, reducer, slug, Model, ModelList=null) {
+		this.REQUEST	= REQUEST
+		this.RECEIVE	= RECEIVE
+		this.UPDATE		= UPDATE
+		this.nome		= nome
+		this.url		= url
+		this.reducer	= reducer
+		this.slug		= slug
+		this.Model		= Model
+		this.ModelList	= ModelList
 	}
 
 	requestAction = () => ({
@@ -34,19 +37,20 @@ class Action {
 	})
 	
 	request() {
+		var self = this;
 		return async function (dispatch, getState) {
-			if (this.shouldRequest(getState, this.slug)) {
-				dispatch(this.requestAction())
-				await loadLocal().then((items) => {
-					dispatch(this.receiveAction(true, items))
+			if (self.shouldRequest(getState)) {
+				dispatch(self.requestAction())
+				await loadLocal(self.slug, self.ModelList ? self.ModelList : self.Model).then((items) => {
+					dispatch(self.receiveAction(true, items))
 				})
-				dispatch(this.requestAction())
-				requestItems(this.url, this.slug, this.Model).then((items) => {
+				dispatch(self.requestAction())
+				requestItems(self.url, self.slug, self.Model).then((items) => {
 					if (items && isNaN(items)) {
-						dispatch(this.receiveAction(true, items))
+						dispatch(self.receiveAction(true, items))
 					} else {
-						dispatch(this.receiveAction(false, {}))
-						dispatch(addMensagem(items, this.nome))
+						dispatch(self.receiveAction(false, {}))
+						dispatch(addMensagem(items, self.nome))
 					}
 				})
 			}
@@ -54,7 +58,7 @@ class Action {
 	}
 	
 	shouldRequest(getState) {
-		if (getState()[this.slug].isFetching || getState()[this.slug].modified) {
+		if (getState()[this.reducer].isFetching || getState()[this.reducer].modified) {
 			return false
 		} else {
 			return true
@@ -62,10 +66,11 @@ class Action {
 	}
 	
 	update(item) {
+		var self = this;
 		return function (dispatch) {
-			updateLocal(item, this.slug, this.Model)
+			updateLocal(item, self.slug, self.Model)
 				.then((items) => {
-					dispatch(this.updateAction(items))
+					dispatch(self.updateAction(items))
 				})
 		}
 	}
