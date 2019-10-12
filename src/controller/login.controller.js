@@ -43,7 +43,7 @@ async function requestToken(client_id, client_secret, keep = true, grant_type = 
 		}
 		return error.response.status
 	})
-	if (isNaN(data) || isBoolean(data)) {
+	if (!isNaN(data) || isBoolean(data)) {
 		return data
 	}
 	let login = {
