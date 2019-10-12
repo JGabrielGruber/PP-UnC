@@ -1,8 +1,6 @@
 import { connect } from 'react-redux'
-import {
-	requestMaterias,
-	updateMateria
-} from '../action/materia.action'
+
+import { MateriaAction } from '../action/materia.action'
 import {
 	requestTurmas,
 	updateTurma
@@ -11,16 +9,18 @@ import {
 	requestProvasBases,
 	updateProvaBase
 } from '../action/provaBase.action'
-
 import Materia from '../component/Materia.component'
+
+const materiaAction	= new MateriaAction()
 
 function mapDispatchToProps(dispatch) {
 	return({
 		requestMaterias: (usuario_id) => {
-			dispatch(requestMaterias(usuario_id))
+			materiaAction.setUrl(usuario_id)
+			dispatch(materiaAction.request())
 		},
 		updateMateria: (materia) => {
-			dispatch(updateMateria(materia))
+			dispatch(materiaAction.update(materia))
 		},
 		requestTurmas: (usuario_id, materia_id) => {
 			dispatch(requestTurmas(usuario_id, materia_id))

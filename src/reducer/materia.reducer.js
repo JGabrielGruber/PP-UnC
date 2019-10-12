@@ -27,7 +27,7 @@ const materia = (
 					isFetching: false,
 					didInvalidate: false,
 					modified: false,
-					materias: action.materias
+					materias: action.items
 				})
 			} else {
 				return Object.assign({}, state, {
@@ -39,7 +39,7 @@ const materia = (
 		case UPDATE:
 			return Object.assign({}, state, {
 				modified: true,
-				materias: action.materias
+				materias: action.items
 			})
 		default:
 			return state

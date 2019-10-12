@@ -1,18 +1,20 @@
 import { connect } from 'react-redux'
 import {
-	requestMaterias,
-	updateMateria
+	MateriaAction
 } from '../action/materia.action'
 
 import ListaMateria from '../component/ListaMateria.component'
 
+const materiaAction	= new MateriaAction()
+
 function mapDispatchToProps(dispatch) {
 	return({
 		requestMaterias: (usuario_id) => {
-			dispatch(requestMaterias(usuario_id))
+			materiaAction.setUrl(usuario_id)
+			dispatch(materiaAction.request())
 		},
 		updateMateria: (materia) => {
-			dispatch(updateMateria(materia))
+			dispatch(materiaAction.update(materia))
 		}
 	})
 }
