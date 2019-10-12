@@ -30,7 +30,7 @@ async function request(url, slug, Model, method='GET', data=null, reducer=null) 
 	let response = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		if (!error.hasOwnProperty('response')) {
+		if (error.response === undefined) {
 			return false
 		}
 		return error.response.status
