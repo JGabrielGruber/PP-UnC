@@ -11,38 +11,61 @@ async function loadLocal(slug, Model) {
 	}
 }
 
-async function request(url, slug, Model) {
-	let axiosConf = {
-		url: url
+async function request(url, slug, Model, method='GET', data=null, reducer=null) {
+	let axiosConf = {}
+	if (method === 'POST' || method === 'PUT') {
+		let content = {}
+		content[reducer] = data
+		axiosConf = {
+			url: url,
+			method: method,
+			data: content
+		}
+	} else {
+		axiosConf = {
+			url: url,
+			method: method
+		}
 	}
-	let items = await axios(axiosConf).then((response) => {
+	let response = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		if (!error.hasOwnProperty('reponse')) {
+		if (!error.hasOwnProperty('response')) {
 			return false
 		}
 		return error.response.status
 	})
-	
-	if (isNaN(items) && items) {
-		await items.forEach(item => {
-			updateLocal(item, slug, Model)
-		})
+	if (isNaN(response) && response) {
+		if (Array.isArray(response)) {
+			for (let item of response) {
+				await updateLocal(item, slug, Model)
+			}
+		} else {
+			await updateLocal(response, slug, Model)
+		}
+		return await loadLocal(slug, Model)
+	} else if (response == null) {
+		await updateLocal(data, slug, Model, true)
 		return await loadLocal(slug, Model)
 	}
-	return items
+	return response
 }
 
-async function updateLocal(item, slug, Model) {
+async function updateLocal(item, slug, Model, remove=false) {
 	let items = await loadLocal(slug, Model)
 	let index = items.ids.indexOf(item._id)
 	if (index >= 0) {
-		items[slug][index] = item
+		if (!remove) {
+			items[slug][index] = item
+		} else {
+			items[slug].pop(index)
+			items.ids.pop(index)
+		}
 	} else {
 		items[slug].push(item)
 		items.ids.push(item._id)
 	}
-	localStorage.setItem(slug, JSON.stringify(items))
+	await localStorage.setItem(slug, JSON.stringify(items))
 	return items
 }
 

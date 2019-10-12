@@ -66,12 +66,39 @@ class Action {
 	}
 	
 	update(item) {
-		var self = this;
+		var self = this
 		return function (dispatch) {
-			updateLocal(item, self.slug, self.Model)
+			if (!item.hasOwnProperty('_id')) {
+				requestItems(self.url, self.slug, self.Model, "POST", item, self.reducer)
 				.then((items) => {
-					dispatch(self.updateAction(items))
+					self.receiveResponse(items, dispatch)
 				})
+			} else {
+				requestItems(self.url + item._id, self.slug, self.Model, "PUT", item, self.reducer)
+				.then((items) => {
+					self.receiveResponse(items, dispatch)
+				})
+			}
+		}
+	}
+
+	delete(item) {
+		var self = this
+		return function (dispatch) {
+			requestItems(self.url + item._id, self.slug, self.Model, "DELETE", item, self.reducer)
+			.then((items) => {
+				self.receiveResponse(items, dispatch)
+			})
+		}
+	}
+
+	receiveResponse(items, dispatch) {
+		var self = this
+		if (items && isNaN(items)) {
+			dispatch(self.updateAction(items))
+		} else {
+			dispatch(self.receiveAction(false, {}))
+			dispatch(addMensagem(items, self.nome))
 		}
 	}
 }
