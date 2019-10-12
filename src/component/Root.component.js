@@ -9,15 +9,12 @@ import Panel from '../container/panel.container';
 import theme from '../theme'
 
 const Root = ({ store }) => (
-	<Provider store={ store }>
-		<ThemeProvider theme={ theme }>
+	<Provider store={store}>
+		<ThemeProvider theme={theme}>
 			<Router>
-				<Redirect
-					exact
-					from="/" to="/panel/dashboard"
-				/>
-				<Route path="/panel" component={ Panel } />
-				<Route path="/login:filter?" component={ LogIn } />
+				<Route path="/panel" component={Panel} />
+				<Route path="/login:filter?" component={LogIn} />
+				<Route exact={true} path={"/"} render={() => <Redirect to="/panel/dashboard"/>} />
 			</Router>
 		</ThemeProvider>
 	</Provider>
