@@ -10,6 +10,7 @@ import MaterialTable from 'material-table';
 import localization from '../library/localizationMaterialTable'
 import fixedTableComponents from '../library/fixedTableComponents'
 import { Materia as MateriaModel } from '../model/materia.model'
+import { taggedTemplateExpression } from '@babel/types';
 
 const style = theme => ({
 	paper: {
@@ -90,6 +91,15 @@ class Materia extends Component {
 			}, 100)
 		} else {
 			await this.props.requestTurmas(this.props.usuario_id, this.state.id)
+			let list = []
+			for (let turma in this.state.materia.turmas) {
+				list.push(this.props.turmas[this.props.turmas_ids.indexOf(turma)])
+			}
+			let turmas = this.state.turmas
+			turmas.data = list
+			this.setState({
+				turmas: turmas
+			})
 		}
 	}
 
@@ -100,6 +110,15 @@ class Materia extends Component {
 			}, 100)
 		} else {
 			await this.props.requestProvasBases(this.props.usuario_id, this.state.id)
+			let list = []
+			for (let provaBase in this.state.materia.provasBases) {
+				list.push(this.props.provasBases[this.props.provasBases_ids.indexOf(provaBase)])
+			}
+			let provasBases = this.state.provas
+			provasBases.data = list
+			this.setState({
+				provas: provasBases
+			})
 		}
 	}
 
@@ -230,7 +249,7 @@ class Materia extends Component {
 						<MaterialTable
 							title="Lista de Turmas"
 							columns={this.state.turmas.columns}
-							data={this.props.turmas}
+							data={this.state.turmas.data}
 							editable={{
 								onRowAdd: this.state.edit ? newData =>
 									new Promise(resolve => {
@@ -261,7 +280,7 @@ class Materia extends Component {
 						<MaterialTable
 							title="Lista de Provas Bases"
 							columns={this.state.provas.columns}
-							data={this.props.provasBases}
+							data={this.state.provas.data}
 							editable={{
 								onRowAdd: this.state.edit ? newData =>
 									new Promise(resolve => {

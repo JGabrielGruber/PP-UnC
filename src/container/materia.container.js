@@ -50,7 +50,9 @@ const mapStateToProps = (state) => {
 		ids: state.materia.materias.ids,
 		usuario_id: state.usuario.usuario._id,
 		turmas: state.turma.turmas.turmas,
-		provasBases: state.provaBase.provasBases.provasBases
+		turmas_ids: state.turma.turmas.ids,
+		provasBases: state.provaBase.provasBases.provasBases,
+		provasBases_ids: state.provaBase.provasBases.ids
 	};
 }
 
