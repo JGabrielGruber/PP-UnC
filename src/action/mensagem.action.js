@@ -23,6 +23,13 @@ function addMensagem(statusCode, conteudo = "") {
 						(conteudo.slice(-1) === 'e' ? 'a' : conteudo.slice(-1))} ${conteudo} com sucesso`
 				}))
 				break
+			case 400:
+				dispatch(addAction({
+					open: true,
+					variant: 'warning',
+					message: `Requisição inválida`
+				}))
+				break
 			case 403:
 				dispatch(addAction({
 					open: true,
