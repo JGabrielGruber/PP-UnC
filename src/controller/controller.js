@@ -35,7 +35,7 @@ async function request(url, slug, Model, method='GET', data=null, reducer=null) 
 		}
 		return error.response.status
 	})
-	if (isNaN(response) && response) {
+	if ((isNaN(response) && response) || Array.isArray(response)) {
 		if (Array.isArray(response)) {
 			for (let item of response) {
 				await updateLocal(item, slug, Model)
