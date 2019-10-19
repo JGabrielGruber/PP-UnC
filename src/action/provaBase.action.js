@@ -1,58 +1,27 @@
-import {
-	loadLocalProvasBases,
-	updateLocalProvaBase,
-	requestProvasBases as request
-} from '../controller/provaBase.controller'
-import { addMensagem } from './mensagem.action';
+import { Action } from "./action"
+import { ProvaBase, ProvasBases } from "../model/provaBase.model"
 
+export const REQUEST = 'REQUEST_PROVABASE'
+export const RECEIVE = 'RECEIVE_PROVABASE'
+export const UPDATE = 'UPDATE_PROVABASE'
 
-export const REQUEST	= 'REQUEST_PROVABASE'
-export const RECEIVE	= 'RECEIVE_PROVABASE'
-export const UPDATE		= 'UPDATE_PROVABASE'
+class ProvaBaseAction extends Action {
+	constructor() {
+		super(
+			REQUEST,
+			RECEIVE,
+			UPDATE,
+			'provaBase',
+			"usuarios//materias//provas",
+			'provaBase',
+			'provasBases',
+			ProvaBase,
+			ProvasBases)
+	}
 
-const requestAction = () => ({
-	type: REQUEST
-})
-
-const receiveAction = (status, provasBases) => ({
-	type: RECEIVE,
-	status: status,
-	provasBases: provasBases
-})
-
-const updateAction = (provasBases) => ({
-	type: UPDATE,
-	provasBases: provasBases
-})
-
-function requestProvasBases(usuario_id, materia_id) {
-	return function(dispatch) {
-		dispatch(requestAction())
-		loadLocalProvasBases().then((provasBases) => {
-			dispatch(receiveAction(true, provasBases))
-		})
-		dispatch(requestAction())
-		request(usuario_id, materia_id).then((provasBases) => {
-			if (provasBases && isNaN(provasBases)) {
-				dispatch(receiveAction(true, provasBases))
-			} else {
-				dispatch(receiveAction(false, {}))
-				dispatch(addMensagem(provasBases, "provas bases"))
-			}
-		})
+	setUrl(usuario_id, materia_id, provaBase_id=null) {
+		super.url = "usuarios/" + usuario_id + "/materias/" + materia_id + "/provas/" + (provaBase_id ? provaBase_id : "")
 	}
 }
 
-function updateProvaBase(provaBase) {
-	return function(dispatch) {
-		updateLocalProvaBase(provaBase)
-		.then((provasBases) => {
-			dispatch(updateAction(provasBases))
-		})
-	}
-}
-
-export {
-	requestProvasBases,
-	updateProvaBase
-}
+export { ProvaBaseAction }

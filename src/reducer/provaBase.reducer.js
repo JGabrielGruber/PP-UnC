@@ -27,7 +27,7 @@ const provaBase = (
 					isFetching: false,
 					didInvalidate: false,
 					modified: false,
-					provasBases: action.provasBases
+					provasBases: action.items
 				})
 			} else {
 				return Object.assign({}, state, {
@@ -39,7 +39,7 @@ const provaBase = (
 		case UPDATE:
 			return Object.assign({}, state, {
 				modified: true,
-				provasBases: action.provasBases
+				provasBases: action.items
 			})
 		default:
 			return state

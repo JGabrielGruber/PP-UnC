@@ -46,7 +46,7 @@ class Materia extends Component {
 				],
 				data: []
 			},
-			provas: {
+			provas_bases: {
 				columns: [
 					{ title: 'Título', field: 'titulo' },
 					{ title: 'Descrição', field: 'descricao' },
@@ -61,7 +61,6 @@ class Materia extends Component {
 	componentWillMount() {
 		this.getMateria()
 		this.awaitData()
-		this.getProvasBases()
 	}
 
 	getMateria = async () => {
@@ -91,50 +90,34 @@ class Materia extends Component {
 		} else {
 			this.getData(
 				this.props.requestTurmas,
+				'turmas',
 				'turmas'
+			)
+			this.getData(
+				this.props.requestProvasBases,
+				'provasBases',
+				'provas_bases'
 			)
 		}
 	}
 
-	getData = async (caller, slug) => {
+	getData = async (caller, propsSlug, stateSlug) => {
 		caller(this.props.usuario_id, this.state.id).then(() => {
 			
 			let list = []
 			let item
-			for (item of this.state.materia[slug]) {
-				item = this.props[slug][this.props[slug + "_ids"].indexOf(item._id)]
+			for (item of this.state.materia[stateSlug]) {
+				item = this.props[propsSlug][this.props[propsSlug + "_ids"].indexOf(item._id)]
 				if (item) {
 					list.push(item)
 				}
 			}
-			let data = this.state[slug]
+			let data = this.state[stateSlug]
 			data.data = list
 			this.setState({
-				[slug]: data
+				[stateSlug]: data
 			})
 		})
-	}
-
-	getProvasBases = async () => {
-		if (!this.props.usuario_id || !this.state.id) {
-			setTimeout(async () => {
-				this.getProvasBases()
-			}, 100)
-		} else {
-			await this.props.requestProvasBases(this.props.usuario_id, this.state.id)
-			let list = []
-			let provaBase
-			if (Array.isArray(this.state.materia.provasBases)) {
-				for (provaBase of this.state.materia.provasBases) {
-					list.push(this.props.provasBases[this.props.provasBases_ids.indexOf(provaBase)])
-				}
-				let provasBases = this.state.provas
-				provasBases.data = list
-				this.setState({
-					provas: provasBases
-				})
-			}
-		}
 	}
 
 	updateValue = (event) => {
@@ -294,16 +277,16 @@ class Materia extends Component {
 					<Grid item xs={12}>
 						<MaterialTable
 							title="Lista de Provas Bases"
-							columns={this.state.provas.columns}
-							data={this.state.provas.data}
+							columns={this.state.provas_bases.columns}
+							data={this.state.provas_bases.data}
 							editable={{
 								onRowAdd: this.state.edit ? newData =>
 									new Promise(resolve => {
 										setTimeout(() => {
 											resolve();
-											const provas = this.state.provas;
-											provas.data.push(newData);
-											this.setState({ ...this.state, provas });
+											const provas_bases = this.state.provas_bases;
+											provas_bases.data.push(newData);
+											this.setState({ ...this.state, provas_bases });
 										}, 600);
 									}) : null
 							}}
