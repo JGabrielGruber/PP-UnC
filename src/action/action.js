@@ -68,12 +68,12 @@ class Action {
 		var self = this
 		return function (dispatch) {
 			if (!item.hasOwnProperty('_id')) {
-				requestItems(self.url, self.slug, self.Model, "POST", item, self.reducer)
+				return requestItems(self.url, self.slug, self.Model, "POST", item, self.reducer)
 				.then((items) => {
 					self.receiveResponse(items, dispatch)
 				})
 			} else {
-				requestItems(self.url + item._id, self.slug, self.Model, "PUT", item, self.reducer)
+				return requestItems(self.url + item._id, self.slug, self.Model, "PUT", item, self.reducer)
 				.then((items) => {
 					self.receiveResponse(items, dispatch)
 				})
@@ -84,7 +84,7 @@ class Action {
 	delete(item) {
 		var self = this
 		return function (dispatch) {
-			requestItems(self.url + item._id, self.slug, self.Model, "DELETE", item, self.reducer)
+			return requestItems(self.url + item._id, self.slug, self.Model, "DELETE", item, self.reducer)
 			.then((items) => {
 				self.receiveResponse(items, dispatch)
 			})
