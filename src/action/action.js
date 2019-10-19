@@ -1,6 +1,5 @@
 import {
 	loadLocal,
-	updateLocal,
 	request as requestItems
 } from '../controller/controller'
 import {
@@ -45,7 +44,7 @@ class Action {
 					dispatch(self.receiveAction(true, items))
 				})
 				dispatch(self.requestAction())
-				requestItems(self.url, self.slug, self.Model).then((items) => {
+				return requestItems(self.url, self.slug, self.Model).then((items) => {
 					if (items && isNaN(items)) {
 						dispatch(self.receiveAction(true, items))
 					} else {

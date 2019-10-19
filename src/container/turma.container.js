@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import {
-	requestTurmas,
-	updateTurma
+	TurmaAction
 } from '../action/turma.action'
 import {
 	requestAlunos,
@@ -14,13 +13,19 @@ import {
 
 import Turma from '../component/Turma.component'
 
+const turmaAction	= new TurmaAction()
+
 function mapDispatchToProps(dispatch) {
 	return({
 		requestTurmas: (usuario_id, materia_id) => {
-			dispatch(requestTurmas(usuario_id, materia_id))
+			turmaAction.setUrl(usuario_id, materia_id)
+			dispatch(turmaAction.request())
 		},
 		updateTurma: (turma) => {
-			dispatch(updateTurma(turma))
+			dispatch(turmaAction.update(turma))
+		},
+		deleteTurma: (turma) => {
+			dispatch(turmaAction.delete(turma))
 		},
 		requestAlunos: (usuario_id, materia_id, turma_id) => {
 			dispatch(requestAlunos(usuario_id, materia_id, turma_id))

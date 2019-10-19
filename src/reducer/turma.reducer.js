@@ -27,7 +27,7 @@ const turma = (
 					isFetching: false,
 					didInvalidate: false,
 					modified: false,
-					turmas: action.turmas
+					turmas: action.items
 				})
 			} else {
 				return Object.assign({}, state, {
@@ -39,7 +39,7 @@ const turma = (
 		case UPDATE:
 			return Object.assign({}, state, {
 				modified: true,
-				turmas: action.turmas
+				turmas: action.items
 			})
 		default:
 			return state

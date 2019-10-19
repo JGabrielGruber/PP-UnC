@@ -37,7 +37,8 @@ async function request(url, slug, Model, method='GET', data=null, reducer=null) 
 	})
 	if ((isNaN(response) && response) || Array.isArray(response)) {
 		if (Array.isArray(response)) {
-			for (let item of response) {
+			let item
+			for (item of response) {
 				await updateLocal(item, slug, Model)
 			}
 		} else {

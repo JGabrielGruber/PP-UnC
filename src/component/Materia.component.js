@@ -10,7 +10,6 @@ import MaterialTable from 'material-table';
 import localization from '../library/localizationMaterialTable'
 import fixedTableComponents from '../library/fixedTableComponents'
 import { Materia as MateriaModel } from '../model/materia.model'
-import { taggedTemplateExpression } from '@babel/types';
 
 const style = theme => ({
 	paper: {
@@ -61,7 +60,7 @@ class Materia extends Component {
 
 	componentWillMount() {
 		this.getMateria()
-		this.getTurmas()
+		this.awaitData()
 		this.getProvasBases()
 	}
 
@@ -74,7 +73,7 @@ class Materia extends Component {
 				this.getMateria()
 			}, 100)
 		} else {
-			await this.props.requestMaterias(this.props.usuario_id)
+			await this.props.requestMaterias(this.props.usuario_id, this.state.id)
 			let index = this.props.ids.indexOf(this.state.id)
 			if (index >= 0) {
 				this.setState({
@@ -84,23 +83,36 @@ class Materia extends Component {
 		}
 	}
 
-	getTurmas = async () => {
-		if (!this.props.usuario_id || !this.state.id) {
+	awaitData = async () => {
+		if (!this.props.usuario_id || !this.state.id || !this.state.materia._id) {
 			setTimeout(async () => {
-				this.getTurmas()
+				this.awaitData()
 			}, 100)
 		} else {
-			await this.props.requestTurmas(this.props.usuario_id, this.state.id)
-			let list = []
-			for (let turma in this.state.materia.turmas) {
-				list.push(this.props.turmas[this.props.turmas_ids.indexOf(turma)])
-			}
-			let turmas = this.state.turmas
-			turmas.data = list
-			this.setState({
-				turmas: turmas
-			})
+			this.getData(
+				this.props.requestTurmas,
+				'turmas'
+			)
 		}
+	}
+
+	getData = async (caller, slug) => {
+		caller(this.props.usuario_id, this.state.id).then(() => {
+			
+			let list = []
+			let item
+			for (item of this.state.materia[slug]) {
+				item = this.props[slug][this.props[slug + "_ids"].indexOf(item._id)]
+				if (item) {
+					list.push(item)
+				}
+			}
+			let data = this.state[slug]
+			data.data = list
+			this.setState({
+				[slug]: data
+			})
+		})
 	}
 
 	getProvasBases = async () => {
@@ -111,14 +123,17 @@ class Materia extends Component {
 		} else {
 			await this.props.requestProvasBases(this.props.usuario_id, this.state.id)
 			let list = []
-			for (let provaBase in this.state.materia.provasBases) {
-				list.push(this.props.provasBases[this.props.provasBases_ids.indexOf(provaBase)])
+			let provaBase
+			if (Array.isArray(this.state.materia.provasBases)) {
+				for (provaBase of this.state.materia.provasBases) {
+					list.push(this.props.provasBases[this.props.provasBases_ids.indexOf(provaBase)])
+				}
+				let provasBases = this.state.provas
+				provasBases.data = list
+				this.setState({
+					provas: provasBases
+				})
 			}
-			let provasBases = this.state.provas
-			provasBases.data = list
-			this.setState({
-				provas: provasBases
-			})
 		}
 	}
 

@@ -26,7 +26,7 @@ async function requestTurmas(usuario_id, materia_id) {
 		}
 		return error.response.status
 	})
-	if (isNaN(turmas) && turmas) {
+	if ((isNaN(turmas) && turmas) || Array.isArray(turmas)) {
 		await turmas.forEach(turma => {
 			updateLocalTurma(turma)
 		})

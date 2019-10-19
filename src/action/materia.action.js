@@ -19,8 +19,8 @@ class MateriaAction extends Action {
 			Materias)
 	}
 
-	setUrl(usuario_id) {
-		super.url = "usuarios/" + usuario_id + "/materias/"
+	setUrl(usuario_id, materia_id=null) {
+		super.url = "usuarios/" + usuario_id + "/materias/" + (materia_id ? materia_id : "")
 	}
 }
 

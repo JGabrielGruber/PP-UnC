@@ -1,23 +1,21 @@
 import { connect } from 'react-redux'
 
 import { MateriaAction } from '../action/materia.action'
-import {
-	requestTurmas,
-	updateTurma
-} from '../action/turma.action'
+import { TurmaAction } from '../action/turma.action'
 import {
 	requestProvasBases,
 	updateProvaBase
 } from '../action/provaBase.action'
 import Materia from '../component/Materia.component'
 
-const materiaAction	= new MateriaAction()
+const materiaAction = new MateriaAction()
+const turmaAction = new TurmaAction()
 
 function mapDispatchToProps(dispatch) {
-	return({
-		requestMaterias: (usuario_id) => {
-			materiaAction.setUrl(usuario_id)
-			dispatch(materiaAction.request())
+	return ({
+		requestMaterias: (usuario_id, materia_id = null) => {
+			materiaAction.setUrl(usuario_id, materia_id)
+			return dispatch(materiaAction.request())
 		},
 		updateMateria: (materia) => {
 			dispatch(materiaAction.update(materia))
@@ -26,10 +24,11 @@ function mapDispatchToProps(dispatch) {
 			dispatch(materiaAction.delete(materia))
 		},
 		requestTurmas: (usuario_id, materia_id) => {
-			dispatch(requestTurmas(usuario_id, materia_id))
+			turmaAction.setUrl(usuario_id, materia_id)
+			return dispatch(turmaAction.request())
 		},
 		updateTurma: (turma) => {
-			dispatch(updateTurma(turma))
+			dispatch(turmaAction.update(turma))
 		},
 		requestProvasBases: (usuario_id, materia_id) => {
 			dispatch(requestProvasBases(usuario_id, materia_id))
