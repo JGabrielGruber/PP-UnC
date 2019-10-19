@@ -16,24 +16,24 @@ function mapDispatchToProps(dispatch) {
 			return dispatch(materiaAction.request())
 		},
 		updateMateria: (materia) => {
-			dispatch(materiaAction.update(materia))
+			return dispatch(materiaAction.update(materia))
 		},
 		deleteMateria: (materia) => {
-			dispatch(materiaAction.delete(materia))
+			return dispatch(materiaAction.delete(materia))
 		},
 		requestTurmas: (usuario_id, materia_id) => {
 			turmaAction.setUrl(usuario_id, materia_id)
 			return dispatch(turmaAction.request())
 		},
 		updateTurma: (turma) => {
-			dispatch(turmaAction.update(turma))
+			return dispatch(turmaAction.update(turma))
 		},
 		requestProvasBases: (usuario_id, materia_id) => {
 			provaBaseAction.setUrl(usuario_id, materia_id)
 			return dispatch(provaBaseAction.request(usuario_id, materia_id))
 		},
 		updateProvaBase: (turma) => {
-			dispatch(provaBaseAction.update(turma))
+			return dispatch(provaBaseAction.update(turma))
 		}
 	})
 }
