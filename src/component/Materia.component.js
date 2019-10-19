@@ -80,6 +80,7 @@ class Materia extends Component {
 				})
 			}
 		}
+		return {}
 	}
 
 	awaitData = async () => {
@@ -102,8 +103,8 @@ class Materia extends Component {
 	}
 
 	getData = async (caller, propsSlug, stateSlug) => {
-		caller(this.props.usuario_id, this.state.id).then(() => {
-			
+		return caller(this.props.usuario_id, this.state.id).then(() => {
+
 			let list = []
 			let item
 			for (item of this.state.materia[stateSlug]) {
@@ -251,12 +252,12 @@ class Materia extends Component {
 							editable={{
 								onRowAdd: this.state.edit ? newData =>
 									new Promise(resolve => {
-										setTimeout(() => {
-											resolve();
-											const turmas = this.state.turmas;
-											turmas.data.push(newData);
-											this.setState({ ...this.state, turmas });
-										}, 600);
+										this.props.updateTurma(newData).then(() => {
+											resolve()
+											this.getMateria().then(() => {
+												this.getData(this.props.requestTurmas, 'turmas', 'turmas')
+											})
+										})
 									}) : null
 							}}
 							actions={[
