@@ -283,12 +283,12 @@ class Materia extends Component {
 							editable={{
 								onRowAdd: this.state.edit ? newData =>
 									new Promise(resolve => {
-										setTimeout(() => {
-											resolve();
-											const provas_bases = this.state.provas_bases;
-											provas_bases.data.push(newData);
-											this.setState({ ...this.state, provas_bases });
-										}, 600);
+										this.props.updateProvaBase(newData).then(() => {
+											resolve()
+											this.getMateria().then(() => {
+												this.getData(this.props.requestProvasBases, 'provasBases', 'provas_bases')
+											})
+										})
 									}) : null
 							}}
 							actions={[
