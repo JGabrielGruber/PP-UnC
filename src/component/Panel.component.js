@@ -20,7 +20,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary'
 import PersonIcon from '@material-ui/icons/Person'
-import { Avatar, Paper, Breadcrumbs, Tooltip, Button, SnackbarContent, Icon, Snackbar } from '@material-ui/core'
+import { Avatar, Paper, Breadcrumbs, Tooltip, Button, SnackbarContent, Snackbar } from '@material-ui/core'
 import { withStyles, makeStyles } from '@material-ui/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { amber, green } from '@material-ui/core/colors'
@@ -239,7 +239,7 @@ class Panel extends Component {
 						</Breadcrumbs>
 					</Paper>
 					<Container maxWidth="lg" className={classes.container}>
-						<div style={{top: '24px', left: '50%', right: 'auto', transform: 'translateX(-50%)', position: 'fixed', zIndex: 1400}}>
+						<div style={{ top: '24px', left: '50%', right: 'auto', transform: 'translateX(-50%)', position: 'fixed', zIndex: 1400 }}>
 							<SnackbarMessages mensagens={this.props.mensagens} onClose={this.handleSnackClose} />
 						</div>
 						<Switch>
@@ -358,7 +358,7 @@ const useStylesSM = makeStyles(theme => ({
 
 const SnackbarMessages = (props) => {
 	const classes = useStylesSM()
-	const { className, mensagens, onClose, ...other } = props;
+	const { className, mensagens, onClose } = props;
 
 	let snacks = []
 	let count = 0
@@ -377,9 +377,9 @@ const SnackbarMessages = (props) => {
 				}}
 				autoHideDuration={6000}
 				open={item.open}
-				onClose={() => {onClose({key: key}, "auto")}}
+				onClose={() => { onClose({ key: key }, "auto") }}
 				key={key}
-				style={{position: 'relative', margin: '10px'}}
+				style={{ position: 'relative', margin: '10px' }}
 			>
 				<SnackbarContent
 					className={clsx(classes[item.variant], className)}
@@ -391,7 +391,7 @@ const SnackbarMessages = (props) => {
 						</span>
 					}
 					action={[
-						<IconButton key="close" aria-label="close" color="inherit" onClick={() => {onClose({key: key}, "click")}}>
+						<IconButton key="close" aria-label="close" color="inherit" onClick={() => { onClose({ key: key }, "click") }}>
 							<CloseIcon className={classes.icon} />
 						</IconButton>,
 					]}
