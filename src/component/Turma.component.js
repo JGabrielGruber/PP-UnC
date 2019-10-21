@@ -1,14 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { Typography, Grid, TextField, Paper, withStyles, Toolbar, Tooltip, IconButton, Snackbar } from '@material-ui/core'
-import EditIcon from '@material-ui/icons/Edit'
-import DeleteIcon from '@material-ui/icons/Delete'
-import CheckIcon from '@material-ui/icons/Check'
-import CloseIcon from '@material-ui/icons/Close'
-import MaterialTable from 'material-table'
+import { Typography, Grid, TextField, withStyles } from '@material-ui/core'
+import MaterialTable from 'material-table';
 
 import localization from '../library/localizationMaterialTable'
 import fixedTableComponents from '../library/fixedTableComponents'
+import { Turma as TurmaModel } from '../model/turma.model'
+import BaseComponent from './Base.component'
 
 const style = theme => ({
 	paper: {
@@ -26,20 +24,13 @@ const style = theme => ({
 	},
 })
 
-class Turma extends Component {
+class Turma extends BaseComponent {
 
 	constructor(props) {
 		super(props)
 
 		this.state = {
-			edit: false,
-			turma: {
-				_id: '',
-				titulo: '',
-				descricao: '',
-				timeupdate: '',
-				timestamp: ''
-			},
+			...this.defaultState,
 			alunos: {
 				columns: [
 					{ title: 'Nome', field: 'nome' },
@@ -52,226 +43,181 @@ class Turma extends Component {
 			provas: {
 				columns: [
 					{ title: 'Título', field: 'titulo' },
-					{ title: 'Duração', field: 'duracao' },
+					{ title: 'Duração(Minutos)', field: 'duracao', type: 'numeric' },
 					{ title: 'Modificada', field: 'timeupdate', type: 'datetime' },
 					{ title: 'Criada', field: 'timestamp', type: 'datetime' }
 				],
 				data: []
-			},
-			materia_id: '',
-		}
-	}
-
-	componentWillMount() {
-		this.getTurma()
-		this.getAlunos()
-		this.getProvas()
-	}
-
-	switchEdit = () => {
-		this.setState({
-			edit: !this.state.edit
-		})
-	}
-
-	getTurma = async () => {
-		let turma = this.state.turma
-		turma._id = this.props.match.params.turmaId
-		this.setState({ turma })
-		this.setState({ materia_id: this.props.match.params.materiaId })
-		if (!this.props.usuario_id || !this.state.materia_id) {
-			setTimeout(async () => {
-				this.getTurma()
-			}, 100)
-		} else {
-			await this.props.requestTurmas(this.props.usuario_id, this.state.materia_id)
-			let index = this.props.ids.indexOf(this.state.turma._id)
-			if (index >= 0) {
-				this.setState({
-					turma: this.props.turmas[index]
-				})
 			}
 		}
 	}
 
-	getAlunos = async () => {
-		if (!this.props.usuario_id || !this.state.materia_id || !this.state.turma._id) {
+	componentDidMount() {
+		this.model = TurmaModel
+		this.modelName = "turma"
+		this.propsId = this.props.match.params.turmaId
+		this.awaitId()
+	}
+
+	awaitId = () => {
+		if (!this.props.usuario_id) {
 			setTimeout(async () => {
-				this.getAlunos()
+				this.awaitId()
 			}, 100)
 		} else {
-			await this.props.requestAlunos(this.props.usuario_id, this.state.materia_id, this.state.turma._id)
+			this.args = [
+				this.props.usuario_id,
+				this.props.match.params.materiaId,
+				this.propsId
+			]
+
+			this.get()
+			this.awaitData()
 		}
 	}
 
-	getProvas = async () => {
-		if (!this.props.usuario_id || !this.state.materia_id || !this.state.turma._id) {
+	awaitData = async () => {
+		if (!this.state.model.timestamp) {
 			setTimeout(async () => {
-				this.getProvas()
+				this.awaitId()
 			}, 100)
 		} else {
-			await this.props.requestProvas(this.props.usuario_id, this.state.materia_id, this.state.turma._id)
+			this.getData(
+				this.props.requestAlunos,
+				'alunos',
+				'alunos'
+			)
+			this.getData(
+				this.props.requestProvas,
+				'provas',
+				'provas'
+			)
 		}
 	}
 
 	render() {
 
-		const { classes } = this.props
-
-		return (
-			<Paper className={classes.paper}>
-				<Snackbar open={this.props.isFetching} message="Carregando turma...">
-				</Snackbar>
-				<Toolbar>
-					<Typography component="h1" variant="h5" className={classes.title}>
-						Turma - {this.state.turma._id}
-					</Typography>
+		this.Content = (
+			<>
+				<Grid item xs={12}>
 					{
 						this.state.edit ? (
-							<div>
-								<Tooltip title="Confirmar" onClick={this.switchEdit}>
-									<IconButton>
-										<CheckIcon />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title="Cancelar">
-									<IconButton>
-										<CloseIcon />
-									</IconButton>
-								</Tooltip>
-							</div>
+							<TextField
+								required
+								id="titulo"
+								name="titulo"
+								label="Título"
+								fullWidth
+								value={this.state.model.titulo}
+							/>
 						) : (
 								<div>
-									<Tooltip title="Editar" onClick={this.switchEdit}>
-										<IconButton>
-											<EditIcon />
-										</IconButton>
-									</Tooltip>
-									<Tooltip title="Remover">
-										<IconButton>
-											<DeleteIcon />
-										</IconButton>
-									</Tooltip>
+									<Typography variant="h6" gutterBottom>
+										Título
+										</Typography>
+									<Typography gutterBottom>
+										{this.state.model.titulo}
+									</Typography>
 								</div>
 							)
 					}
-				</Toolbar>
-				<Grid container spacing={3}>
-					<Grid item xs={12}>
-						{
-							this.state.edit ? (
-								<TextField
-									required
-									id="titulo"
-									name="titulo"
-									label="Título"
-									fullWidth
-									value={this.state.turma.titulo}
-								/>
-							) : (
-									<div>
-										<Typography variant="h6" gutterBottom>
-											Título
-										</Typography>
-										<Typography gutterBottom>
-											{this.state.turma.titulo}
-										</Typography>
-									</div>
-								)
-						}
 
-					</Grid>
-					<Grid item xs={12}>
-						{
-							this.state.edit ? (
-								<TextField
-									required
-									multiline
-									rowsMax="4"
-									id="descricao"
-									name="descricao"
-									label="Descrição"
-									fullWidth
-									value={this.state.turma.descricao}
-								/>
-							) : (
-									<div>
-										<Typography variant="h6" gutterBottom>
-											Descrição
-										</Typography>
-										<Typography gutterBottom>
-											{this.state.turma.descricao}
-										</Typography>
-									</div>
-								)
-						}
-					</Grid>
-					<Grid item xs={12}>
-						<MaterialTable
-							title="Lista de Alunos"
-							columns={this.state.alunos.columns}
-							data={this.props.alunos}
-							isLoading={this.props.isFetching}
-							editable={{
-								onRowAdd: this.state.edit ? newData =>
-									new Promise(resolve => {
-										setTimeout(() => {
-											resolve();
-											const alunos = this.state.alunos;
-											alunos.data.push(newData);
-											this.setState({ ...this.state, alunos });
-										}, 600);
-									}) : null
-							}}
-							actions={[
-								{
-									icon: 'more_horiz',
-									tooltip: 'Ver Aluno',
-									onClick: (event, rowData) => {
-										this.props.history.push(
-											'/panel/materias/' + this.state.materia_id + '/turmas/' + this.state.turma._id + '/provas/' + rowData._id
-										)
-									}
-								}
-							]}
-							localization={localization}
-							components={fixedTableComponents}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<MaterialTable
-							title="Lista de Provas"
-							columns={this.state.provas.columns}
-							data={this.props.provas}
-							editable={{
-								onRowAdd: this.state.edit ? newData =>
-									new Promise(resolve => {
-										setTimeout(() => {
-											resolve();
-											const provas = this.state.provas;
-											provas.data.push(newData);
-											this.setState({ ...this.state, provas });
-										}, 600);
-									}) : null
-							}}
-							actions={[
-								{
-									icon: 'more_horiz',
-									tooltip: 'Ver Prova',
-									onClick: (event, rowData) => {
-										this.props.history.push(
-											'/panel/materias/' + this.state.materia_id + '/turmas/' + this.state.turma._id + '/provas/' + rowData._id
-										)
-									}
-								}
-							]}
-							localization={localization}
-							components={fixedTableComponents}
-						/>
-					</Grid>
 				</Grid>
-			</Paper >
+				<Grid item xs={12}>
+					{
+						this.state.edit ? (
+							<TextField
+								required
+								multiline
+								rowsMax="4"
+								id="descricao"
+								name="descricao"
+								label="Descrição"
+								fullWidth
+								value={this.state.model.descricao}
+							/>
+						) : (
+								<div>
+									<Typography variant="h6" gutterBottom>
+										Descrição
+										</Typography>
+									<Typography gutterBottom>
+										{this.state.model.descricao}
+									</Typography>
+								</div>
+							)
+					}
+				</Grid>
+				<Grid item xs={12}>
+					<MaterialTable
+						title="Lista de Alunos"
+						columns={this.state.alunos.columns}
+						data={this.state.alunos.data}
+						isLoading={this.props.isFetching}
+						editable={{
+							onRowAdd: this.state.edit ? newData =>
+								new Promise(resolve => {
+									this.props.updateAluno(newData).then(() => {
+										resolve()
+										this.get().then(() => {
+											this.getData(this.props.requestAlunos, 'alunos', 'alunos')
+										})
+									})
+								}) : null
+						}}
+						actions={[
+							{
+								icon: 'more_horiz',
+								tooltip: 'Ver Aluno',
+								onClick: (event, rowData) => {
+									this.props.history.push(
+										'/panel/materias/' + this.props.match.params.materiaId + '/turmas/' + this.state.model._id + '/provas/' + rowData._id
+									)
+								}
+							}
+						]}
+						localization={localization}
+						components={fixedTableComponents}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<MaterialTable
+						title="Lista de Provas"
+						columns={this.state.provas.columns}
+						data={this.state.provas.data}
+						editable={{
+							onRowAdd: this.state.edit ? newData =>
+								new Promise(resolve => {
+									newData.duracao = newData.duracao ? parseInt(newData.duracao) : undefined
+									this.props.updateProva(newData).then(() => {
+										resolve()
+										this.get().then(() => {
+											this.getData(this.props.requestProvas, 'provas', 'provas')
+										})
+									})
+								}) : null
+						}}
+						actions={[
+							{
+								icon: 'more_horiz',
+								tooltip: 'Ver Prova',
+								onClick: (event, rowData) => {
+									this.props.history.push(
+										'/panel/materias/' + this.props.match.params.materiaId + '/turmas/' + this.state.model._id + '/provas/' + rowData._id
+									)
+								}
+							}
+						]}
+						localization={localization}
+						components={fixedTableComponents}
+					/>
+				</Grid>
+			</>
 		)
+
+		const { classes } = this.props
+
+		return super.renderBase(classes)
 	}
 }
 

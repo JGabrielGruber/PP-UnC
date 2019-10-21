@@ -3,41 +3,43 @@ import {
 	TurmaAction
 } from '../action/turma.action'
 import {
-	requestAlunos,
-	updateAluno
+	AlunoAction
 } from '../action/aluno.action'
 import {
-	requestProvas,
-	updateProva
+	ProvaAction
 } from '../action/prova.action'
 
 import Turma from '../component/Turma.component'
 
 const turmaAction	= new TurmaAction()
+const alunoAction	= new AlunoAction()
+const provaAction	= new ProvaAction()
 
 function mapDispatchToProps(dispatch) {
 	return({
-		requestTurmas: (usuario_id, materia_id) => {
-			turmaAction.setUrl(usuario_id, materia_id)
-			dispatch(turmaAction.request())
+		request: (usuario_id, materia_id, turma_id = null) => {
+			turmaAction.setUrl(usuario_id, materia_id, turma_id)
+			return dispatch(turmaAction.request())
 		},
-		updateTurma: (turma) => {
-			dispatch(turmaAction.update(turma))
+		update: (turma) => {
+			return dispatch(turmaAction.update(turma))
 		},
-		deleteTurma: (turma) => {
-			dispatch(turmaAction.delete(turma))
+		remove: (turma) => {
+			return dispatch(turmaAction.delete(turma))
 		},
 		requestAlunos: (usuario_id, materia_id, turma_id) => {
-			dispatch(requestAlunos(usuario_id, materia_id, turma_id))
+			alunoAction.setUrl(usuario_id, materia_id, turma_id)
+			return dispatch(alunoAction.request())
 		},
 		updateAluno: (aluno) => {
-			dispatch(updateAluno(aluno))
+			return dispatch(alunoAction.update(aluno))
 		},
 		requestProvas: (usuario_id, materia_id, turma_id) => {
-			dispatch(requestProvas(usuario_id, materia_id, turma_id))
+			provaAction.setUrl(usuario_id, materia_id, turma_id)
+			return dispatch(provaAction.request())
 		},
 		updateProva: (prova) => {
-			dispatch(updateProva(prova))
+			return dispatch(provaAction.update(prova))
 		},
 	})
 }
@@ -50,9 +52,11 @@ const mapStateToProps = (state) => {
 		modified: state.turma.modified,
 		ids: state.turma.turmas.ids,
 		usuario_id: state.usuario.usuario._id,
-		turmas: state.turma.turmas.turmas,
+		models: state.turma.turmas.turmas,
 		alunos: state.aluno.alunos.alunos,
+		alunos_ids: state.aluno.alunos.ids,
 		provas: state.prova.provas.provas,
+		provas_ids: state.prova.provas.ids,
 	};
 }
 
