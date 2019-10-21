@@ -27,7 +27,7 @@ const aluno = (
 					isFetching: false,
 					didInvalidate: false,
 					modified: false,
-					alunos: action.alunos
+					alunos: action.items
 				})
 			} else {
 				return Object.assign({}, state, {
@@ -39,7 +39,7 @@ const aluno = (
 		case UPDATE:
 			return Object.assign({}, state, {
 				modified: true,
-				alunos: action.alunos
+				alunos: action.items
 			})
 		default:
 			return state

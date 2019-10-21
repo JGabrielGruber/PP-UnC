@@ -1,58 +1,28 @@
-import {
-	loadLocalAlunos,
-	updateLocalAluno,
-	requestAlunos as request
-} from '../controller/aluno.controller'
+import { Action } from "./action"
+import { Aluno, Alunos } from "../model/aluno.model"
 
-import { addMensagem } from './mensagem.action';
+export const REQUEST = 'REQUEST_ALUNO'
+export const RECEIVE = 'RECEIVE_ALUNO'
+export const UPDATE = 'UPDATE_ALUNO'
 
-export const REQUEST	= 'REQUEST_ALUNO'
-export const RECEIVE	= 'RECEIVE_ALUNO'
-export const UPDATE		= 'UPDATE_ALUNO'
+class AlunoAction extends Action {
+	constructor() {
+		super(
+			REQUEST,
+			RECEIVE,
+			UPDATE,
+			'aluno',
+			"usuarios//materias//turmas//alunos",
+			'aluno',
+			'alunos',
+			Aluno,
+			Alunos)
+	}
 
-const requestAction = () => ({
-	type: REQUEST
-})
-
-const receiveAction = (status, alunos) => ({
-	type: RECEIVE,
-	status: status,
-	alunos: alunos
-})
-
-const updateAction = (alunos) => ({
-	type: UPDATE,
-	alunos: alunos
-})
-
-function requestAlunos(usuario_id, materia_id, turma_id) {
-	return function(dispatch) {
-		dispatch(requestAction())
-		loadLocalAlunos().then((alunos) => {
-			dispatch(receiveAction(true, alunos))
-		})
-		dispatch(requestAction())
-		request(usuario_id, materia_id, turma_id).then((alunos) => {
-			if (alunos && isNaN(alunos)) {
-				dispatch(receiveAction(true, alunos))
-			} else {
-				dispatch(receiveAction(false, {}))
-				dispatch(addMensagem(alunos, "alunos"))
-			}
-		})
+	setUrl(usuario_id, materia_id, turma_id, aluno_id=null) {
+		super.url = "usuarios/" + usuario_id + "/materias/" + materia_id +
+			"/turmas/" + turma_id + "/alunos/" + (aluno_id ? aluno_id : "")
 	}
 }
 
-function updateAluno(aluno) {
-	return function(dispatch) {
-		updateLocalAluno(aluno)
-		.then((alunos) => {
-			dispatch(updateAction(alunos))
-		})
-	}
-}
-
-export {
-	requestAlunos,
-	updateAluno
-}
+export { AlunoAction }
