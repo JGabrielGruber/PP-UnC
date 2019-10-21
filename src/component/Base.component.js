@@ -170,7 +170,7 @@ class BaseComponent extends Component {
 					aria-describedby="alert-dialog-description"
 				>
 					<DialogTitle id="alert-dialog-title">
-						{"Confirmar remoção da Turma?"}
+						{`Confirmar remoção da ${this.modelName}?`}
 					</DialogTitle>
 					<DialogContent>
 						<DialogContentText id="alert-dialog-description">
