@@ -67,24 +67,18 @@ class Action {
 	update(item) {
 		var self = this
 		return function (dispatch) {
-			if (!item.hasOwnProperty('_id')) {
-				return requestItems(self.url, self.slug, self.Model, "POST", item, self.reducer)
+			let type = item.hasOwnProperty('_id') ? "PUT" : "POST"
+			return requestItems(self.url, self.slug, self.Model, type, item, self.reducer)
 				.then((items) => {
 					self.receiveResponse(items, dispatch)
 				})
-			} else {
-				return requestItems(self.url + item._id, self.slug, self.Model, "PUT", item, self.reducer)
-				.then((items) => {
-					self.receiveResponse(items, dispatch)
-				})
-			}
 		}
 	}
 
 	delete(item) {
 		var self = this
 		return function (dispatch) {
-			return requestItems(self.url + item._id, self.slug, self.Model, "DELETE", item, self.reducer)
+			return requestItems(self.url, self.slug, self.Model, "DELETE", item, self.reducer)
 			.then((items) => {
 				self.receiveResponse(items, dispatch)
 			})
