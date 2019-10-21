@@ -1,15 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { Typography, Grid, TextField, Paper, withStyles, Toolbar, Tooltip, IconButton, Snackbar } from '@material-ui/core'
-import EditIcon from '@material-ui/icons/Edit'
-import DeleteIcon from '@material-ui/icons/Delete'
-import CheckIcon from '@material-ui/icons/Check'
-import CloseIcon from '@material-ui/icons/Close'
+import { Typography, Grid, TextField, withStyles } from '@material-ui/core'
 import MaterialTable from 'material-table';
 
 import localization from '../library/localizationMaterialTable'
 import fixedTableComponents from '../library/fixedTableComponents'
 import { Materia as MateriaModel } from '../model/materia.model'
+import BaseComponent from './Base.component'
 
 const style = theme => ({
 	paper: {
@@ -27,15 +24,13 @@ const style = theme => ({
 	},
 })
 
-class Materia extends Component {
+class Materia extends BaseComponent {
 
 	constructor(props) {
 		super(props)
 
 		this.state = {
-			edit: false,
-			materia: MateriaModel(),
-			id: "",
+			...this.defaultState,
 			turmas: {
 				columns: [
 					{ title: 'Título', field: 'titulo' },
@@ -58,35 +53,35 @@ class Materia extends Component {
 		}
 	}
 
-	componentWillMount() {
-		this.getMateria()
-		this.awaitData()
+	componentDidMount() {
+		this.model = MateriaModel
+		this.modelName = "matéria"
+		this.propsId = this.props.match.params.materiaId
+		this.awaitId()
+
 	}
 
-	getMateria = async () => {
-		this.setState({
-			id: this.props.match.params.materiaId
-		})
-		if (!this.props.usuario_id || !this.state.id) {
+	awaitId = () => {
+		if (!this.props.usuario_id) {
 			setTimeout(async () => {
-				this.getMateria()
+				this.awaitId()
 			}, 100)
 		} else {
-			await this.props.requestMaterias(this.props.usuario_id, this.state.id)
-			let index = this.props.ids.indexOf(this.state.id)
-			if (index >= 0) {
-				this.setState({
-					materia: this.props.materias[index]
-				})
-			}
+			this.args = [
+				this.props.usuario_id,
+				this.propsId
+			]
+
+			this.get()
+			this.awaitData()
 		}
-		return {}
 	}
 
+
 	awaitData = async () => {
-		if (!this.props.usuario_id || !this.state.id || !this.state.materia._id) {
+		if (!this.state.model.timestamp) {
 			setTimeout(async () => {
-				this.awaitData()
+				this.awaitId()
 			}, 100)
 		} else {
 			this.getData(
@@ -102,213 +97,128 @@ class Materia extends Component {
 		}
 	}
 
-	getData = async (caller, propsSlug, stateSlug) => {
-		return caller(this.props.usuario_id, this.state.id).then(() => {
-
-			let list = []
-			let item
-			for (item of this.state.materia[stateSlug]) {
-				item = this.props[propsSlug][this.props[propsSlug + "_ids"].indexOf(item._id)]
-				if (item) {
-					list.push(item)
-				}
-			}
-			let data = this.state[stateSlug]
-			data.data = list
-			this.setState({
-				[stateSlug]: data
-			})
-		})
-	}
-
-	updateValue = (event) => {
-		let materia = this.state.materia
-		materia[event.target.id] = event.target.value
-		this.setState({
-			...this.state, materia
-		})
-	}
-
-	switchEdit = () => {
-		this.setState({
-			edit: !this.state.edit
-		})
-	}
-
-	updateMateria = () => {
-		this.props.updateMateria(this.state.materia)
-		this.switchEdit()
-	}
-
-	removeMateria = () => {
-		this.props.deleteMateria(this.state.materia)
-		this.props.history.push(
-			'/panel/materias/'
-		)
-	}
-
 	render() {
-
-		const { classes } = this.props
-
-		return (
-			<Paper className={classes.paper}>
-				<Snackbar open={this.props.isFetching} message="Carregando matéria...">
-				</Snackbar>
-				<Toolbar>
-					<Typography component="h1" variant="h5" className={classes.title}>
-						Matéria - {this.props.match.params.materiaId}
-					</Typography>
+		this.Content = (
+			<>
+				<Grid item xs={12}>
 					{
 						this.state.edit ? (
-							<div>
-								<Tooltip title="Confirmar" onClick={this.updateMateria}>
-									<IconButton>
-										<CheckIcon />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title="Cancelar" onClick={() => {
-									this.switchEdit()
-									this.getMateria()
-								}}>
-									<IconButton>
-										<CloseIcon />
-									</IconButton>
-								</Tooltip>
-							</div>
+							<TextField
+								required
+								id="titulo"
+								name="titulo"
+								label="Título"
+								fullWidth
+								value={this.state.model.titulo}
+								onChange={this.updateValue}
+							/>
 						) : (
 								<div>
-									<Tooltip title="Editar" onClick={this.switchEdit}>
-										<IconButton>
-											<EditIcon />
-										</IconButton>
-									</Tooltip>
-									<Tooltip title="Remover" onClick={this.removeMateria}>
-										<IconButton>
-											<DeleteIcon />
-										</IconButton>
-									</Tooltip>
+									<Typography variant="h6" gutterBottom>
+										Título
+									</Typography>
+									<Typography gutterBottom>
+										{this.state.model.titulo}
+									</Typography>
 								</div>
 							)
 					}
-				</Toolbar>
-				<Grid container spacing={3}>
-					<Grid item xs={12}>
-						{
-							this.state.edit ? (
-								<TextField
-									required
-									id="titulo"
-									name="titulo"
-									label="Título"
-									fullWidth
-									value={this.state.materia.titulo}
-									onChange={this.updateValue}
-								/>
-							) : (
-									<div>
-										<Typography variant="h6" gutterBottom>
-											Título
-										</Typography>
-										<Typography gutterBottom>
-											{this.state.materia.titulo}
-										</Typography>
-									</div>
-								)
-						}
 
-					</Grid>
-					<Grid item xs={12}>
-						{
-							this.state.edit ? (
-								<TextField
-									required
-									multiline
-									rowsMax="4"
-									id="descricao"
-									name="descricao"
-									label="Descrição"
-									fullWidth
-									value={this.state.materia.descricao}
-									onChange={this.updateValue}
-								/>
-							) : (
-									<div>
-										<Typography variant="h6" gutterBottom>
-											Descrição
-										</Typography>
-										<Typography gutterBottom>
-											{this.state.materia.descricao}
-										</Typography>
-									</div>
-								)
-						}
-					</Grid>
-					<Grid item xs={12}>
-						<MaterialTable
-							title="Lista de Turmas"
-							columns={this.state.turmas.columns}
-							data={this.state.turmas.data}
-							editable={{
-								onRowAdd: this.state.edit ? newData =>
-									new Promise(resolve => {
-										this.props.updateTurma(newData).then(() => {
-											resolve()
-											this.getMateria().then(() => {
-												this.getData(this.props.requestTurmas, 'turmas', 'turmas')
-											})
-										})
-									}) : null
-							}}
-							actions={[
-								{
-									icon: 'more_horiz',
-									tooltip: 'Ver Turma',
-									onClick: (event, rowData) => {
-										this.props.history.push(
-											'/panel/materias/' + this.state.materia._id + '/turmas/' + rowData._id
-										)
-									}
-								}
-							]}
-							localization={localization}
-							components={fixedTableComponents}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<MaterialTable
-							title="Lista de Provas Bases"
-							columns={this.state.provas_bases.columns}
-							data={this.state.provas_bases.data}
-							editable={{
-								onRowAdd: this.state.edit ? newData =>
-									new Promise(resolve => {
-										this.props.updateProvaBase(newData).then(() => {
-											resolve()
-											this.getMateria().then(() => {
-												this.getData(this.props.requestProvasBases, 'provasBases', 'provas_bases')
-											})
-										})
-									}) : null
-							}}
-							actions={[
-								{
-									icon: 'more_horiz',
-									tooltip: 'Ver Prova Base',
-									onClick: (event, rowData) => {
-										this.props.history.push(
-											'/panel/materias/' + this.state.materia._id + '/provas/' + rowData._id
-										)
-									}
-								}
-							]}
-							localization={localization}
-							components={fixedTableComponents}
-						/>
-					</Grid>
 				</Grid>
-			</Paper >
+				<Grid item xs={12}>
+					{
+						this.state.edit ? (
+							<TextField
+								required
+								multiline
+								rowsMax="4"
+								id="descricao"
+								name="descricao"
+								label="Descrição"
+								fullWidth
+								value={this.state.model.descricao}
+								onChange={this.updateValue}
+							/>
+						) : (
+								<div>
+									<Typography variant="h6" gutterBottom>
+										Descrição
+							</Typography>
+									<Typography gutterBottom>
+										{this.state.model.descricao}
+									</Typography>
+								</div>
+							)
+					}
+				</Grid>
+				<Grid item xs={12}>
+					<MaterialTable
+						title="Lista de Turmas"
+						columns={this.state.turmas.columns}
+						data={this.state.turmas.data}
+						editable={{
+							onRowAdd: this.state.edit ? newData =>
+								new Promise(resolve => {
+									this.props.updateTurma(newData).then(() => {
+										resolve()
+										this.get().then(() => {
+											this.getData(this.props.requestTurmas, 'turmas', 'turmas')
+										})
+									})
+								}) : null
+						}}
+						actions={[
+							{
+								icon: 'more_horiz',
+								tooltip: 'Ver Turma',
+								onClick: (event, rowData) => {
+									this.props.history.push(
+										'/panel/materias/' + this.state.model._id + '/turmas/' + rowData._id
+									)
+								}
+							}
+						]}
+						localization={localization}
+						components={fixedTableComponents}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<MaterialTable
+						title="Lista de Provas Bases"
+						columns={this.state.provas_bases.columns}
+						data={this.state.provas_bases.data}
+						editable={{
+							onRowAdd: this.state.edit ? newData =>
+								new Promise(resolve => {
+									this.props.updateProvaBase(newData).then(() => {
+										resolve()
+										this.get().then(() => {
+											this.getData(this.props.requestProvasBases, 'provasBases', 'provas_bases')
+										})
+									})
+								}) : null
+						}}
+						actions={[
+							{
+								icon: 'more_horiz',
+								tooltip: 'Ver Prova Base',
+								onClick: (event, rowData) => {
+									this.props.history.push(
+										'/panel/materias/' + this.state.model._id + '/provas/' + rowData._id
+									)
+								}
+							}
+						]}
+						localization={localization}
+						components={fixedTableComponents}
+					/>
+				</Grid>
+			</>
 		)
+
+		const { classes } = this.props
+
+		return super.renderBase(classes)
 	}
 }
 
