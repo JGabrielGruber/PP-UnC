@@ -11,14 +11,14 @@ const provaBaseAction = new ProvaBaseAction()
 
 function mapDispatchToProps(dispatch) {
 	return ({
-		requestMaterias: (usuario_id, materia_id = null) => {
+		request: (usuario_id, materia_id = null) => {
 			materiaAction.setUrl(usuario_id, materia_id)
 			return dispatch(materiaAction.request())
 		},
-		updateMateria: (materia) => {
+		update: (materia) => {
 			return dispatch(materiaAction.update(materia))
 		},
-		deleteMateria: (materia) => {
+		remove: (materia) => {
 			return dispatch(materiaAction.delete(materia))
 		},
 		requestTurmas: (usuario_id, materia_id) => {
@@ -44,7 +44,7 @@ const mapStateToProps = (state) => {
 		didInvalidate: state.materia.didInvalidate,
 		error: state.materia.error,
 		modified: state.materia.modified,
-		materias: state.materia.materias.materias,
+		models: state.materia.materias.materias,
 		ids: state.materia.materias.ids,
 		usuario_id: state.usuario.usuario._id,
 		turmas: state.turma.turmas.turmas,
