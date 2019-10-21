@@ -34,8 +34,8 @@ class Materia extends BaseComponent {
 			turmas: {
 				columns: [
 					{ title: 'Título', field: 'titulo' },
-					{ title: 'Ano', field: 'ano' },
-					{ title: 'Semestre', field: 'semestre' },
+					{ title: 'Ano', field: 'ano', type: 'numeric' },
+					{ title: 'Semestre', field: 'semestre', type: 'numeric' },
 					{ title: 'Modificada', field: 'timeupdate', type: 'datetime' },
 					{ title: 'Criada', field: 'timestamp', type: 'datetime' }
 				],
@@ -159,6 +159,8 @@ class Materia extends BaseComponent {
 						editable={{
 							onRowAdd: this.state.edit ? newData =>
 								new Promise(resolve => {
+									newData.ano = newData.ano ? parseInt(newData.ano) : undefined
+									newData.semestre = newData.semestre ? parseInt(newData.semestre) : undefined
 									this.props.updateTurma(newData).then(() => {
 										resolve()
 										this.get().then(() => {
