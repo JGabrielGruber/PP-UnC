@@ -1,58 +1,28 @@
-import {
-	loadLocalProvas,
-	updateLocalProva,
-	requestProvas as request
-} from '../controller/prova.controller'
+import { Action } from "./action"
+import { Prova, Provas } from "../model/prova.model"
 
-import { addMensagem } from './mensagem.action';
+export const REQUEST = 'REQUEST_PROVA'
+export const RECEIVE = 'RECEIVE_PROVA'
+export const UPDATE = 'UPDATE_PROVA'
 
-export const REQUEST	= 'REQUEST_PROVA'
-export const RECEIVE	= 'RECEIVE_PROVA'
-export const UPDATE		= 'UPDATE_PROVA'
+class ProvaAction extends Action {
+	constructor() {
+		super(
+			REQUEST,
+			RECEIVE,
+			UPDATE,
+			'prova',
+			"usuarios//materias//turmas//provas",
+			'prova',
+			'provas',
+			Prova,
+			Provas)
+	}
 
-const requestAction = () => ({
-	type: REQUEST
-})
-
-const receiveAction = (status, provas) => ({
-	type: RECEIVE,
-	status: status,
-	provas: provas
-})
-
-const updateAction = (provas) => ({
-	type: UPDATE,
-	provas: provas
-})
-
-function requestProvas(usuario_id, materia_id, turma_id) {
-	return function(dispatch) {
-		dispatch(requestAction())
-		loadLocalProvas().then((provas) => {
-			dispatch(receiveAction(true, provas))
-		})
-		dispatch(requestAction())
-		request(usuario_id, materia_id, turma_id).then((provas) => {
-			if (provas && isNaN(provas)) {
-				dispatch(receiveAction(true, provas))
-			} else {
-				dispatch(receiveAction(false, {}))
-				dispatch(addMensagem(provas, "provas"))
-			}
-		})
+	setUrl(usuario_id, materia_id, turma_id, prova_id=null) {
+		super.url = "usuarios/" + usuario_id + "/materias/" + materia_id +
+			"/turmas/" + turma_id + "/provas/" + (prova_id ? prova_id : "")
 	}
 }
 
-function updateProva(prova) {
-	return function(dispatch) {
-		updateLocalProva(prova)
-		.then((provas) => {
-			dispatch(updateAction(provas))
-		})
-	}
-}
-
-export {
-	requestProvas,
-	updateProva
-}
+export { ProvaAction }
