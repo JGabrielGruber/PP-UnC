@@ -1,5 +1,6 @@
 const Questao = () => ({
 	_id: '',
+	numero: '',
 	descricao: '',
 	isAlternativa: false,
 	alternativas: [],
