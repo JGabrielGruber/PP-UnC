@@ -1,9 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Typography, Grid, TextField, withStyles } from '@material-ui/core'
+import { Typography, Grid, TextField, withStyles, Dialog } from '@material-ui/core'
+import MaterialTable from 'material-table'
 
 import { ProvaBase as ProvaBaseModel } from '../model/provaBase.model'
+import { Questao as QuestaoModel } from '../model/questao.model'
+import localization from '../library/localizationMaterialTable'
+import fixedTableComponents from '../library/fixedTableComponents'
 import BaseComponent from './Base.component'
+import Questao from './Questao.component'
 
 const style = theme => ({
 	paper: {
@@ -25,6 +30,19 @@ class ProvaBase extends BaseComponent {
 
 	constructor(props) {
 		super(props)
+
+		this.state = {
+			...this.defaultState,
+			questoes: {
+				columns: [
+					{ title: 'Número', field: 'numero' },
+					{ title: 'Descrição', field: 'descricao' },
+					{ title: 'Peso', field: 'peso' },
+				]
+			},
+			questao: QuestaoModel(),
+			modal: false,
+		}
 	}
 
 	componentDidMount() {
@@ -48,6 +66,44 @@ class ProvaBase extends BaseComponent {
 
 			this.get()
 		}
+	}
+
+	handleOpen = (questao = null) => {
+		this.setState({
+			modal: true,
+			questao: (questao ? questao : QuestaoModel())
+		})
+	}
+
+	handleClose = () => {
+		this.setState({
+			modal: false
+		})
+	}
+
+	handleAdd = questao => event => {
+		this.handleClose()
+		let questoes = this.state.model.questoes ? this.state.model.questoes : []
+		questoes.push(questao)
+		let model = this.state.model
+		model.questoes = questoes
+		this.setState({
+			model
+		})
+		this.handleSort()
+	}
+
+	handleSort = async () => {
+		let questoes = this.state.model.questoes
+		questoes.sort(function(a, b){
+			if(a.numero < b.numero) return -1;
+			if(a.numero > b.numero) return 1;
+			return 0;
+		})
+		let model = this.state.model
+		this.setState({
+			model
+		})
 	}
 
 	render() {
@@ -103,6 +159,59 @@ class ProvaBase extends BaseComponent {
 							)
 					}
 				</Grid>
+				<Grid item xs={12}>
+					<MaterialTable
+						title="Lista de Questões"
+						columns={this.state.questoes.columns}
+						data={this.state.model.questoes}
+						isLoading={this.props.isFetching}
+						actions={this.state.edit ? [
+							{
+								icon: 'add_box',
+								tooltip: 'Adicionar',
+								isFreeAction: true,
+								onClick: (event) => {
+									this.handleOpen()
+								}
+							},
+							{
+								icon: 'edit',
+								iconProps: { color: 'action' },
+								tooltip: 'Editar',
+								onClick: (event, rowData) => {
+									this.handleOpen(rowData)
+								}
+							},
+							{
+								icon: 'delete',
+								iconProps: { color: 'action' },
+								tooltip: 'Remover',
+								onClick: (event, rowData) => {
+									let questoes = this.state.model.questoes
+									questoes.splice(questoes.indexOf(rowData), 1)
+									let model = this.state.model
+									model.questoes = questoes
+									this.setState({
+										model
+									})
+								}
+							},
+						] : undefined}
+						localization={localization}
+						components={fixedTableComponents}
+					/>
+				</Grid>
+				<Dialog
+					open={this.state.modal} onClose={this.handleClose}
+					aria-labelledby="form-dialog-title" maxWidth='md'
+					fullWidth
+				>
+					<Questao
+						questao={this.state.questao}
+						onAdd={this.handleAdd}
+						onCancel={this.handleClose}
+					/>
+				</Dialog>
 			</>
 		)
 
