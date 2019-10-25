@@ -84,7 +84,13 @@ class ProvaBase extends BaseComponent {
 	handleAdd = questao => event => {
 		this.handleClose()
 		let questoes = this.state.model.questoes ? this.state.model.questoes : []
-		questoes.push(questao)
+		let index = questoes.indexOf(questao)
+		if (index >= 0) {
+			questoes.splice(index, 1)
+			questoes.push(questao)
+		} else {
+			questoes.push(questao)
+		}
 		let model = this.state.model
 		model.questoes = questoes
 		this.setState({

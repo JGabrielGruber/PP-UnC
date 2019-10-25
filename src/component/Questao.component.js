@@ -216,7 +216,7 @@ class QuestaoForm extends Component {
 						Cancelar
 					</Button>
 					<Button onClick={this.props.onAdd(this.state.questao)} color="primary">
-						Adicionar
+						Confirmar
 					</Button>
 				</DialogActions>
 			</>
