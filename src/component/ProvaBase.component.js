@@ -126,6 +126,7 @@ class ProvaBase extends BaseComponent {
 								label="Título"
 								fullWidth
 								value={this.state.model.titulo}
+								onChange={this.updateValue}
 							/>
 						) : (
 								<div>
@@ -152,6 +153,7 @@ class ProvaBase extends BaseComponent {
 								label="Descrição"
 								fullWidth
 								value={this.state.model.descricao}
+								onChange={this.updateValue}
 							/>
 						) : (
 								<div>
