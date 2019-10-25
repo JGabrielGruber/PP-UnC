@@ -160,6 +160,14 @@ class BaseComponent extends Component {
 							)
 					}
 				</Toolbar>
+				<Grid container direction='column'>
+					<Typography variant="caption" color="secondary">
+						{`Criado em: ${this.state.model.timestamp}`}
+					</Typography>
+					<Typography variant="caption" color="secondary">
+						{`Modificado em: ${this.state.model.timeupdate}`}
+					</Typography>
+				</Grid>
 				<Grid container spacing={3}>
 					{this.Content}
 				</Grid>
@@ -176,7 +184,7 @@ class BaseComponent extends Component {
 						<DialogContentText id="alert-dialog-description">
 							{`Você realmente deseja remover a ${this.modelName} ${
 								this.state.model.titulo ? this.state.model.titulo : this.state.model.nome
-							} ?
+								} ?
 								\n Ela e tudo o que for atribuido a ela, não poderá ser recuperado!`}
 						</DialogContentText>
 					</DialogContent>
