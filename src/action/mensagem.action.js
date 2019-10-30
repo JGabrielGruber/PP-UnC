@@ -1,5 +1,6 @@
 export const ADD = 'ADD_MENSAGEM'
 export const DEL = 'DEL_MENSAGEM'
+export const STATUS = 'STATUS_MENSAGEM'
 
 const addAction = (mensagem) => ({
 	type: ADD,
@@ -9,6 +10,11 @@ const addAction = (mensagem) => ({
 const delAction = (index) => ({
 	type: DEL,
 	index: index
+})
+
+const statusAction = (status) => ({
+	type: STATUS,
+	status: status
 })
 
 function addMensagem(statusCode, conteudo = "") {
@@ -61,11 +67,12 @@ function addMensagem(statusCode, conteudo = "") {
 				}))
 				break
 			default:
-				dispatch(addAction({
+				dispatch(statusAction(false))
+				/*dispatch(addAction({
 					open: true,
 					variant: 'error',
 					message: `Problema de conexão com o servidor de dados`
-				}))
+				}))*/
 				break
 		}
 	}

@@ -30,7 +30,8 @@ const mapStateToProps = (state) => {
 		error: state.usuario.error,
 		modified: state.usuario.modified,
 		usuario: state.usuario.usuario,
-		mensagens: state.mensagem.mensagens
+		mensagens: state.mensagem.mensagens,
+		status: state.mensagem.status
 	};
 }
 

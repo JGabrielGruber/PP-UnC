@@ -28,6 +28,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import ErrorIcon from '@material-ui/icons/Error'
 import InfoIcon from '@material-ui/icons/Info'
 import WarningIcon from '@material-ui/icons/Warning'
+import OfflineBoltIcon from '@material-ui/icons/OfflineBolt'
 
 import Copyright from './Copyright.component'
 import Dashboard from './Dashboard.component'
@@ -243,6 +244,7 @@ class Panel extends Component {
 						<div style={{ top: '24px', left: '50%', right: 'auto', transform: 'translateX(-50%)', position: 'fixed', zIndex: 1400 }}>
 							<SnackbarMessages mensagens={this.props.mensagens} onClose={this.handleSnackClose} />
 						</div>
+						<OfflineMsg status={this.props.status} />
 						<Switch>
 							<Route
 								path={'/panel/dashboard'}
@@ -412,6 +414,30 @@ const SnackbarMessages = (props) => {
 		<div>
 			{snacks}
 		</div>
+	)
+}
+
+const OfflineMsg = ({ status }) => {
+	const classes = useStylesSM()
+
+	return (
+		<Snackbar
+			anchorOrigin={{
+				vertical: 'top',
+				horizontal: 'right',
+			}}
+			open={!status}
+		>
+			<SnackbarContent
+				aria-describedby="client-snackbar"
+				message={
+					<span id="client-snackbar" className={classes.message}>
+						<OfflineBoltIcon />
+						Offline
+				</span>
+				}
+			/>
+		</Snackbar>
 	)
 }
 

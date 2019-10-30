@@ -1,11 +1,13 @@
 import {
 	ADD,
-	DEL
+	DEL,
+	STATUS
 } from '../action/mensagem.action'
 
 const mensagem = (
 	state = {
-		mensagens: []
+		mensagens: [],
+		status: true
 	},
 	action
 ) => {
@@ -19,6 +21,8 @@ const mensagem = (
 			mensagens = state.mensagens.slice()
 			mensagens.splice(action.index, 1)
 			return Object.assign({}, state, { mensagens: mensagens })
+		case STATUS:
+			return Object.assign({}, state, { status: action.status })
 		default:
 			return state
 	}

@@ -4,8 +4,7 @@ import {
 	requestUsuario as request
 } from '../controller/usuario.controller'
 import {
-	addMensagem,
-	delMensagem
+	addMensagem
 } from './mensagem.action'
 
 
