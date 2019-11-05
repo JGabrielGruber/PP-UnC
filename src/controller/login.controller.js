@@ -38,7 +38,7 @@ async function requestToken(client_id, client_secret, keep = true, grant_type = 
 	let data = await axios(axiosConf).then((response) => {
 		return response.data
 	}).catch((error) => {
-		if (!error.response.status) {
+		if (error.response === undefined) {
 			return false
 		}
 		return error.response.status
