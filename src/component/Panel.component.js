@@ -421,23 +421,31 @@ const OfflineMsg = ({ status }) => {
 	const classes = useStylesSM()
 
 	return (
-		<Snackbar
-			anchorOrigin={{
-				vertical: 'top',
-				horizontal: 'right',
-			}}
-			open={!status}
-		>
-			<SnackbarContent
-				aria-describedby="client-snackbar"
-				message={
-					<span id="client-snackbar" className={classes.message}>
-						<OfflineBoltIcon />
-						Offline
+		<div style={{
+			position: 'fixed',
+			top: '50px',
+			right: '5%',
+			left: 'auto',
+			zIndex: '1400',
+			transform: 'translateY(0px)'}}>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'top',
+					horizontal: 'right',
+				}}
+				open={!status}
+			>
+				<SnackbarContent
+					aria-describedby="client-snackbar"
+					message={
+						<span id="client-snackbar" className={classes.message}>
+							<OfflineBoltIcon />
+							Offline
 				</span>
-				}
-			/>
-		</Snackbar>
+					}
+				/>
+			</Snackbar>
+		</div>
 	)
 }
 
