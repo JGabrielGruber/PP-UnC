@@ -1,5 +1,6 @@
 const Resposta = () => ({
 	_id: '',
+	questao: '',
 	escolhas: [],
 	resposta: '',
 	correta: false,
