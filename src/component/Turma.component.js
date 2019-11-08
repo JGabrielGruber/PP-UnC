@@ -173,7 +173,7 @@ class Turma extends BaseComponent {
 								tooltip: 'Ver Aluno',
 								onClick: (event, rowData) => {
 									this.props.history.push(
-										'/panel/materias/' + this.props.match.params.materiaId + '/turmas/' + this.state.model._id + '/provas/' + rowData._id
+										'/panel/materias/' + this.props.match.params.materiaId + '/turmas/' + this.state.model._id + '/alunos/' + rowData._id
 									)
 								}
 							}
