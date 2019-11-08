@@ -1,7 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Typography, Grid, TextField, withStyles, Dialog } from '@material-ui/core'
+import { Typography, Grid, TextField, withStyles, Dialog, DialogContent, DialogTitle, Tooltip, IconButton, Toolbar } from '@material-ui/core'
 import MaterialTable from 'material-table'
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteIcon from '@material-ui/icons/Delete'
+import CheckIcon from '@material-ui/icons/Check'
+import CloseIcon from '@material-ui/icons/Close'
+import VisibilityIcon from '@material-ui/icons/Visibility'
 
 import { ProvaBase as ProvaBaseModel } from '../model/provaBase.model'
 import { Questao as QuestaoModel } from '../model/questao.model'
@@ -9,6 +14,7 @@ import localization from '../library/localizationMaterialTable'
 import fixedTableComponents from '../library/fixedTableComponents'
 import BaseComponent from './Base.component'
 import Questao from './Questao.component'
+import Formulario from './Formulario.component'
 
 const style = theme => ({
 	paper: {
@@ -38,10 +44,12 @@ class ProvaBase extends BaseComponent {
 					{ title: 'Número', field: 'numero' },
 					{ title: 'Descrição', field: 'descricao' },
 					{ title: 'Peso', field: 'peso' },
-				]
+				],
+				data: []
 			},
 			questao: QuestaoModel(),
 			modal: false,
+			preview: false,
 		}
 	}
 
@@ -68,6 +76,28 @@ class ProvaBase extends BaseComponent {
 		}
 	}
 
+	get = async () => {
+		if (!this.props.usuario_id || !this.state.model._id) {
+			let model = this.model()
+			model._id = this.propsId
+			this.setState({
+				model: model
+			})
+			setTimeout(async () => {
+				this.get()
+			}, 100)
+		} else {
+			await this.props.request(...this.args)
+			let index = this.props.ids.indexOf(this.state.model._id)
+			if (index >= 0) {
+				await this.setState({
+					model: this.props.models[index]
+				})
+				this.handleSort()
+			}
+		}
+	}
+
 	handleOpen = (questao = null) => {
 		this.setState({
 			modal: true,
@@ -75,14 +105,14 @@ class ProvaBase extends BaseComponent {
 		})
 	}
 
-	handleClose = () => {
+	handleClose = object => event => {
 		this.setState({
-			modal: false
+			[object]: false
 		})
 	}
 
 	handleAdd = questao => event => {
-		this.handleClose()
+		this.handleClose('modal')
 		let questoes = this.state.model.questoes ? this.state.model.questoes : []
 		let index = questoes.indexOf(questao)
 		if (index >= 0) {
@@ -101,15 +131,69 @@ class ProvaBase extends BaseComponent {
 
 	handleSort = async () => {
 		let questoes = this.state.model.questoes
-		questoes.sort(function(a, b){
-			if(a.numero < b.numero) return -1;
-			if(a.numero > b.numero) return 1;
+		questoes.sort(function (a, b) {
+			if (a.numero < b.numero) return -1;
+			if (a.numero > b.numero) return 1;
 			return 0;
 		})
 		let model = this.state.model
 		this.setState({
 			model
 		})
+		questoes = this.state.questoes
+		questoes.data = JSON.parse(JSON.stringify(this.state.model.questoes))
+		this.setState({
+			questoes
+		})
+	}
+
+	headerBase(classes) {
+		return (
+			<Toolbar>
+				<Typography component="h1" variant="h5" className={classes.title}>
+					{this.modelName.charAt(0).toUpperCase() + this.modelName.slice(1)} - {this.state.model._id}
+				</Typography>
+				<Tooltip title="Visualizar" onClick={event => this.setState({ preview: true })}>
+					<IconButton>
+						<VisibilityIcon />
+					</IconButton>
+				</Tooltip>
+				{
+					this.state.edit ? (
+						<>
+							<Tooltip title="Confirmar" onClick={this.update}>
+								<IconButton>
+									<CheckIcon />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Cancelar" onClick={() => {
+								this.switchEdit()
+								this.get()
+							}}>
+								<IconButton>
+									<CloseIcon />
+								</IconButton>
+							</Tooltip>
+						</>
+					) : (
+							<>
+								<Tooltip title="Editar" onClick={this.switchEdit}>
+									<IconButton>
+										<EditIcon />
+									</IconButton>
+								</Tooltip>
+								<Tooltip title="Remover" onClick={() => {
+									this.setState({ dialog: true })
+								}}>
+									<IconButton>
+										<DeleteIcon />
+									</IconButton>
+								</Tooltip>
+							</>
+						)
+				}
+			</Toolbar>
+		)
 	}
 
 	render() {
@@ -171,7 +255,7 @@ class ProvaBase extends BaseComponent {
 					<MaterialTable
 						title="Lista de Questões"
 						columns={this.state.questoes.columns}
-						data={this.state.model.questoes}
+						data={this.state.questoes.data}
 						isLoading={this.props.isFetching}
 						actions={this.state.edit ? [
 							{
@@ -210,16 +294,29 @@ class ProvaBase extends BaseComponent {
 					/>
 				</Grid>
 				<Dialog
-					open={this.state.modal} onClose={this.handleClose}
+					open={this.state.modal} onClose={this.handleClose('modal')}
 					aria-labelledby="form-dialog-title" maxWidth='md'
 					fullWidth
 				>
 					<Questao
 						questao={this.state.questao}
 						onAdd={this.handleAdd}
-						onCancel={this.handleClose}
+						onCancel={this.handleClose('modal')}
 					/>
 				</Dialog>
+				<Dialog
+					open={this.state.preview} onClose={this.handleClose('preview')}
+					aria-labelledby="form-dialog-title" maxWidth='lg'
+					fullWidth
+				>
+					<DialogTitle id="form-dialog-title">Visualização da Prova</DialogTitle>
+					<DialogContent>
+						<Formulario
+							prova={this.state.model}
+						/>
+					</DialogContent>
+				</Dialog>
+
 			</>
 		)
 
