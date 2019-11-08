@@ -40,7 +40,7 @@ class QuestaoForm extends Component {
 			})
 		} else {
 			let questao = this.state.questao
-			questao[event.target.name] = event.target.value
+			questao[event.target.name] = event.target.type !== "number" ? event.target.value : parseFloat(event.target.value)
 			this.setState({
 				questao
 			})
