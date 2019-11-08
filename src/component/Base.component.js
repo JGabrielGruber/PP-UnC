@@ -51,12 +51,11 @@ class BaseComponent extends Component {
 			await this.props.request(...this.args)
 			let index = this.props.ids.indexOf(this.state.model._id)
 			if (index >= 0) {
-				this.setState({
+				await this.setState({
 					model: this.props.models[index]
 				})
 			}
 		}
-		return {}
 	}
 
 	update = () => {
@@ -112,6 +111,50 @@ class BaseComponent extends Component {
 		})
 	}
 
+	headerBase(classes) {
+		return (
+			<Toolbar>
+				<Typography component="h1" variant="h5" className={classes.title}>
+					{this.modelName.charAt(0).toUpperCase() + this.modelName.slice(1)} - {this.state.model._id}
+				</Typography>
+				{
+					this.state.edit ? (
+						<>
+							<Tooltip title="Confirmar" onClick={this.update}>
+								<IconButton>
+									<CheckIcon />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Cancelar" onClick={() => {
+								this.switchEdit()
+								this.get()
+							}}>
+								<IconButton>
+									<CloseIcon />
+								</IconButton>
+							</Tooltip>
+						</>
+					) : (
+							<>
+								<Tooltip title="Editar" onClick={this.switchEdit}>
+									<IconButton>
+										<EditIcon />
+									</IconButton>
+								</Tooltip>
+								<Tooltip title="Remover" onClick={() => {
+									this.setState({ dialog: true })
+								}}>
+									<IconButton>
+										<DeleteIcon />
+									</IconButton>
+								</Tooltip>
+							</>
+						)
+				}
+			</Toolbar>
+		)
+	}
+
 	renderBase(classes) {
 
 		return (
@@ -119,47 +162,8 @@ class BaseComponent extends Component {
 				<Snackbar
 					open={this.props.isFetching}
 					message={`Carregando ${this.modelName.charAt(0).toUpperCase() + this.modelName.slice(1)} ...`}
-				>
-				</Snackbar>
-				<Toolbar>
-					<Typography component="h1" variant="h5" className={classes.title}>
-						{this.modelName.charAt(0).toUpperCase() + this.modelName.slice(1)} - {this.state.model._id}
-					</Typography>
-					{
-						this.state.edit ? (
-							<>
-								<Tooltip title="Confirmar" onClick={this.update}>
-									<IconButton>
-										<CheckIcon />
-									</IconButton>
-								</Tooltip>
-								<Tooltip title="Cancelar" onClick={() => {
-									this.switchEdit()
-									this.get()
-								}}>
-									<IconButton>
-										<CloseIcon />
-									</IconButton>
-								</Tooltip>
-							</>
-						) : (
-								<>
-									<Tooltip title="Editar" onClick={this.switchEdit}>
-										<IconButton>
-											<EditIcon />
-										</IconButton>
-									</Tooltip>
-									<Tooltip title="Remover" onClick={() => {
-										this.setState({ dialog: true })
-									}}>
-										<IconButton>
-											<DeleteIcon />
-										</IconButton>
-									</Tooltip>
-								</>
-							)
-					}
-				</Toolbar>
+				/>
+				{this.headerBase(classes)}
 				<Grid container direction='column'>
 					<Typography variant="caption" color="secondary">
 						{`Criado em: ${this.state.model.timestamp}`}
