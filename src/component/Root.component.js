@@ -7,6 +7,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import LogIn from './LogIn.component'
 import Panel from '../container/panel.container';
 import theme from '../theme'
+import Realizacao from './Realizacao.component'
 
 const Root = ({ store }) => (
 	<Provider store={store}>
@@ -14,6 +15,7 @@ const Root = ({ store }) => (
 			<Router>
 				<Route path="/panel" component={Panel} />
 				<Route path="/login:filter?" component={LogIn} />
+				<Route path="/realizacao" component={Realizacao} />
 				<Route exact={true} path={"/"} render={() => <Redirect to="/panel/dashboard"/>} />
 			</Router>
 		</ThemeProvider>
