@@ -84,7 +84,7 @@ class Formulario extends Component {
 					<FormControl component="fieldset" style={{ width: '100%' }}>
 						<RadioGroup
 							name="selecionada"
-							value={resposta.escolhas[0] ? resposta.escolhas[0] : undefined}
+							value={resposta.escolhas[0] ? resposta.escolhas[0] : 0}
 							onChange={this.props.onChangeRadio(questao._id)}
 							key={questao._id}
 						>
