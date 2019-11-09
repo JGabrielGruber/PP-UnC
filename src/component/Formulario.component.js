@@ -9,8 +9,6 @@ import {
 import { ProvaBase as ProvaBaseModel } from '../model/provaBase.model'
 import { Resposta as RespostaModel } from '../model/resposta.model'
 
-const rexposta = RespostaModel()
-
 class Formulario extends Component {
 
 	constructor(props) {
@@ -51,9 +49,14 @@ class Formulario extends Component {
 	getQuestoes = () => {
 		let questoes = [], questao, componente
 		for (questao of this.props.prova.questoes) {
-			let resposta, items = [], item
+			let preenchimento, items = [], item
+			let index = this.props.prova.questoes.indexOf(questao)
+			let resposta = this.props.respostas.find((rep) => {
+				return rep.questao === this.props.prova.questoes[index]._id ? rep : false
+			})
+			
 			if (!questao.isAlternativa) {
-				resposta = (
+				preenchimento = (
 					<TextField
 						required
 						multiline
@@ -62,8 +65,8 @@ class Formulario extends Component {
 						name="resposta"
 						label="Resposta"
 						fullWidth
-						value={rexposta.resposta}
-						onChange={this.props.handleText}
+						value={resposta.resposta}
+						onChange={this.props.onChangeText(questao._id)}
 					/>
 				)
 			} else if (!questao.isMultipla) {
@@ -77,12 +80,13 @@ class Formulario extends Component {
 						/>
 					))
 				}
-				resposta = (
+				preenchimento = (
 					<FormControl component="fieldset" style={{ width: '100%' }}>
 						<RadioGroup
 							name="selecionada"
-							value={rexposta.escolhas[0] ? rexposta.escolhas[0] : undefined}
-							onChange={this.props.handleRadio}
+							value={resposta.escolhas[0] ? resposta.escolhas[0] : undefined}
+							onChange={this.props.onChangeRadio(questao._id)}
+							key={questao._id}
 						>
 							{items}
 						</RadioGroup>
@@ -94,8 +98,8 @@ class Formulario extends Component {
 						<FormControlLabel
 							value={item._id}
 							control={<Checkbox
-								checked={rexposta.escolhas.indexOf(item._id) >= 0 ? true : false}
-								onChange={this.props.handleCheck}
+								checked={resposta.escolhas.indexOf(item._id) >= 0 ? true : false}
+								onChange={this.props.onChangeCheck(questao._id)}
 								value={item._id}
 							/>}
 							key={item._id}
@@ -103,7 +107,7 @@ class Formulario extends Component {
 						/>
 					))
 				}
-				resposta = (
+				preenchimento = (
 					<FormControl component="fieldset" style={{ width: '100%' }}>
 						<FormGroup>
 							{items}
@@ -118,7 +122,7 @@ class Formulario extends Component {
 							{`${questao.numero} - ${questao.descricao}`}
 						</Typography>
 					</Grid>
-					{resposta}
+					{preenchimento}
 				</Grid>
 			)
 			questoes.push(
