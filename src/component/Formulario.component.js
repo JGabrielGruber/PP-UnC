@@ -49,13 +49,19 @@ class Formulario extends Component {
 	getQuestoes = () => {
 		let questoes = [], questao, componente
 		for (questao of this.props.prova.questoes) {
-			let preenchimento, items = [], item
+			let preenchimento, items = [], item, resposta, attr = []
 			let index = this.props.prova.questoes.indexOf(questao)
-			let resposta = this.props.respostas.find((rep) => {
-				return rep.questao === this.props.prova.questoes[index]._id ? rep : false
-			})
-			
+			if (this.props.respostas) {
+				resposta = this.props.respostas.find((rep) => {
+					return rep.questao === this.props.prova.questoes[index]._id ? rep : false
+				})
+			}
+
 			if (!questao.isAlternativa) {
+				if (resposta) {
+					attr["value"] = resposta.resposta
+					attr["onChange"] = this.props.onChangeText(questao._id)
+				}
 				preenchimento = (
 					<TextField
 						required
@@ -65,11 +71,14 @@ class Formulario extends Component {
 						name="resposta"
 						label="Resposta"
 						fullWidth
-						value={resposta.resposta}
-						onChange={this.props.onChangeText(questao._id)}
+						{...attr}
 					/>
 				)
 			} else if (!questao.isMultipla) {
+				if (resposta) {
+					attr["value"] = resposta.escolhas[0] ? resposta.escolhas[0] : 0
+					attr["onChange"] = this.props.onChangeRadio(questao._id)
+				}
 				for (item of questao.alternativas) {
 					items.push((
 						<FormControlLabel
@@ -84,9 +93,8 @@ class Formulario extends Component {
 					<FormControl component="fieldset" style={{ width: '100%' }}>
 						<RadioGroup
 							name="selecionada"
-							value={resposta.escolhas[0] ? resposta.escolhas[0] : 0}
-							onChange={this.props.onChangeRadio(questao._id)}
 							key={questao._id}
+							{...attr}
 						>
 							{items}
 						</RadioGroup>
@@ -94,13 +102,17 @@ class Formulario extends Component {
 				)
 			} else {
 				for (item of questao.alternativas) {
+					attr = []
+					if (resposta) {
+						attr["checked"] = resposta.escolhas.indexOf(item._id) >= 0 ? true : false
+						attr["value"] = item._id
+						attr["onChange"] = this.props.onChangeCheck(questao._id)
+					}
 					items.push((
 						<FormControlLabel
 							value={item._id}
 							control={<Checkbox
-								checked={resposta.escolhas.indexOf(item._id) >= 0 ? true : false}
-								onChange={this.props.onChangeCheck(questao._id)}
-								value={item._id}
+								{...attr}
 							/>}
 							key={item._id}
 							label={item.descricao}
