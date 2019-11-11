@@ -9,8 +9,8 @@ const provaBaseAction	= new ProvaBaseAction()
 
 function mapDispatchToProps(dispatch) {
 	return({
-		request: (usuario_id, materia_id, turma_id = null) => {
-			provaBaseAction.setUrl(usuario_id, materia_id, turma_id)
+		request: (usuario_id, materia_id, provaBase_id = null) => {
+			provaBaseAction.setUrl(usuario_id, materia_id, provaBase_id)
 			return dispatch(provaBaseAction.request())
 		},
 		update: (turma) => {
