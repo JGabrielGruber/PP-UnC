@@ -38,6 +38,7 @@ import Turma from '../container/turma.container'
 import ProvaBase from '../container/provaBase.container'
 import { loadLocalLogin } from '../controller/login.controller'
 import Aluno from '../container/aluno.container'
+import Prova from '../container/prova.container'
 
 const drawerWidth = 240
 
@@ -286,6 +287,13 @@ class Panel extends Component {
 								exact={true}
 								render={props => (
 									<Aluno {...props} />
+								)}
+							/>
+							<Route
+								path={'/panel/materias/:materiaId/turmas/:turmaId/provas/:provaId'}
+								exact={true}
+								render={props => (
+									<Prova {...props} />
 								)}
 							/>
 						</Switch>
