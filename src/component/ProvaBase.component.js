@@ -114,9 +114,10 @@ class ProvaBase extends BaseComponent {
 	handleAdd = questao => event => {
 		this.handleClose('modal')
 		let questoes = this.state.model.questoes ? this.state.model.questoes : []
-		let index = questoes.indexOf(questao)
+		let index = this.state.questoes.data.indexOf(questao)
 		if (index >= 0) {
 			questoes.splice(index, 1)
+			questao.tableData = undefined
 			questoes.push(questao)
 		} else {
 			questoes.push(questao)
@@ -125,6 +126,9 @@ class ProvaBase extends BaseComponent {
 		model.questoes = questoes
 		this.setState({
 			model
+		})
+		this.setState({
+			modal: false
 		})
 		this.handleSort()
 	}
