@@ -93,7 +93,11 @@ class BaseComponent extends Component {
 
 	updateValue = (event) => {
 		let model = this.state.model
-		model[event.target.id] = event.target.value
+		if (event.target.type === "number") {
+			model[event.target.id] = Number(event.target.value)
+		} else {
+			model[event.target.id] = event.target.value
+		}
 		this.setState({
 			...this.state, model
 		})
