@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
-import { withStyles, Paper, AppBar, Toolbar, CssBaseline, Button, Grid } from '@material-ui/core'
+import {
+	withStyles, Paper, AppBar,
+	Toolbar, CssBaseline, Button,
+	Grid, IconButton, Tooltip
+} from '@material-ui/core'
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 
 import Formulario from './Formulario.component'
 import Copyright from './Copyright.component'
@@ -62,7 +67,7 @@ const styles = theme => ({
 		paddingBottom: theme.spacing(4),
 	},
 	counter: {
-		padding: theme.spacing(1)
+		padding: theme.spacing(2)
 	}
 })
 
@@ -307,10 +312,11 @@ class Realizacao extends Component {
 						<Typography variant="h6" className={classes.counter}>
 							{this.state.timeLeft} minutos
 						</Typography>
-						<Button
-							variant="contained"
-							color="secondary"
-						>Finalizar Prova</Button>
+						<Tooltip title="Finalizar a prova">
+							<IconButton color="inherit">
+								<AssignmentTurnedInIcon />
+							</IconButton>
+						</Tooltip>
 					</Toolbar>
 				</AppBar>
 				<main className={classes.content}>
