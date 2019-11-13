@@ -104,13 +104,18 @@ class QuestaoForm extends Component {
 
 	rmEscolha = id => event => {
 		let alternativas = this.state.questao.alternativas
+		let corretas = this.state.questao.corretas
 
 		alternativas.splice(this.state.questao.alternativas.indexOf((this.state.questao.alternativas.filter(obj => {
+			return obj._id === id
+		})[0])), 1)
+		corretas.splice(this.state.questao.corretas.indexOf((this.state.questao.corretas.filter(obj => {
 			return obj._id === id
 		})[0])), 1)
 
 		let questao = this.state.questao
 		questao.alternativas = alternativas
+		questao.corretas = corretas
 		this.setState({
 			questao
 		})
