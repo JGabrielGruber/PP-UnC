@@ -58,7 +58,7 @@ class Aluno extends BaseComponent {
 	render() {
 
 		this.Content = (
-			<>
+			<Grid item xs={12}>
 				<Grid container spacing={10}>
 					<Grid item md={6}>
 						{
@@ -112,7 +112,7 @@ class Aluno extends BaseComponent {
 						}
 					</Grid>
 				</Grid>
-			</>
+			</Grid>
 		)
 
 		const { classes } = this.props
