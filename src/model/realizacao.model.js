@@ -7,6 +7,7 @@ const Realizacao = () => ({
 	limite: '',
 	total: '',
 	timestamp: '',
+	timestamp: '',
 	timeupdate: ''
 })
 
