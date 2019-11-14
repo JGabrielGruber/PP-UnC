@@ -6,7 +6,7 @@ const Realizacao = () => ({
 	finalizada: false,
 	limite: '',
 	total: '',
-	timestamp: '',
+	timestarted: '',
 	timestamp: '',
 	timeupdate: ''
 })
