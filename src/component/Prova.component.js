@@ -14,9 +14,16 @@ import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
 import VisibilityIcon from '@material-ui/icons/Visibility'
 import FileCopyIcon from '@material-ui/icons/FileCopy'
+import DateFnsUtils from '@date-io/date-fns';
+import {
+	MuiPickersUtilsProvider,
+	DateTimePicker,
+} from '@material-ui/pickers';
+import ptBrLocale from 'date-fns/locale/pt-BR'
 
 import { Prova as ProvaModel } from '../model/prova.model'
 import { Questao as QuestaoModel } from '../model/questao.model'
+import { Realizacao as RealizacaoModel } from '../model/realizacao.model'
 import localization from '../library/localizationMaterialTable'
 import fixedTableComponents from '../library/fixedTableComponents'
 import BaseComponent from './Base.component'
@@ -50,7 +57,7 @@ class Prova extends BaseComponent {
 
 		this.state = {
 			...this.defaultState,
-			questoes: {
+			questoesTable: {
 				columns: [
 					{ title: 'Número', field: 'numero' },
 					{ title: 'Descrição', field: 'descricao' },
@@ -58,13 +65,35 @@ class Prova extends BaseComponent {
 				],
 				data: []
 			},
+			realizacoesTable: {
+				columns: [
+					{ title: 'Aluno', field: 'aluno.nome' },
+					{ title: 'Iniciada', field: 'iniciada' },
+					{ title: 'Finalizada', field: 'finalizada' },
+					{ title: 'Limite', field: 'limite' },
+				],
+				data: []
+			},
+			alunosTable: {
+				columns: [
+					{ title: 'Nome', field: 'nome' },
+					{ title: 'E-mail', field: 'email' },
+				],
+				data: []
+			},
 			questao: QuestaoModel(),
-			modal: false,
-			preview: false,
-			base: false,
+			limite: null,
+			questaoModal: false,
+			previewModal: false,
+			baseModal: false,
+			realizacaoModal: false,
 			provaBaseSelecionada: '',
+			alunosSelecionados: [],
 			provasBases: null,
-			materia: {}
+			turma: null,
+			materia: {},
+			realizacoes: [],
+			realizacao: null
 		}
 	}
 
@@ -89,6 +118,7 @@ class Prova extends BaseComponent {
 			]
 
 			this.get()
+			this.awaitData()
 		}
 	}
 
@@ -114,11 +144,68 @@ class Prova extends BaseComponent {
 		}
 	}
 
-	handleOpen = (questao = null) => {
+	awaitData = async () => {
+		if (!this.state.model.timestamp) {
+			setTimeout(async () => {
+				this.awaitId()
+			}, 100)
+		} else {
+			this.getRealizacoes()
+		}
+	}
+
+	getRealizacoes = async () => {
+		return this.props.requestRealizacoes(...this.args).then(() => {
+			let list = []
+			let item, index
+			for (item of this.state.model.realizacoes) {
+				index = this.props.realizacoes_ids.indexOf(item._id)
+				if (index >= 0) {
+					item = this.props.realizacoes[index]
+					if (item) {
+						list.push(item)
+					}
+				}
+			}
+			let data = this.state.realizacoes
+			data.data = list
+			this.setState({
+				realizacoes: data
+			})
+			let realizacoesTable = this.state.realizacoesTable
+			realizacoesTable.data = JSON.parse(JSON.stringify(list))
+			this.setState({
+				realizacoesTable
+			})
+		})
+	}
+
+	handleOpenQuestao = (questao = null) => {
 		this.setState({
-			modal: true,
+			questaoModal: true,
 			questao: (questao ? questao : QuestaoModel())
 		})
+	}
+
+	handleOpenRealizacao = (realizacao = null) => {
+		this.setState({
+			realizacaoModal: true,
+			realizacao: (realizacao ? realizacao : RealizacaoModel())
+		})
+	}
+
+	handleOpenResposta = (realizacao = null) => {
+		if (realizacao._id) {
+			this.setState({
+				realizacao: realizacao,
+				previewModal: true
+			})
+		} else {
+			this.setState({
+				realizacao: null,
+				previewModal: true
+			})
+		}
 	}
 
 	handleClose = object => event => {
@@ -128,9 +215,9 @@ class Prova extends BaseComponent {
 	}
 
 	handleAdd = questao => event => {
-		this.handleClose('modal')
+		this.handleClose('questaoModal')
 		let questoes = this.state.model.questoes ? this.state.model.questoes : []
-		let index = this.state.questoes.data.indexOf(questao)
+		let index = this.state.questoesTable.data.indexOf(questao)
 		if (index >= 0) {
 			questoes.splice(index, 1)
 			questao.tableData = undefined
@@ -144,7 +231,7 @@ class Prova extends BaseComponent {
 			model
 		})
 		this.setState({
-			modal: false
+			questaoModal: false
 		})
 		this.handleSort()
 	}
@@ -160,7 +247,7 @@ class Prova extends BaseComponent {
 		this.setState({
 			model
 		})
-		questoes = this.state.questoes
+		questoes = this.state.questoesTable
 		questoes.data = JSON.parse(JSON.stringify(this.state.model.questoes))
 		this.setState({
 			questoes
@@ -173,26 +260,67 @@ class Prova extends BaseComponent {
 		})
 	}
 
+	handleSelectAluno = rows => {
+		let row, raw, alunos = []
+		for (row of rows) {
+			raw = JSON.parse(JSON.stringify(row))
+			raw.tableData = undefined
+			alunos.push(raw)
+		}
+		this.setState({
+			alunosSelecionados: alunos
+		})
+	}
+
+	handleAddRealizacao = async event => {
+		if (this.state.alunosSelecionados.length > 0) {
+			let ids = [], aluno
+			for (aluno of this.state.alunosSelecionados) {
+				ids.push(aluno._id)
+			}
+
+			await this.props.updateRealizacoes({
+				alunos: ids,
+				limite: (this.state.limite.getTime() / 1000 | 0)
+			})
+
+			this.setState({
+				realizacaoModal: false
+			})
+
+			await this.get()
+			this.getRealizacoes()
+			this.setState({
+				alunosSelecionados: [],
+				limite: null
+			})
+		}
+	}
+
 	openProvaBase = event => {
 		this.getProvasBases()
-		this.setState({ base: true })
+		this.setState({ baseModal: true })
+	}
+
+	getMateria = async () => {
+		await this.props.requestMaterias(this.props.usuario_id)
+		let index = this.props.materias_ids.indexOf(this.props.match.params.materiaId)
+		if (index >= 0) {
+			await this.setState({
+				materia: this.props.materias[index]
+			})
+		}
 	}
 
 	getProvasBases = async () => {
 		if (!this.state.provasBases) {
-			await this.props.requestMaterias(this.props.usuario_id)
-			let index = this.props.materias_ids.indexOf(this.props.match.params.materiaId)
-			if (index >= 0) {
-				await this.setState({
-					materia: this.props.materias_models[index]
-				})
-			}
+			await this.getMateria()
 
 			await this.props.requestProvasBases(this.props.usuario_id, this.props.match.params.materiaId)
 			let list = []
 			let item
 			for (item of this.state.materia.provas_bases) {
-				item = this.props.provasBases_models[this.props.provasBases_ids.indexOf(item._id)]
+				item = this.props.provasBases[this.props.provasBases_ids.indexOf(item._id)]
 				if (item) {
 					list.push(item)
 				}
@@ -203,11 +331,53 @@ class Prova extends BaseComponent {
 		}
 	}
 
+	getTurma = async () => {
+		//if (!this.state.turma) {
+		await this.getMateria()
+
+		await this.props.requestTurmas(this.props.usuario_id, this.props.match.params.materiaId)
+		let item
+		item = this.props.turmas[this.props.turmas_ids.indexOf(this.props.match.params.turmaId)]
+
+		if (item) {
+			this.setState({
+				turma: item
+			})
+		}
+		return
+		//}
+	}
+
+	getAlunos = async () => {
+
+		//if (!this.state.alunosTable.data) {
+
+		await this.getTurma()
+		if (this.state.turma) {
+
+			await this.props.requestAlunos(this.props.usuario_id, this.props.match.params.materiaId, this.props.match.params.turmaId)
+			let list = []
+			let item
+			for (item of this.state.turma.alunos) {
+				item = this.props.alunos[this.props.alunos_ids.indexOf(item._id)]
+				if (item) {
+					list.push(item)
+				}
+			}
+			let alunos = this.state.alunosTable
+			alunos.data = JSON.parse(JSON.stringify(list))
+			this.setState({
+				alunos
+			})
+		}
+		//}
+	}
+
 	copyProvaBase = async event => {
 		let model = this.state.model
-		var questoes = this.state.questoes, questoesProvaBase = []
+		var questoes = this.state.questoesTable, questoesProvaBase = []
 		await this.props.requestProvasBases(this.props.usuario_id, this.props.match.params.materiaId, this.state.provaBaseSelecionada)
-		let prova = this.props.provasBases_models[this.props.provasBases_ids.indexOf(this.state.provaBaseSelecionada)]
+		let prova = this.props.provasBases[this.props.provasBases_ids.indexOf(this.state.provaBaseSelecionada)]
 
 		if (prova) {
 			model.titulo = prova.titulo
@@ -227,7 +397,7 @@ class Prova extends BaseComponent {
 			})
 		}
 		this.setState({
-			base: false
+			baseModal: false
 		})
 	}
 
@@ -237,7 +407,7 @@ class Prova extends BaseComponent {
 				<Typography component="h1" variant="h5" className={classes.title}>
 					{this.modelName.charAt(0).toUpperCase() + this.modelName.slice(1)} - {this.state.model._id}
 				</Typography>
-				<Tooltip title="Visualizar" onClick={event => this.setState({ preview: true })}>
+				<Tooltip title="Visualizar" onClick={this.handleOpenResposta}>
 					<IconButton>
 						<VisibilityIcon />
 					</IconButton>
@@ -383,8 +553,8 @@ class Prova extends BaseComponent {
 				<Grid item xs={12}>
 					<MaterialTable
 						title="Lista de Questões"
-						columns={this.state.questoes.columns}
-						data={this.state.questoes.data}
+						columns={this.state.questoesTable.columns}
+						data={this.state.questoesTable.data}
 						isLoading={this.props.isFetching}
 						actions={this.state.edit ? [
 							{
@@ -392,7 +562,7 @@ class Prova extends BaseComponent {
 								tooltip: 'Adicionar',
 								isFreeAction: true,
 								onClick: (event) => {
-									this.handleOpen()
+									this.handleOpenQuestao()
 								}
 							},
 							{
@@ -400,7 +570,7 @@ class Prova extends BaseComponent {
 								iconProps: { color: 'action' },
 								tooltip: 'Editar',
 								onClick: (event, rowData) => {
-									this.handleOpen(rowData)
+									this.handleOpenQuestao(rowData)
 								}
 							},
 							{
@@ -422,31 +592,78 @@ class Prova extends BaseComponent {
 						components={fixedTableComponents}
 					/>
 				</Grid>
+				<Grid item xs={12}>
+					<MaterialTable
+						title="Lista de Realizações"
+						columns={this.state.realizacoesTable.columns}
+						data={this.state.realizacoesTable.data}
+						isLoading={this.props.isFetching}
+						actions={this.state.edit ? [
+							{
+								icon: 'add_box',
+								tooltip: 'Adicionar',
+								isFreeAction: true,
+								onClick: (event) => {
+									this.getAlunos()
+									this.handleOpenRealizacao()
+								}
+							},
+							{
+								icon: 'delete',
+								iconProps: { color: 'action' },
+								tooltip: 'Remover',
+								onClick: (event, rowData) => {
+									let realizacoes = this.state.model.realizacoes
+									realizacoes.splice(realizacoes.indexOf(rowData), 1)
+									let model = this.state.model
+									model.realizacoes = realizacoes
+									this.setState({
+										model
+									})
+								}
+							},
+						] : [
+								{
+									icon: 'more_horiz',
+									iconProps: { color: 'action' },
+									tooltip: 'Visualizar',
+									onClick: (event, rowData) => {
+										this.handleOpenResposta(rowData)
+									}
+								},
+							]}
+						localization={localization}
+						components={fixedTableComponents}
+					/>
+				</Grid>
 				<Dialog
-					open={this.state.modal} onClose={this.handleClose('modal')}
+					open={this.state.questaoModal} onClose={this.handleClose('questaoModal')}
 					aria-labelledby="form-dialog-title" maxWidth='md'
 					fullWidth
 				>
 					<Questao
 						questao={this.state.questao}
 						onAdd={this.handleAdd}
-						onCancel={this.handleClose('modal')}
+						onCancel={this.handleClose('questaoModal')}
 					/>
 				</Dialog>
 				<Dialog
-					open={this.state.preview} onClose={this.handleClose('preview')}
+					open={this.state.previewModal} onClose={this.handleClose('previewModal')}
 					aria-labelledby="form-dialog-title" maxWidth='lg'
 					fullWidth
 				>
-					<DialogTitle id="form-dialog-title">Visualização da Prova</DialogTitle>
+					<DialogTitle id="form-dialog-title">Visualização da Prova {
+						this.state.realizacao ? "- " + this.state.realizacao.aluno.nome : undefined
+						}</DialogTitle>
 					<DialogContent>
 						<Formulario
 							prova={this.state.model}
+							respostas={this.state.realizacao ? this.state.realizacao.respostas : undefined}
 						/>
 					</DialogContent>
 				</Dialog>
 				<Dialog
-					open={this.state.base} onClose={this.handleClose('base')}
+					open={this.state.baseModal} onClose={this.handleClose('baseModal')}
 					aria-labelledby="form-dialog-title" maxWidth='md'
 					fullWidth scroll={"body"}
 				>
@@ -470,10 +687,64 @@ class Prova extends BaseComponent {
 					<DialogActions>
 						<Button color="primary">
 							Cancelar
-          				</Button>
+						</Button>
 						<Button color="primary" onClick={this.copyProvaBase}>
 							Confirmar
-          				</Button>
+						</Button>
+					</DialogActions>
+				</Dialog>
+				<Dialog
+					open={this.state.realizacaoModal} onClose={this.handleClose('realizacaoModal')}
+					aria-labelledby="form-dialog-title" maxWidth='md'
+					fullWidth scroll={"body"}
+				>
+					<DialogTitle id="form-dialog-title">Realizar prova</DialogTitle>
+					<DialogContent>
+						<MuiPickersUtilsProvider utils={DateFnsUtils} locale={ptBrLocale}>
+							<DateTimePicker
+								clearable
+								format="yyyy/MM/dd HH:MM:SS"
+								margin="normal"
+								id="limite"
+								name="limite"
+								label="Limite para realizar a prova"
+								fullWidth
+								value={this.state.limite}
+								onChange={item => {
+									this.setState({
+										limite: item
+									})
+								}}
+								KeyboardButtonProps={{
+									'aria-label': 'change date',
+								}}
+							/>
+						</MuiPickersUtilsProvider>
+						<MaterialTable
+							title="Alunos a realizarem a prova"
+							columns={this.state.alunosTable.columns}
+							data={this.state.alunosTable.data}
+							isLoading={this.props.isFetching}
+							options={{
+								selection: true
+							}}
+							localization={{
+								...localization,
+								toolbar: {
+									nRowsSelected: '{0} aluno(s) selecionados'
+								}
+							}}
+							components={fixedTableComponents}
+							onSelectionChange={this.handleSelectAluno}
+						/>
+					</DialogContent>
+					<DialogActions>
+						<Button color="primary">
+							Cancelar
+						</Button>
+						<Button color="primary" onClick={this.handleAddRealizacao}>
+							Confirmar
+						</Button>
 					</DialogActions>
 				</Dialog>
 
