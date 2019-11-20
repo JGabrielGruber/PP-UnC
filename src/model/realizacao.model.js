@@ -4,7 +4,7 @@ const Realizacao = () => ({
 	respostas: [],
 	iniciada: false,
 	finalizada: false,
-	limite: '',
+	limite: null,
 	total: '',
 	timestarted: '',
 	timestamp: '',
