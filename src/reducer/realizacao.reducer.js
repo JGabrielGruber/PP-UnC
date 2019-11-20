@@ -1,4 +1,9 @@
 import { Realizacoes } from '../model/realizacao.model'
+import {
+	REQUEST,
+	RECEIVE,
+	UPDATE
+} from '../action/realizacao.action'
 
 const realizacao = (
 	state = {
@@ -11,18 +16,18 @@ const realizacao = (
 	action
 ) => {
 	switch (action.type) {
-		case 'REQUEST':
+		case REQUEST:
 			return Object.assign({}, state, {
 				isFetching: true,
 				didInvalidate: false
 			})
-		case 'RECEIVE':
+		case RECEIVE:
 			if (action.status) {
 				return Object.assign({}, state, {
 					isFetching: false,
 					didInvalidate: false,
 					modified: false,
-					realizacoes: action.realizacoes
+					realizacoes: action.items
 				})
 			} else {
 				return Object.assign({}, state, {
@@ -31,10 +36,10 @@ const realizacao = (
 					error: action.errror
 				})
 			}
-		case 'UPDATE':
+		case UPDATE:
 			return Object.assign({}, state, {
 				modified: true,
-				realizacoes: action.realizacoes
+				realizacoes: action.items
 			})
 		default:
 			return state
