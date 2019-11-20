@@ -76,11 +76,14 @@ class BaseComponent extends Component {
 	getData = async (caller, propsSlug, stateSlug) => {
 		return caller(...this.args).then(() => {
 			let list = []
-			let item
+			let item, index
 			for (item of this.state.model[stateSlug]) {
-				item = this.props[propsSlug][this.props[propsSlug + "_ids"].indexOf(item._id)]
-				if (item) {
-					list.push(item)
+				index = this.props[propsSlug + "_ids"].indexOf(item._id)
+				if (index >= 0) {
+					item = this.props[propsSlug][index]
+					if (item) {
+						list.push(item)
+					}
 				}
 			}
 			let data = this.state[stateSlug]
