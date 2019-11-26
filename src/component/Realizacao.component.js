@@ -12,6 +12,16 @@ import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 
 import Formulario from './Formulario.component'
 import Copyright from './Copyright.component'
+import {
+	loadLocalRealizacao,
+	requestDadosProva,
+	requestDadosRealizacao,
+	updateLocalRealizacao,
+	requestDadosToken,
+	startRealizacao,
+	defineAxios,
+	updateRealizacao
+} from '../controller/realizacao.controller'
 
 const styles = theme => ({
 	'@global': {
@@ -198,7 +208,7 @@ const realizacaoxe = {
 			"meioCorreta": false,
 		}
 	],
-	"timestamp": "2019-11-09 15:57:18.944000",
+	"timestamp": "2019-11-13 21:12:18.944000",
 	"total": 0
 }
 
@@ -210,17 +220,23 @@ class Realizacao extends Component {
 		this.state = {
 			prova: provaxe,
 			realizacao: realizacaoxe,
+			acesso: null,
+			token: "",
 			timeLeft: 0
 		}
+
+		this.handleStartRealizacao = this.handleStartRealizacao.bind(this)
+		this.handleFinalizarRealizacao = this.handleFinalizarRealizacao.bind(this)
 	}
 
 	updateMinLeft = async event => {
 		clearInterval(this.timer)
 		let finish = new Date(
-			new Date(this.state.realizacao.timestamp).getTime() +
+			new Date(this.state.realizacao.timestarted).getTime() +
 			(this.state.prova.duracao ? this.state.prova.duracao : 60) * 60000
 		)
-		let left = finish.getTime() - new Date().getTime()
+		let now = new Date()
+		let left = finish.getTime() - (now.isDstObserved() ? now.getTime() - (60000 * 60) : now.getTime())
 		let minLeft = Math.round(left / 60000)
 		if (left > 0) {
 			this.setState({
@@ -292,8 +308,87 @@ class Realizacao extends Component {
 	}
 
 	componentDidMount() {
+		Date.prototype.stdTimezoneOffset = function () {
+			var jan = new Date(this.getFullYear(), 0, 1);
+			var jul = new Date(this.getFullYear(), 6, 1);
+			return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+		}
+		
+		Date.prototype.isDstObserved = function () {
+			return this.getTimezoneOffset() < this.stdTimezoneOffset();
+		}
 		if (!this.timer) {
 			this.updateMinLeft()
+		}
+		this.getDataToken()
+	}
+	
+	async getDataToken() {
+		let token = new URLSearchParams(this.props.location.search).get("token")
+		if (token) {
+			await this.setState({
+				token: token
+			})
+			defineAxios(this.state.token)
+			let data = await requestDadosToken(this.state.token)
+			if (data) {
+				await this.setState({
+					...this.state,
+					...data
+				})
+				this.getProva()
+			}
+		}
+	}
+
+	async handleStartRealizacao() {
+		let realizacao = await startRealizacao(this.state.acesso)
+		if (realizacao) {
+			await this.setState({
+				...this.state,
+				...realizacao
+			})
+			this.getProva()
+		}
+	}
+
+	async getProva() {
+		let data = await requestDadosProva(this.state.acesso)
+		if (data) {
+			await this.setState({
+				...this.state,
+				...data
+			})
+			this.getRealizacao()
+		}
+	}
+
+	async getRealizacao() {
+		let data = await requestDadosRealizacao(this.state.acesso)
+		if (data) {
+			await this.setState({
+				...this.state,
+				...data
+			})
+			this.updateMinLeft()
+		}
+	}
+
+	async handleFinalizarRealizacao() {
+		await this.setState({
+			...this.state,
+			realizacao: {
+				...this.state.realizacao,
+				finalizada: true
+			}
+		})
+		
+		let realizacao = await updateRealizacao(this.state.acesso, this.state.realizacao)
+		if (realizacao) {
+			await this.setState({
+				...this.state,
+				...realizacao
+			})
 		}
 	}
 
@@ -302,48 +397,80 @@ class Realizacao extends Component {
 		const { classes } = this.props
 
 		return (
-			<div className={classes.root}>
-				<CssBaseline />
-				<AppBar position="absolute" className={classes.appBar}>
-					<Toolbar className={classes.toolbar}>
-						<Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-							{this.state.prova.titulo}
-						</Typography>
-						<Typography variant="h6" className={classes.counter}>
-							{this.state.timeLeft} minutos
-						</Typography>
-						<Tooltip title="Finalizar a prova">
-							<IconButton color="inherit">
-								<AssignmentTurnedInIcon />
-							</IconButton>
-						</Tooltip>
-					</Toolbar>
-				</AppBar>
-				<main className={classes.content}>
-					<Container maxWidth="lg" className={classes.container}>
-						<Paper className={classes.paper}>
-							<Grid container>
-								<Typography variant="h6" className={classes.title}>
-									Aluno: {this.state.realizacao.aluno.nome}
-								</Typography>
-								<Typography variant="h6">
-									Data: {this.state.realizacao.timestamp}
-								</Typography>
-							</Grid>
-							<Formulario
-								prova={this.state.prova}
-								respostas={this.state.realizacao.respostas}
-								onChangeText={this.handleChangeText}
-								onChangeCheck={this.handleChangeCheck}
-								onChangeRadio={this.handleChangeRadio}
-							/>
-						</Paper>
-					</Container>
-					<Box mt={8}>
-						<Copyright />
-					</Box>
-				</main>
-			</div >
+			<Container component="main" maxWidth="xl">
+				<div className={classes.root}>
+					<CssBaseline />
+					{
+						this.state.realizacao.iniciada ? (
+							<>
+								<AppBar position="absolute" className={classes.appBar}>
+									<Toolbar className={classes.toolbar}>
+										<Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+											{this.state.prova.titulo}
+										</Typography>
+										<Typography variant="h6" className={classes.counter}>
+											{this.state.timeLeft} minutos
+							</Typography>
+										<Tooltip title="Finalizar a prova" onClick={this.handleFinalizarRealizacao}>
+											<IconButton color="inherit">
+												<AssignmentTurnedInIcon />
+											</IconButton>
+										</Tooltip>
+									</Toolbar>
+								</AppBar>
+								<main className={classes.content}>
+									<Container maxWidth="lg" className={classes.container}>
+										<Paper className={classes.paper}>
+											<Grid container>
+												<Typography variant="h6" className={classes.title}>
+													Aluno: {this.state.realizacao.aluno.nome}
+												</Typography>
+												<Typography variant="h6">
+													Data: {this.state.realizacao.timestarted}
+												</Typography>
+											</Grid>
+											<Formulario
+												prova={this.state.prova}
+												respostas={this.state.realizacao.respostas}
+												onChangeText={this.handleChangeText}
+												onChangeCheck={this.handleChangeCheck}
+												onChangeRadio={this.handleChangeRadio}
+											/>
+										</Paper>
+									</Container>
+									<Box mt={8}>
+										<Copyright />
+									</Box>
+								</main>
+							</>
+						) : (
+								<Grid container direction="column" alignContent="center" className={classes.paper} spacing={5}>
+									<Typography variant="h3" className={classes.title} align="center" color="textPrimary">
+										Realizar prova - {this.state.prova.titulo}
+									</Typography>
+									<Typography variant="h5" align="center" color="textSecondary" component="p">
+										Você realmente deseja iniciar a prova?<br />
+										A partir do momento que você iniciar, você terá somente {this.state.prova.duracao} minutos para realizar ela!
+									</Typography>
+									<Grid container item justify="flex-end">
+										<Grid item>
+											<Button
+												color="primary"
+												title="Sim! Estou pronto!"
+												variant="contained"
+												size="large"
+												onClick={this.handleStartRealizacao}
+											>
+												Sim! estou pronto!
+											</Button>
+										</Grid>
+									</Grid>
+								</Grid>
+							)
+
+					}
+				</div >
+			</Container>
 		)
 	}
 }
