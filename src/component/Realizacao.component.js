@@ -6,22 +6,22 @@ import Container from '@material-ui/core/Container'
 import {
 	withStyles, Paper, AppBar,
 	Toolbar, CssBaseline, Button,
-	Grid, IconButton, Tooltip
+	Grid, IconButton, Tooltip, DialogTitle, Dialog, DialogContent, DialogContentText, DialogActions
 } from '@material-ui/core'
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 
 import Formulario from './Formulario.component'
 import Copyright from './Copyright.component'
 import {
-	loadLocalRealizacao,
 	requestDadosProva,
 	requestDadosRealizacao,
-	updateLocalRealizacao,
 	requestDadosToken,
 	startRealizacao,
 	defineAxios,
 	updateRealizacao
 } from '../controller/realizacao.controller'
+import { Prova as ProvaModel } from '../model/prova.model'
+import { Realizacao as RealizacaoModel } from '../model/realizacao.model'
 
 const styles = theme => ({
 	'@global': {
@@ -81,136 +81,6 @@ const styles = theme => ({
 	}
 })
 
-const provaxe = {
-	"_id": "5d766034936b84b7fec0406a",
-	"titulo": "Prova Teste",
-	"descricao": "Uma prova base testada",
-	"duracao": 120,
-	"questoes": [
-		{
-			"_id": "5dc36303123e35aab0c7c43b",
-			"alternativas": [],
-			"corretas": [],
-			"descricao": "Descreva o teste:",
-			"esperado": "É um teste",
-			"isAlternativa": false,
-			"isMultipla": false,
-			"numero": 1,
-			"peso": 1
-		},
-		{
-			"_id": "5dc36303123e35aab0c7c43c",
-			"alternativas": [
-				{
-					"_id": "_2mc3p630h7s",
-					"descricao": "Teste 1"
-				},
-				{
-					"_id": "_62o8tidfr0",
-					"descricao": "Teste 2"
-				},
-				{
-					"_id": "_18ngj7oz9jk",
-					"descricao": "Teste 3"
-				},
-				{
-					"_id": "_1jtp8ctwutb",
-					"descricao": "Teste 4"
-				}
-			],
-			"corretas": [
-				"_2mc3p630h7s",
-				"_62o8tidfr0",
-				"_18ngj7oz9jk"
-			],
-			"descricao": "Quais testes?",
-			"esperado": "",
-			"isAlternativa": true,
-			"isMultipla": true,
-			"numero": 2,
-			"peso": 1
-		},
-		{
-			"_id": "5dc36303123e35aab0c7c43d",
-			"alternativas": [
-				{
-					"_id": "_cecbb7rqfgo",
-					"descricao": "Sim"
-				},
-				{
-					"_id": "_1ddz9e75be8",
-					"descricao": "Não"
-				}
-			],
-			"corretas": [
-				"_cecbb7rqfgo"
-			],
-			"descricao": "Foram validos?",
-			"esperado": "",
-			"isAlternativa": true,
-			"isMultipla": false,
-			"numero": 3,
-			"peso": 1
-		},
-		{
-			"_id": "5dc4080e123e35aab0c7c906",
-			"alternativas": [],
-			"corretas": [],
-			"descricao": "Qual o veredito?",
-			"esperado": "Que é um teste!",
-			"isAlternativa": false,
-			"isMultipla": false,
-			"numero": 4,
-			"peso": 1
-		}
-	]
-}
-
-const realizacaoxe = {
-	"_id": "asdjfkjskdasdas",
-	"aluno": {
-		"_id": "asjkdlkajsdklsjdas",
-		"nome": "Josisnei da Voadora",
-		"email": "josisnei@voado.ra"
-	},
-	"finalizada": false,
-	"respostas": [
-		{
-			"_id": "asldkjaskdad",
-			"questao": "5dc36303123e35aab0c7c43b",
-			"escolhas": [],
-			"resposta": "",
-			"correta": false,
-			"meioCorreta": false,
-		},
-		{
-			"_id": "asldyyyyyyytr",
-			"questao": "5dc36303123e35aab0c7c43c",
-			"escolhas": [],
-			"resposta": "",
-			"correta": false,
-			"meioCorreta": false,
-		},
-		{
-			"_id": "tyuytjghvvcbwewr",
-			"questao": "5dc36303123e35aab0c7c43d",
-			"escolhas": [],
-			"resposta": "",
-			"correta": false,
-			"meioCorreta": false,
-		},
-		{
-			"_id": "asfxczcfvsdasda",
-			"questao": "5dc4080e123e35aab0c7c906",
-			"escolhas": [],
-			"resposta": "",
-			"correta": false,
-			"meioCorreta": false,
-		}
-	],
-	"timestamp": "2019-11-13 21:12:18.944000",
-	"total": 0
-}
 
 class Realizacao extends Component {
 
@@ -218,15 +88,17 @@ class Realizacao extends Component {
 		super(props)
 
 		this.state = {
-			prova: provaxe,
-			realizacao: realizacaoxe,
+			prova: ProvaModel(),
+			realizacao: RealizacaoModel(),
 			acesso: null,
 			token: "",
-			timeLeft: 0
+			timeLeft: 0,
+			finalizar: false
 		}
 
 		this.handleStartRealizacao = this.handleStartRealizacao.bind(this)
 		this.handleFinalizarRealizacao = this.handleFinalizarRealizacao.bind(this)
+		this.handleClose = this.handleClose.bind(this)
 	}
 
 	updateMinLeft = async event => {
@@ -281,7 +153,6 @@ class Realizacao extends Component {
 			resposta.escolhas = escolhas
 			respostas[i] = resposta
 			let realizacao = this.state.realizacao
-			realizacaoxe.respostas = respostas
 			this.setState({
 				realizacao
 			})
@@ -300,11 +171,16 @@ class Realizacao extends Component {
 			resposta.escolhas = escolhas
 			respostas[i] = resposta
 			let realizacao = this.state.realizacao
-			realizacaoxe.respostas = respostas
 			this.setState({
 				realizacao
 			})
 		}
+	}
+
+	handleClose = () => {
+		this.setState({
+			finalizar: false
+		})
 	}
 
 	componentDidMount() {
@@ -402,21 +278,30 @@ class Realizacao extends Component {
 				<div className={classes.root}>
 					<CssBaseline />
 					{
-						this.state.realizacao.iniciada ? (
+						this.state.realizacao.iniciada && this.state.prova.questoes.length > 0 ? (
 							<>
 								<AppBar position="absolute" className={classes.appBar}>
 									<Toolbar className={classes.toolbar}>
 										<Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
 											{this.state.prova.titulo}
 										</Typography>
-										<Typography variant="h6" className={classes.counter}>
-											{this.state.timeLeft} minutos
-							</Typography>
-										<Tooltip title="Finalizar a prova" onClick={this.handleFinalizarRealizacao}>
-											<IconButton color="inherit">
-												<AssignmentTurnedInIcon />
-											</IconButton>
-										</Tooltip>
+										
+										{
+											this.state.realizacao.finalizada ? 
+											<Typography variant="h6" className={classes.counter}>
+													Finalizada
+											</Typography> :
+											<>
+												<Typography variant="h6" className={classes.counter}>
+													{this.state.timeLeft} minutos
+												</Typography>
+												<Tooltip title="Finalizar a prova" onClick={() => this.setState({finalizar: true})}>
+													<IconButton color="inherit">
+														<AssignmentTurnedInIcon />
+													</IconButton>
+												</Tooltip>
+											</>
+										}
 									</Toolbar>
 								</AppBar>
 								<main className={classes.content}>
@@ -430,13 +315,16 @@ class Realizacao extends Component {
 													Data: {this.state.realizacao.timestarted}
 												</Typography>
 											</Grid>
-											<Formulario
-												prova={this.state.prova}
-												respostas={this.state.realizacao.respostas}
-												onChangeText={this.handleChangeText}
-												onChangeCheck={this.handleChangeCheck}
-												onChangeRadio={this.handleChangeRadio}
-											/>
+											{
+												this.state.realizacao.finalizada ? null :
+													<Formulario
+														prova={this.state.prova}
+														respostas={this.state.realizacao.respostas}
+														onChangeText={this.handleChangeText}
+														onChangeCheck={this.handleChangeCheck}
+														onChangeRadio={this.handleChangeRadio}
+													/>
+											}
 										</Paper>
 									</Container>
 									<Box mt={8}>
@@ -471,6 +359,32 @@ class Realizacao extends Component {
 
 					}
 				</div >
+				<Dialog
+					open={this.state.finalizar}
+					onClose={this.handleClose}
+					aria-labelledby="alert-dialog-title"
+					aria-describedby="alert-dialog-description"
+				>
+					<DialogTitle id="alert-dialog-title">
+						FINALIZAR A PROVA
+					</DialogTitle>
+					<DialogContent>
+						<DialogContentText id="alert-dialog-description">
+							Vocẽ realmente deseja finalizar a prova? Você não poderá mais editar ela assim que finalizar!
+						</DialogContentText>
+					</DialogContent>
+					<DialogActions>
+						<Button onClick={this.handleClose} color="secondary" autoFocus>
+							Cancelar
+						</Button>
+						<Button onClick={() => {
+							this.handleClose()
+							this.handleFinalizarRealizacao()
+						}} color="primary">
+							Confirmar
+						</Button>
+					</DialogActions>
+				</Dialog>
 			</Container>
 		)
 	}
