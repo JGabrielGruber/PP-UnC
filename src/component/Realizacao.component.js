@@ -325,7 +325,7 @@ class Realizacao extends Component {
 	
 	async getDataToken() {
 		let token = new URLSearchParams(this.props.location.search).get("token")
-		if (token) {
+		if (token !== undefined && token !== null) {
 			await this.setState({
 				token: token
 			})
@@ -342,11 +342,11 @@ class Realizacao extends Component {
 	}
 
 	async handleStartRealizacao() {
-		let realizacao = await startRealizacao(this.state.acesso)
-		if (realizacao) {
+		let data = await startRealizacao(this.state.acesso)
+		if (data.realizacao !== undefined) {
 			await this.setState({
 				...this.state,
-				...realizacao
+				...data
 			})
 			this.getProva()
 		}
@@ -354,7 +354,7 @@ class Realizacao extends Component {
 
 	async getProva() {
 		let data = await requestDadosProva(this.state.acesso)
-		if (data) {
+		if (data.prova !== undefined) {
 			await this.setState({
 				...this.state,
 				...data
@@ -365,11 +365,12 @@ class Realizacao extends Component {
 
 	async getRealizacao() {
 		let data = await requestDadosRealizacao(this.state.acesso)
-		if (data) {
+		if (data.realizacao !== undefined) {
 			await this.setState({
 				...this.state,
 				...data
 			})
+			console.log(this.state)
 			this.updateMinLeft()
 		}
 	}
@@ -383,11 +384,11 @@ class Realizacao extends Component {
 			}
 		})
 		
-		let realizacao = await updateRealizacao(this.state.acesso, this.state.realizacao)
-		if (realizacao) {
+		let data = await updateRealizacao(this.state.acesso, this.state.realizacao)
+		if (data.realizacao !== undefined) {
 			await this.setState({
 				...this.state,
-				...realizacao
+				...data
 			})
 		}
 	}
