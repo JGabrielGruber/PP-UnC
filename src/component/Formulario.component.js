@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import {
 	Checkbox, TextField, Radio, RadioGroup,
 	FormControl, FormGroup, FormControlLabel,
-	Grid, Typography
+	Grid, Typography, Tooltip, IconButton
 } from '@material-ui/core'
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { ProvaBase as ProvaBaseModel } from '../model/provaBase.model'
 import { Resposta as RespostaModel } from '../model/resposta.model'
@@ -47,7 +49,7 @@ class Formulario extends Component {
 	}
 
 	getQuestoes = () => {
-		let questoes = [], questao, componente
+		var questoes = [], questao, componente, correcao
 		for (questao of this.props.prova.questoes) {
 			let preenchimento, items = [], item, resposta, attr = []
 			let index = this.props.prova.questoes.indexOf(questao)
@@ -63,16 +65,23 @@ class Formulario extends Component {
 					attr["onChange"] = this.props.onChangeText(questao._id)
 				}
 				preenchimento = (
-					<TextField
-						required
-						multiline
-						rowsMax="12"
-						id="resposta"
-						name="resposta"
-						label="Resposta"
-						fullWidth
-						{...attr}
-					/>
+					<>
+						<TextField
+							required
+							multiline
+							rowsMax="12"
+							id="resposta"
+							name="resposta"
+							label="Resposta"
+							fullWidth
+							{...attr}
+						/>
+						{questao.esperado ?
+							(<Typography variant="body1" color="error">
+							{questao.esperado}
+							</Typography>) : null
+						}
+					</>
 				)
 			} else if (!questao.isMultipla) {
 				if (resposta) {
@@ -81,12 +90,20 @@ class Formulario extends Component {
 				}
 				for (item of questao.alternativas) {
 					items.push((
-						<FormControlLabel
-							value={item._id}
-							control={<Radio />}
-							key={item._id}
-							label={item.descricao}
-						/>
+						<Grid key={item._id} style={{ display: 'inline-flex' }}>
+							<FormControlLabel
+								value={item._id}
+								control={<Radio />}
+								key={item._id}
+								label={item.descricao}
+							/>
+							{ questao.corretas && resposta ?
+								(item._id === questao.corretas[0] ? 
+									(resposta.escolhas[0] === questao.corretas[0] ?
+										<CheckIcon color="primary" /> :
+										<CloseIcon color="error"/>) : null) : null
+							}
+						</Grid>
 					))
 				}
 				preenchimento = (
@@ -109,14 +126,22 @@ class Formulario extends Component {
 						attr["onChange"] = this.props.onChangeCheck(questao._id)
 					}
 					items.push((
-						<FormControlLabel
-							value={item._id}
-							control={<Checkbox
-								{...attr}
-							/>}
-							key={item._id}
-							label={item.descricao}
-						/>
+						<Grid key={item._id} style={{ display: 'inline-flex' }}>
+							<FormControlLabel
+								value={item._id}
+								control={<Checkbox
+									{...attr}
+								/>}
+								key={item._id}
+								label={item.descricao}
+							/>
+							{ questao.corretas && resposta ?
+								(questao.corretas.indexOf(item._id) >= 0 ?
+									(attr["checked"] ?
+										<CheckIcon color="primary" /> :
+										<CloseIcon color="error"/>) : null) : null
+							}
+						</Grid>
 					))
 				}
 				preenchimento = (
@@ -127,16 +152,48 @@ class Formulario extends Component {
 					</FormControl>
 				)
 			}
+
+			correcao = () => {
+				if ((questao.corretas || questao.esperado) && resposta) {
+					return (
+						<Grid spacing={10}>
+							<Typography variant="overline">
+							{
+								resposta.correta ? questao.peso :
+								(resposta.meioCorreta ? questao.peso / 2 : 0)
+							} pontos
+							</Typography>
+							<Tooltip title="Marcar como correta">
+								<IconButton>
+									<CheckIcon />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Marcar como incorreta">
+								<IconButton>
+									<CloseIcon />
+								</IconButton>
+							</Tooltip>
+						</Grid>
+					)
+				}
+				return null
+			}
+
 			componente = (
 				<Grid item xs={12} key={questao._id}>
-					<Grid>
-						<Typography variant="h6">
-							{`${questao.numero} - ${questao.descricao}`}
+					<Grid style={{ width: '100%', display: 'inline-flex' }}>
+						<Typography variant="h6" style={{ flex: 1 }}>
+							{questao.numero} - {questao.descricao}
+							<Typography variant="caption">
+								{questao.peso} ponto(s)
+							</Typography>
 						</Typography>
+						{correcao()}
 					</Grid>
 					{preenchimento}
 				</Grid>
 			)
+
 			questoes.push(
 				componente
 			)
