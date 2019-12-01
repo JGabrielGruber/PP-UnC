@@ -26,6 +26,8 @@ const mapStateToProps = (state) => {
 		error: state.materia.error,
 		modified: state.materia.modified,
 		materias: state.materia.materias.materias,
+		materias_ids: state.materia.materias.ids,
+		usuario: state.usuario.usuario,
 		usuario_id: state.usuario.usuario._id
 	};
 }

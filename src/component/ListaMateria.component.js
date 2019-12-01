@@ -29,6 +29,7 @@ class ListaMateria extends Component {
 		super(props);
 
 		this.state = {
+			data: [],
 			columns: [
 				{ title: 'Título', field: 'titulo' },
 				{ title: 'Descrição', field: 'descricao' },
@@ -43,12 +44,26 @@ class ListaMateria extends Component {
 	}
 
 	getMaterias = async () => {
-		if (this.props.usuario_id === "") {
+		if (this.props.usuario_id === "" || this.props.usuario === undefined) {
 			await setTimeout(async () => {
 				this.getMaterias()
 			}, 100)
 		} else {
 			await this.props.requestMaterias(this.props.usuario_id)
+			let list = []
+			let item, index
+			for (item of this.props.usuario.materias) {
+				index = this.props.materias_ids.indexOf(item._id)
+				if (index >= 0) {
+					item = this.props.materias[index]
+					if (item) {
+						list.push(item)
+					}
+				}
+			}
+			this.setState({
+				data: list
+			})
 		}
 	}
 
@@ -63,7 +78,7 @@ class ListaMateria extends Component {
 				<MaterialTable
 					title="Lista de Matérias"
 					columns={this.state.columns}
-					data={this.props.materias}
+					data={this.state.data}
 					editable={{
 						onRowAdd: newData =>
 							new Promise(resolve => {
