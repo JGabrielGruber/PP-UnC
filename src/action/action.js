@@ -88,7 +88,9 @@ class Action {
 	receiveResponse(items, dispatch) {
 		var self = this
 		if (items && isNaN(items)) {
-			dispatch(self.updateAction(items))
+			if (Array.isArray(items)) {
+				dispatch(self.updateAction(items))
+			}
 		} else {
 			dispatch(self.receiveAction(false, {}))
 			dispatch(addMensagem(items, self.nome))
