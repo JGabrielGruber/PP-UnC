@@ -62,7 +62,8 @@ function mapDispatchToProps(dispatch) {
 		updateRealizacoes: (realizacoes) => {
 			return dispatch(realizacaoAction.update(realizacoes))
 		},
-		removeRealiacoes: (realizacoes) => {
+		removeRealiacoes: (realizacoes, usuario_id, materia_id, turma_id, prova_id, requisicao_id = null) => {
+			realizacaoAction.setUrl(usuario_id, materia_id, turma_id, prova_id, requisicao_id)
 			return dispatch(realizacaoAction.delete(realizacoes))
 		},
 	})
@@ -83,10 +84,13 @@ const mapStateToProps = (state) => {
 		materias: state.materia.materias.materias,
 		turmas_ids: state.turma.turmas.ids,
 		turmas: state.turma.turmas.turmas,
+		turmas_isFetching: state.turma.isFetching,
 		alunos_ids: state.aluno.alunos.ids,
 		alunos: state.aluno.alunos.alunos,
+		alunos_isFetching: state.aluno.isFetching,
 		realizacoes_ids: state.realizacao.realizacoes.ids,
 		realizacoes: state.realizacao.realizacoes.realizacoes,
+		realizacoes_isFetching: state.realizacao.isFetching,
 	};
 }
 

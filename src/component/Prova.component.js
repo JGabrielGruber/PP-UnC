@@ -68,8 +68,8 @@ class Prova extends BaseComponent {
 			realizacoesTable: {
 				columns: [
 					{ title: 'Aluno', field: 'aluno.nome' },
-					{ title: 'Iniciada', field: 'iniciada' },
-					{ title: 'Finalizada', field: 'finalizada' },
+					{ title: 'Iniciada', field: 'iniciada', type: 'boolean' },
+					{ title: 'Finalizada', field: 'finalizada', type: 'boolean' },
 					{ title: 'Limite', field: 'limite' },
 				],
 				data: []
@@ -154,8 +154,8 @@ class Prova extends BaseComponent {
 		}
 	}
 
-	getRealizacoes = async () => {
-		return this.props.requestRealizacoes(...this.args).then(() => {
+	getRealizacoes = async (id=null) => {
+		return this.props.requestRealizacoes(...[...this.args, id]).then(() => {
 			let list = []
 			let item, index
 			for (item of this.state.model.realizacoes) {
@@ -180,6 +180,14 @@ class Prova extends BaseComponent {
 		})
 	}
 
+	update = () => {
+		this.props.update({
+			...this.state.model,
+			realizacoes: undefined
+		})
+		this.switchEdit()
+	}
+
 	handleOpenQuestao = (questao = null) => {
 		this.setState({
 			questaoModal: true,
@@ -196,9 +204,17 @@ class Prova extends BaseComponent {
 
 	handleOpenResposta = (realizacao = null) => {
 		if (realizacao._id) {
-			this.setState({
-				realizacao: realizacao,
-				previewModal: true
+			this.args = [
+				this.props.usuario_id,
+				this.props.match.params.materiaId,
+				this.props.match.params.turmaId,
+				this.propsId
+			]
+			this.awaitData().then(this.getRealizacoes(realizacao._id)).then(() => {
+				this.setState({
+					realizacao: this.state.realizacoesTable.data[realizacao.tableData.id],
+					previewModal: true
+				})
 			})
 		} else {
 			this.setState({
@@ -297,6 +313,12 @@ class Prova extends BaseComponent {
 		}
 	}
 
+	handleRemoveRealizacao = async (realizacao) => {
+		if (realizacao._id) {
+			this.props.removeRealiacoes(realizacao, ...this.args, realizacao._id).then(this.get).then(this.getRealizacoes)
+		}
+	}
+
 	openProvaBase = event => {
 		this.getProvasBases()
 		this.setState({ baseModal: true })
@@ -332,7 +354,6 @@ class Prova extends BaseComponent {
 	}
 
 	getTurma = async () => {
-		//if (!this.state.turma) {
 		await this.getMateria()
 
 		await this.props.requestTurmas(this.props.usuario_id, this.props.match.params.materiaId)
@@ -345,13 +366,9 @@ class Prova extends BaseComponent {
 			})
 		}
 		return
-		//}
 	}
 
 	getAlunos = async () => {
-
-		//if (!this.state.alunosTable.data) {
-
 		await this.getTurma()
 		if (this.state.turma) {
 
@@ -370,7 +387,6 @@ class Prova extends BaseComponent {
 				alunos
 			})
 		}
-		//}
 	}
 
 	copyProvaBase = async event => {
@@ -597,7 +613,7 @@ class Prova extends BaseComponent {
 						title="Lista de Realizações"
 						columns={this.state.realizacoesTable.columns}
 						data={this.state.realizacoesTable.data}
-						isLoading={this.props.isFetching}
+						isLoading={this.props.realizacoes_isFetching}
 						actions={this.state.edit ? [
 							{
 								icon: 'add_box',
@@ -613,13 +629,7 @@ class Prova extends BaseComponent {
 								iconProps: { color: 'action' },
 								tooltip: 'Remover',
 								onClick: (event, rowData) => {
-									let realizacoes = this.state.model.realizacoes
-									realizacoes.splice(realizacoes.indexOf(rowData), 1)
-									let model = this.state.model
-									model.realizacoes = realizacoes
-									this.setState({
-										model
-									})
+									this.handleRemoveRealizacao(rowData)
 								}
 							},
 						] : [
@@ -659,6 +669,7 @@ class Prova extends BaseComponent {
 						<Formulario
 							prova={this.state.model}
 							respostas={this.state.realizacao ? this.state.realizacao.respostas : undefined}
+							onChangeText={() => {}} onChangeRadio={() => {} } onChangeCheck={() => {}}
 						/>
 					</DialogContent>
 				</Dialog>
@@ -703,7 +714,7 @@ class Prova extends BaseComponent {
 						<MuiPickersUtilsProvider utils={DateFnsUtils} locale={ptBrLocale}>
 							<DateTimePicker
 								clearable
-								format="yyyy/MM/dd HH:MM:SS"
+								format="yyyy/MM/dd HH:mm"
 								margin="normal"
 								id="limite"
 								name="limite"
@@ -724,7 +735,7 @@ class Prova extends BaseComponent {
 							title="Alunos a realizarem a prova"
 							columns={this.state.alunosTable.columns}
 							data={this.state.alunosTable.data}
-							isLoading={this.props.isFetching}
+							isLoading={this.props.aluno_isFetching || this.props.turmas_isFetching}
 							options={{
 								selection: true
 							}}
@@ -739,7 +750,7 @@ class Prova extends BaseComponent {
 						/>
 					</DialogContent>
 					<DialogActions>
-						<Button color="primary">
+						<Button color="secondary">
 							Cancelar
 						</Button>
 						<Button color="primary" onClick={this.handleAddRealizacao}>
