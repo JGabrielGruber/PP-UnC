@@ -135,20 +135,22 @@ class ProvaBase extends BaseComponent {
 
 	handleSort = async () => {
 		let questoes = this.state.model.questoes
-		questoes.sort(function (a, b) {
-			if (a.numero < b.numero) return -1;
-			if (a.numero > b.numero) return 1;
-			return 0;
-		})
-		let model = this.state.model
-		this.setState({
-			model
-		})
-		questoes = this.state.questoes
-		questoes.data = JSON.parse(JSON.stringify(this.state.model.questoes))
-		this.setState({
-			questoes
-		})
+		if (questoes) {
+			questoes.sort(function (a, b) {
+				if (a.numero < b.numero) return -1;
+				if (a.numero > b.numero) return 1;
+				return 0;
+			})
+			let model = this.state.model
+			this.setState({
+				model
+			})
+			questoes = this.state.questoes
+			questoes.data = JSON.parse(JSON.stringify(this.state.model.questoes))
+			this.setState({
+				questoes
+			})
+		}
 	}
 
 	headerBase(classes) {
