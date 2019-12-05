@@ -17,14 +17,16 @@ class Formulario extends Component {
 		super(props)
 
 		this.state = {
-			prova: ProvaBaseModel()
+			prova: ProvaBaseModel(),
+			respostas: []
 		}
 	}
 
 	componentDidMount() {
 		if (this.props.prova) {
 			this.setState({
-				prova: this.props.prova
+				prova: this.props.prova,
+				respostas: this.props.respostas
 			})
 		}
 	}
@@ -153,7 +155,7 @@ class Formulario extends Component {
 				)
 			}
 
-			correcao = () => {
+			correcao = (questao, resposta) => {
 				if ((questao.corretas || questao.esperado) && resposta) {
 					return (
 						<Grid spacing={10}>
@@ -164,13 +166,44 @@ class Formulario extends Component {
 							} pontos
 							</Typography>
 							<Tooltip title="Marcar como correta">
-								<IconButton>
-									<CheckIcon />
+								<IconButton onClick={() => {
+									let index = this.state.respostas.indexOf(resposta);
+									resposta.correta = resposta.correta != null ? !resposta.correta : true
+									this.setState(prevState => ({
+										respostas: [
+											...prevState.respostas,
+											{
+												[index]: {
+													...resposta
+												}
+											}
+										]
+									}))
+								}}>
+									<CheckIcon color={resposta.correta || resposta.meioCorreta ? "primary" : "action"} />
 								</IconButton>
 							</Tooltip>
-							<Tooltip title="Marcar como incorreta">
-								<IconButton>
-									<CloseIcon />
+							<Tooltip title={resposta.correta != null && resposta.correta !== true ? "Marcar como incorreta" : "Marcar como meio correta"}>
+								<IconButton onClick={() => {
+									let index = this.state.respostas.indexOf(resposta)
+									if (resposta.correta === true) {
+										resposta.meioCorreta = true
+									} else {
+										resposta.meioCorreta = false
+									}
+									resposta.correta = false
+									this.setState(prevState => ({
+										respostas: [
+											...prevState.respostas,
+											{
+												[index]: {
+													...resposta
+												}
+											}
+										]
+									}))
+								}}>
+									<CloseIcon color={resposta.correta != null && resposta.correta !== true ? "error" : "action"} />
 								</IconButton>
 							</Tooltip>
 						</Grid>
@@ -188,7 +221,7 @@ class Formulario extends Component {
 								{questao.peso} ponto(s)
 							</Typography>
 						</Typography>
-						{correcao()}
+						{correcao(questao, resposta)}
 					</Grid>
 					{preenchimento}
 				</Grid>

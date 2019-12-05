@@ -71,6 +71,7 @@ class Prova extends BaseComponent {
 					{ title: 'Iniciada', field: 'iniciada', type: 'boolean' },
 					{ title: 'Finalizada', field: 'finalizada', type: 'boolean' },
 					{ title: 'Limite', field: 'limite' },
+					{ title: 'Nota', field: 'total', type: 'numeric' },
 				],
 				data: []
 			},
@@ -696,7 +697,7 @@ class Prova extends BaseComponent {
 						</form>
 					</DialogContent>
 					<DialogActions>
-						<Button color="primary">
+						<Button color="secondary">
 							Cancelar
 						</Button>
 						<Button color="primary" onClick={this.copyProvaBase}>
