@@ -28,26 +28,26 @@ async function request(url, slug, Model, method='GET', data=null, reducer=null) 
 		}
 	}
 	let response = await axios(axiosConf).then((response) => {
-		return response.data
+		return { status: response.status, data: response.data }
 	}).catch((error) => {
 		if (error.response === undefined) {
 			return false
 		}
 		return error.response.status
 	})
-	if ((isNaN(response) && response) || Array.isArray(response)) {
-		if (Array.isArray(response)) {
+	if ((isNaN(response) && response) || Array.isArray(response.data)) {
+		if (Array.isArray(response.data)) {
 			let item
-			for (item of response) {
+			for (item of response.data) {
 				await updateLocal(item, slug, Model)
 			}
 		} else {
-			await updateLocal(response, slug, Model)
+			await updateLocal(response.data, slug, Model)
 		}
-		return await loadLocal(slug, Model)
+		return {status: response.status, data: await loadLocal(slug, Model)}
 	} else if (response == null) {
 		await updateLocal(data, slug, Model, true)
-		return await loadLocal(slug, Model)
+		return {status: response.status, data: await loadLocal(slug, Model)}
 	}
 	return response
 }

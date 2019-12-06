@@ -19,7 +19,12 @@ const statusAction = (status) => ({
 
 function addMensagem(statusCode, conteudo = "") {
 	return function (dispatch) {
+		console.log(statusCode)
 		switch (statusCode) {
+			
+			case 200:
+				dispatch(statusAction(true))
+				break
 			case 201:
 				dispatch(addAction({
 					open: true,
@@ -28,6 +33,7 @@ function addMensagem(statusCode, conteudo = "") {
 						(conteudo.slice(-2) === 'es' ? 'as' : conteudo.slice(-2)) :
 						(conteudo.slice(-1) === 'e' ? 'a' : conteudo.slice(-1))} ${conteudo} com sucesso`
 				}))
+				dispatch(statusAction(true))
 				break
 			case 400:
 				dispatch(addAction({
@@ -35,6 +41,7 @@ function addMensagem(statusCode, conteudo = "") {
 					variant: 'warning',
 					message: `Requisição inválida`
 				}))
+				dispatch(statusAction(true))
 				break
 			case 403:
 				dispatch(addAction({
@@ -42,6 +49,7 @@ function addMensagem(statusCode, conteudo = "") {
 					variant: 'error',
 					message: `Você não tem permissão`
 				}))
+				dispatch(statusAction(true))
 				break
 			case 404:
 				dispatch(addAction({
@@ -51,6 +59,7 @@ function addMensagem(statusCode, conteudo = "") {
 						(conteudo.slice(-2) === 'es' ? 'as' : conteudo.slice(-2)) :
 						(conteudo.slice(-1) === 'e' ? 'a' : conteudo.slice(-1))}`
 				}))
+				dispatch(statusAction(true))
 				break
 			case 500:
 				dispatch(addAction({
@@ -58,6 +67,7 @@ function addMensagem(statusCode, conteudo = "") {
 					variant: 'error',
 					message: `Problema com o servidor de dados`
 				}))
+				dispatch(statusAction(true))
 				break
 			case 502:
 				dispatch(addAction({
@@ -65,6 +75,7 @@ function addMensagem(statusCode, conteudo = "") {
 					variant: 'error',
 					message: `Problema com o banco de dados`
 				}))
+				dispatch(statusAction(true))
 				break
 			default:
 				dispatch(statusAction(false))

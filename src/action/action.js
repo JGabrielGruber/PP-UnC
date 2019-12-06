@@ -44,12 +44,15 @@ class Action {
 					dispatch(self.receiveAction(true, items))
 				})
 				dispatch(self.requestAction())
-				return requestItems(self.url, self.slug, self.Model).then((items) => {
-					if (items && isNaN(items)) {
+				return requestItems(self.url, self.slug, self.Model).then((response) => {
+					console.log(response)
+					if (response && isNaN(response)) {
+						let items = response.data
 						dispatch(self.receiveAction(true, items))
+						dispatch(addMensagem(response.status, self.nome))
 					} else {
 						dispatch(self.receiveAction(false, {}))
-						dispatch(addMensagem(items, self.nome))
+						dispatch(addMensagem(response, self.nome))
 					}
 				})
 			}
@@ -90,6 +93,7 @@ class Action {
 		if (items && isNaN(items)) {
 			if (Array.isArray(items)) {
 				dispatch(self.updateAction(items))
+				dispatch(addMensagem(items, self.nome))
 			}
 		} else {
 			dispatch(self.receiveAction(false, {}))
