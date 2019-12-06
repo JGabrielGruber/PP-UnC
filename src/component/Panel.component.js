@@ -20,7 +20,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary'
 import PersonIcon from '@material-ui/icons/Person'
-import { Avatar, Paper, Breadcrumbs, Tooltip, Button, SnackbarContent, Snackbar } from '@material-ui/core'
+import { Avatar, Paper, Breadcrumbs, Tooltip, Button, SnackbarContent, Snackbar, Menu, MenuItem } from '@material-ui/core'
 import { withStyles, makeStyles } from '@material-ui/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { amber, green } from '@material-ui/core/colors'
@@ -39,6 +39,7 @@ import ProvaBase from '../container/provaBase.container'
 import { loadLocalLogin } from '../controller/login.controller'
 import Aluno from '../container/aluno.container'
 import Prova from '../container/prova.container'
+import { removeLocalLogin } from '../controller/login.controller'
 
 const drawerWidth = 240
 
@@ -140,7 +141,8 @@ class Panel extends Component {
 		this.handleDrawerOpen = this.handleDrawerOpen.bind(this)
 		this.handleDrawerClose = this.handleDrawerClose.bind(this)
 		this.state = {
-			open: false
+			open: false,
+			menuAnchor: null
 		}
 	}
 
@@ -170,6 +172,24 @@ class Panel extends Component {
 		}
 	}
 
+	handleOpenMenu = event => {
+		this.setState({
+			menuAnchor: event.currentTarget
+		})
+	}
+
+	handleCloseMenu = () => {
+		this.setState({
+			menuAnchor: null
+		})
+	}
+
+	handleLogOff = () => {
+		this.handleCloseMenu()
+		removeLocalLogin()
+		this.props.history.push('/login')
+	}
+
 	render() {
 
 		const classes = this.props.classes;
@@ -191,11 +211,20 @@ class Panel extends Component {
 						<Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
 							Dashboard
 						</Typography>
-						<IconButton color="inherit">
+						<IconButton color="inherit" onClick={this.handleOpenMenu}>
 							<Avatar className={classes.avatar}>
 								<PersonIcon />
 							</Avatar>
 						</IconButton>
+						<Menu
+							id="simple-menu"
+							anchorEl={this.state.menuAnchor}
+							keepMounted
+							open={Boolean(this.state.menuAnchor)}
+							onClose={this.handleCloseMenu}
+						>
+							<MenuItem onClick={this.handleLogOff}>Sair</MenuItem>
+						</Menu>
 					</Toolbar>
 				</AppBar>
 				<Drawer

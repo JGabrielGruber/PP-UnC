@@ -25,6 +25,11 @@ async function updateLocalLogin(login) {
 	return login
 }
 
+async function removeLocalLogin() {
+	localStorage.setItem('login', {})
+	defineAxios({})
+}
+
 async function requestToken(client_id, client_secret, keep = true, grant_type = "client_credentials") {
 	let axiosConf = {
 		url: "oauth/token/",
@@ -77,4 +82,4 @@ async function requestId() {
 	return await updateLocalUsuario(usuario)
 }
 
-export { loadLocalLogin, updateLocalLogin, requestToken, requestId }
+export { loadLocalLogin, updateLocalLogin, requestToken, requestId, removeLocalLogin }
