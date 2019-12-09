@@ -26,7 +26,7 @@ async function updateLocalLogin(login) {
 }
 
 async function removeLocalLogin() {
-	localStorage.setItem('login', {})
+	localStorage.setItem('login', null)
 	defineAxios({})
 }
 
