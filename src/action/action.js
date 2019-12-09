@@ -8,33 +8,33 @@ import {
 
 class Action {
 
-	constructor(REQUEST, RECEIVE, UPDATE, nome, url, reducer, slug, Model, ModelList=null) {
-		this.REQUEST	= REQUEST
-		this.RECEIVE	= RECEIVE
-		this.UPDATE		= UPDATE
-		this.nome		= nome
-		this.url		= url
-		this.reducer	= reducer
-		this.slug		= slug
-		this.Model		= Model
-		this.ModelList	= ModelList
+	constructor(REQUEST, RECEIVE, UPDATE, nome, url, reducer, slug, Model, ModelList = null) {
+		this.REQUEST = REQUEST
+		this.RECEIVE = RECEIVE
+		this.UPDATE = UPDATE
+		this.nome = nome
+		this.url = url
+		this.reducer = reducer
+		this.slug = slug
+		this.Model = Model
+		this.ModelList = ModelList
 	}
 
 	requestAction = () => ({
 		type: this.REQUEST
 	})
-	
+
 	receiveAction = (status, items) => ({
 		type: this.RECEIVE,
 		status: status,
 		items: items
 	})
-	
+
 	updateAction = (items) => ({
 		type: this.UPDATE,
 		items: items
 	})
-	
+
 	request() {
 		var self = this;
 		return async function (dispatch, getState) {
@@ -45,7 +45,6 @@ class Action {
 				})
 				dispatch(self.requestAction())
 				return requestItems(self.url, self.slug, self.Model).then((response) => {
-					console.log(response)
 					if (response && isNaN(response)) {
 						let items = response.data
 						dispatch(self.receiveAction(true, items))
@@ -58,7 +57,7 @@ class Action {
 			}
 		}
 	}
-	
+
 	shouldRequest(getState) {
 		if (getState()[this.reducer].isFetching || getState()[this.reducer].modified) {
 			return false
@@ -66,14 +65,14 @@ class Action {
 			return true
 		}
 	}
-	
+
 	update(item) {
 		var self = this
 		return function (dispatch) {
 			let type = item.hasOwnProperty('_id') ? "PUT" : "POST"
 			return requestItems(self.url, self.slug, self.Model, type, item, self.reducer)
 				.then((items) => {
-					self.receiveResponse(items, dispatch)
+					self.receiveResponse(items, dispatch, "Modificad")
 				})
 		}
 	}
@@ -82,22 +81,22 @@ class Action {
 		var self = this
 		return function (dispatch) {
 			return requestItems(self.url, self.slug, self.Model, "DELETE", item, self.reducer)
-			.then((items) => {
-				self.receiveResponse(items, dispatch)
-			})
+				.then((items) => {
+					self.receiveResponse(items, dispatch, "Removid")
+				})
 		}
 	}
 
-	receiveResponse(items, dispatch) {
+	receiveResponse(items, dispatch, showMessage = null) {
 		var self = this
 		if (items && isNaN(items)) {
 			if (Array.isArray(items)) {
 				dispatch(self.updateAction(items))
-				dispatch(addMensagem(items, self.nome))
 			}
+			dispatch(addMensagem(items.status, self.nome, showMessage))
 		} else {
 			dispatch(self.receiveAction(false, {}))
-			dispatch(addMensagem(items, self.nome))
+			dispatch(addMensagem(items, self.nome, showMessage))
 		}
 	}
 }
