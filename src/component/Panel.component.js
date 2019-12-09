@@ -352,19 +352,33 @@ const AppBreadCrumb = (path, history) => {
 		return null
 	})
 
-	list.forEach((item, key) => {
-		breads.push((
-			<Button
+	for (let key = 0; key < list.length; key++) {
+		if (key == 1) {
+			breads.push((
+				<Button
 				title={"Voltar para " + titles[key]}
 				size="small"
 				color="inherit"
-				key={key}
-				onClick={() => { history.push(item) }}
-			>
-				{titles[key]}
-			</Button>
-		))
-	})
+					key={key}
+					onClick={() => { history.push(list[key]) }}
+				>
+					{titles[key]}
+				</Button>
+			))
+		} else if ((key % 2) == 0) {
+			breads.push((
+				<Button
+					title={"Voltar para " + titles[key]}
+					size="small"
+					color="inherit"
+					key={key}
+					onClick={() => { history.push(list[key]) }}
+				>
+					{titles[(key - 1)]} - {titles[key]}
+				</Button>
+			))
+		}
+	}
 
 	breads[breads.length - 1] = (
 		<Button disabled size="small" key={breads.length}>
