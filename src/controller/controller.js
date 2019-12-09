@@ -54,19 +54,21 @@ async function request(url, slug, Model, method='GET', data=null, reducer=null) 
 
 async function updateLocal(item, slug, Model, remove=false) {
 	let items = await loadLocal(slug, Model)
-	let index = items.ids.indexOf(item._id)
-	if (index >= 0) {
-		if (!remove) {
-			items[slug][index] = item
+	if (item && "_id" in item) {
+		let index = items.ids.indexOf(item._id)
+		if (index >= 0) {
+			if (!remove) {
+				items[slug][index] = item
+			} else {
+				items[slug].pop(index)
+				items.ids.pop(index)
+			}
 		} else {
-			items[slug].pop(index)
-			items.ids.pop(index)
+			items[slug].push(item)
+			items.ids.push(item._id)
 		}
-	} else {
-		items[slug].push(item)
-		items.ids.push(item._id)
+		await localStorage.setItem(slug, JSON.stringify(items))
 	}
-	await localStorage.setItem(slug, JSON.stringify(items))
 	return items
 }
 
