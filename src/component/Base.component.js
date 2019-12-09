@@ -65,11 +65,18 @@ class BaseComponent extends Component {
 
 	remove = () => {
 		this.props.remove(this.state.model)
-		this.props.history.push(
-			this.props.location.pathname.substring(
+		let path = this.props.location.pathname.substring(
+			0,
+			this.props.location.pathname.lastIndexOf('/')
+		)
+		if (this.modelName !== "matéria") {
+			path = path.substring(
 				0,
-				this.props.location.pathname.lastIndexOf('/')
+				path.lastIndexOf('/')
 			)
+		}
+		this.props.history.push(
+			path
 		)
 	}
 
