@@ -160,28 +160,27 @@ class Prova extends BaseComponent {
 	}
 
 	getRealizacoes = async (id = null) => {
-		return this.props.requestRealizacoes(...[...this.args, id]).then(() => {
-			let list = []
-			let item, index
-			for (item of this.state.model.realizacoes) {
-				index = this.props.realizacoes_ids.indexOf(item._id)
-				if (index >= 0) {
-					item = this.props.realizacoes[index]
-					if (item) {
-						list.push(item)
-					}
+		await this.props.requestRealizacoes(...[...this.args, id])
+		let list = []
+		let item, index
+		for (item of this.state.model.realizacoes) {
+			index = this.props.realizacoes_ids.indexOf(item._id)
+			if (index >= 0) {
+				item = this.props.realizacoes[index]
+				if (item) {
+					list.push(item)
 				}
 			}
-			let data = this.state.realizacoes
-			data.data = list
-			this.setState({
-				realizacoes: data
-			})
-			let realizacoesTable = this.state.realizacoesTable
-			realizacoesTable.data = JSON.parse(JSON.stringify(list))
-			this.setState({
-				realizacoesTable
-			})
+		}
+		let data = this.state.realizacoes
+		data.data = list
+		this.setState({
+			realizacoes: data
+		})
+		let realizacoesTable = this.state.realizacoesTable
+		realizacoesTable.data = JSON.parse(JSON.stringify(list))
+		this.setState({
+			realizacoesTable
 		})
 	}
 
