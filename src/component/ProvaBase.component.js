@@ -94,6 +94,10 @@ class ProvaBase extends BaseComponent {
 					model: this.props.models[index]
 				})
 				this.handleSort()
+				this.props.setTitle(
+					this.modelName.charAt(0).toUpperCase() + this.modelName.slice(1) + " - " +
+					(this.state.model.titulo ? this.state.model.titulo : this.state.model.nome)
+				)
 			}
 		}
 	}

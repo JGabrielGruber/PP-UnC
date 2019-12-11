@@ -54,6 +54,10 @@ class BaseComponent extends Component {
 				await this.setState({
 					model: this.props.models[index]
 				})
+				this.props.setTitle(
+					this.modelName.charAt(0).toUpperCase() + this.modelName.slice(1) + " - " +
+					(this.state.model.titulo ? this.state.model.titulo : this.state.model.nome)
+				)
 			}
 		}
 	}
@@ -224,7 +228,8 @@ class BaseComponent extends Component {
 }
 
 BaseComponent.propType = {
-	classes: PropTypes.object.isRequired
+	classes: PropTypes.object.isRequired,
+	setTitle: PropTypes.func.isRequired
 }
 
 export default BaseComponent

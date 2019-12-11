@@ -141,6 +141,10 @@ class Prova extends BaseComponent {
 					model: this.props.models[index]
 				})
 				this.handleSort()
+				this.props.setTitle(
+					this.modelName.charAt(0).toUpperCase() + this.modelName.slice(1) + " - " +
+					(this.state.model.titulo ? this.state.model.titulo : this.state.model.nome)
+				)
 			}
 		}
 	}
@@ -645,9 +649,9 @@ class Prova extends BaseComponent {
 							},
 						] : [
 								{
-									icon: 'more_horiz',
+									icon: 'edit',
 									iconProps: { color: 'action' },
-									tooltip: 'Visualizar',
+									tooltip: 'Corrigir',
 									onClick: (event, rowData) => {
 										this.handleOpenResposta(rowData)
 									}
@@ -676,8 +680,9 @@ class Prova extends BaseComponent {
 					<DialogTitle disableTypography id="form-dialog-title">
 						<Grid style={{ display: "flex" }}>
 							<Typography variant="h5" className={classes.title}>
-								Visualização da Prova {
-									this.state.realizacao ? "- " + this.state.realizacao.aluno.nome : undefined
+								{
+									this.state.realizacao ? "Correção da Prova - " + this.state.realizacao.aluno.nome
+										: "Visualização da Prova"
 								}
 							</Typography>
 							{

@@ -142,8 +142,11 @@ class Panel extends Component {
 		this.handleDrawerClose = this.handleDrawerClose.bind(this)
 		this.state = {
 			open: false,
-			menuAnchor: null
+			menuAnchor: null,
+			title: "Dashboard"
 		}
+
+		this.setTitle = this.setTitle.bind(this)
 	}
 
 	componentDidMount() {
@@ -190,6 +193,12 @@ class Panel extends Component {
 		this.props.history.push('/login')
 	}
 
+	setTitle = title => {
+		this.setState({
+			title
+		})
+	}
+
 	render() {
 
 		const classes = this.props.classes;
@@ -209,7 +218,7 @@ class Panel extends Component {
 							<MenuIcon />
 						</IconButton>
 						<Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-							Dashboard
+							{this.state.title}
 						</Typography>
 						<IconButton color="inherit" onClick={this.handleOpenMenu}>
 							<Avatar className={classes.avatar}>
@@ -280,49 +289,49 @@ class Panel extends Component {
 							<Route
 								path={'/panel/dashboard'}
 								render={props => (
-									<Dashboard {...props} />
+									<Dashboard {...props} setTitle={this.setTitle} />
 								)}
 							/>
 							<Route
 								path={'/panel/materias'}
 								exact={true}
 								render={props => (
-									<ListaMateria {...props} />
+									<ListaMateria {...props} setTitle={this.setTitle} />
 								)}
 							/>
 							<Route
 								path={'/panel/materias/:materiaId'}
 								exact={true}
 								render={props => (
-									<Materia {...props} />
+									<Materia {...props} setTitle={this.setTitle} />
 								)}
 							/>
 							<Route
 								path={'/panel/materias/:materiaId/turmas/:turmaId'}
 								exact={true}
 								render={props => (
-									<Turma {...props} />
+									<Turma {...props} setTitle={this.setTitle} />
 								)}
 							/>
 							<Route
 								path={'/panel/materias/:materiaId/provas/:provaBaseId'}
 								exact={true}
 								render={props => (
-									<ProvaBase {...props} />
+									<ProvaBase {...props} setTitle={this.setTitle} />
 								)}
 							/>
 							<Route
 								path={'/panel/materias/:materiaId/turmas/:turmaId/alunos/:alunoId'}
 								exact={true}
 								render={props => (
-									<Aluno {...props} />
+									<Aluno {...props} setTitle={this.setTitle} />
 								)}
 							/>
 							<Route
 								path={'/panel/materias/:materiaId/turmas/:turmaId/provas/:provaId'}
 								exact={true}
 								render={props => (
-									<Prova {...props} />
+									<Prova {...props} setTitle={this.setTitle} />
 								)}
 							/>
 						</Switch>
@@ -356,9 +365,9 @@ const AppBreadCrumb = (path, history) => {
 		if (key === 1) {
 			breads.push((
 				<Button
-				title={"Voltar para " + titles[key]}
-				size="small"
-				color="inherit"
+					title={"Voltar para " + titles[key]}
+					size="small"
+					color="inherit"
 					key={key}
 					onClick={() => { history.push(list[key]) }}
 				>
@@ -486,7 +495,8 @@ const OfflineMsg = ({ status }) => {
 			right: '5%',
 			left: 'auto',
 			zIndex: '1400',
-			transform: 'translateY(0px)'}}>
+			transform: 'translateY(0px)'
+		}}>
 			<Snackbar
 				anchorOrigin={{
 					vertical: 'top',
