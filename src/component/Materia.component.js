@@ -97,6 +97,15 @@ class Materia extends BaseComponent {
 		}
 	}
 
+	update = () => {
+		this.props.update({
+			...this.state.model,
+			provas_bases: undefined,
+			turmas: undefined,
+		})
+		this.switchEdit()
+	}
+
 	render() {
 		this.Content = (
 			<>

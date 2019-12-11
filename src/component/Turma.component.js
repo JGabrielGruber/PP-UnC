@@ -94,6 +94,15 @@ class Turma extends BaseComponent {
 			)
 		}
 	}
+	
+	update = () => {
+		this.props.update({
+			...this.state.model,
+			alunos: undefined,
+			provas: undefined,
+		})
+		this.switchEdit()
+	}
 
 	render() {
 
