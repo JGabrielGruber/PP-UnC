@@ -155,7 +155,7 @@ class Prova extends BaseComponent {
 		}
 	}
 
-	getRealizacoes = async (id=null) => {
+	getRealizacoes = async (id = null) => {
 		return this.props.requestRealizacoes(...[...this.args, id]).then(() => {
 			let list = []
 			let item, index
@@ -314,9 +314,19 @@ class Prova extends BaseComponent {
 		}
 	}
 
-	handleRemoveRealizacao = async (realizacao) => {
+	handleUpdateRealizacao = realizacao => event => {
 		if (realizacao._id) {
-			this.props.removeRealiacoes(realizacao, ...this.args, realizacao._id).then(this.get).then(this.getRealizacoes)
+			realizacao.aluno = realizacao.aluno._id
+			realizacao.tableData = undefined
+			this.props.updateRealizacoes(realizacao)
+				.then(this.handleClose('realizacaoModal')).then(this.getRealizacoes)
+		}
+	}
+
+	handleRemoveRealizacao = async realizacao => {
+		if (realizacao._id) {
+			this.props.removeRealiacoes(realizacao, ...this.args, realizacao._id)
+				.then(this.get).then(this.getRealizacoes)
 		}
 	}
 
@@ -663,14 +673,36 @@ class Prova extends BaseComponent {
 					aria-labelledby="form-dialog-title" maxWidth='lg'
 					fullWidth
 				>
-					<DialogTitle id="form-dialog-title">Visualização da Prova {
-						this.state.realizacao ? "- " + this.state.realizacao.aluno.nome : undefined
-						}</DialogTitle>
+					<DialogTitle disableTypography id="form-dialog-title">
+						<Grid style={{ display: "flex" }}>
+							<Typography variant="h5" className={classes.title}>
+								Visualização da Prova {
+									this.state.realizacao ? "- " + this.state.realizacao.aluno.nome : undefined
+								}
+							</Typography>
+							{
+								this.state.realizacao ?
+									<Tooltip
+										title="Confirmar"
+										onClick={this.handleUpdateRealizacao(this.state.realizacao)}
+									>
+										<IconButton>
+											<CheckIcon />
+										</IconButton>
+									</Tooltip> : undefined
+							}
+							<Tooltip title="Cancelar" onClick={this.handleClose('previewModal')}>
+								<IconButton>
+									<CloseIcon />
+								</IconButton>
+							</Tooltip>
+						</Grid>
+					</DialogTitle>
 					<DialogContent>
 						<Formulario
 							prova={this.state.model}
 							respostas={this.state.realizacao ? this.state.realizacao.respostas : undefined}
-							onChangeText={() => {}} onChangeRadio={() => {} } onChangeCheck={() => {}}
+							onChangeText={() => { }} onChangeRadio={() => { }} onChangeCheck={() => { }}
 						/>
 					</DialogContent>
 				</Dialog>

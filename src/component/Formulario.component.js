@@ -157,7 +157,7 @@ class Formulario extends Component {
 			correcao = (questao, resposta) => {
 				if ((questao.corretas || questao.esperado) && resposta) {
 					return (
-						<Grid spacing={10}>
+						<Grid>
 							<Typography variant="overline">
 							{
 								resposta.correta ? questao.peso :
@@ -169,6 +169,7 @@ class Formulario extends Component {
 									let index = this.state.respostas.indexOf(resposta);
 									resposta.correta = resposta.correta != null ? !resposta.correta : true
 									resposta.meioCorreta = false
+									this.props.respostas[index] = resposta
 									this.setState(prevState => ({
 										respostas: [
 											...prevState.respostas,
