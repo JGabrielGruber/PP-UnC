@@ -70,6 +70,7 @@ class Action {
 		var self = this
 		return function (dispatch) {
 			let type = item.hasOwnProperty('_id') ? "PUT" : "POST"
+			dispatch(self.requestAction())
 			return requestItems(self.url, self.slug, self.Model, type, item, self.reducer)
 				.then((items) => {
 					self.receiveResponse(items, dispatch, "Atualizad")
@@ -80,6 +81,7 @@ class Action {
 	delete(item) {
 		var self = this
 		return function (dispatch) {
+			dispatch(self.requestAction())
 			return requestItems(self.url, self.slug, self.Model, "DELETE", item, self.reducer)
 				.then((items) => {
 					self.receiveResponse(items, dispatch, "Removid")
@@ -92,6 +94,8 @@ class Action {
 		if (items && isNaN(items)) {
 			if (Array.isArray(items)) {
 				dispatch(self.updateAction(items))
+			} else {
+				dispatch(self.receiveAction(false, {}))
 			}
 			dispatch(addMensagem(items.status, self.nome, showMessage))
 		} else {

@@ -71,10 +71,10 @@ function mapDispatchToProps(dispatch) {
 
 const mapStateToProps = (state) => {
 	return {
-		isFetching: state.provaBase.isFetching,
-		didInvalidate: state.provaBase.didInvalidate,
-		error: state.provaBase.error,
-		modified: state.provaBase.modified,
+		isFetching: state.prova.isFetching,
+		didInvalidate: state.prova.didInvalidate,
+		error: state.prova.error,
+		modified: state.prova.modified,
 		usuario_id: state.usuario.usuario._id,
 		ids: state.prova.provas.ids,
 		models: state.prova.provas.provas,

@@ -353,7 +353,7 @@ const AppBreadCrumb = (path, history) => {
 	})
 
 	for (let key = 0; key < list.length; key++) {
-		if (key == 1) {
+		if (key === 1) {
 			breads.push((
 				<Button
 				title={"Voltar para " + titles[key]}
