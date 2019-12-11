@@ -155,7 +155,6 @@ class Turma extends BaseComponent {
 						title="Lista de Alunos"
 						columns={this.state.alunos.columns}
 						data={this.state.alunos.data}
-						isLoading={this.props.isFetching}
 						editable={{
 							onRowAdd: this.state.edit ? newData =>
 								new Promise(resolve => {
@@ -180,6 +179,7 @@ class Turma extends BaseComponent {
 						]}
 						localization={localization}
 						components={fixedTableComponents}
+						isLoading={this.props.alunos_isFetching}
 					/>
 				</Grid>
 				<Grid item xs={12}>
@@ -212,6 +212,7 @@ class Turma extends BaseComponent {
 						]}
 						localization={localization}
 						components={fixedTableComponents}
+						isLoading={this.props.provas_isFetching}
 					/>
 				</Grid>
 			</>

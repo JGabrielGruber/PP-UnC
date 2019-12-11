@@ -182,6 +182,7 @@ class Materia extends BaseComponent {
 						]}
 						localization={localization}
 						components={fixedTableComponents}
+						isLoading={this.props.turmas_isFetching}
 					/>
 				</Grid>
 				<Grid item xs={12}>
@@ -213,6 +214,7 @@ class Materia extends BaseComponent {
 						]}
 						localization={localization}
 						components={fixedTableComponents}
+						isLoading={this.props.provasBases_isFetching}
 					/>
 				</Grid>
 			</>

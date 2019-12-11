@@ -32,7 +32,7 @@ class ListaMateria extends Component {
 			data: [],
 			columns: [
 				{ title: 'Título', field: 'titulo' },
-				{ title: 'Descrição', field: 'descricao' },
+				{ title: 'Curso', field: 'curso' },
 				{ title: 'Modificada', field: 'timeupdate', type: 'datetime', initialEditValue: '' },
 				{ title: 'Criada', field: 'timestamp', type: 'datetime' }
 			]

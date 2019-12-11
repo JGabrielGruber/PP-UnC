@@ -72,7 +72,7 @@ class Action {
 			let type = item.hasOwnProperty('_id') ? "PUT" : "POST"
 			return requestItems(self.url, self.slug, self.Model, type, item, self.reducer)
 				.then((items) => {
-					self.receiveResponse(items, dispatch, "Modificad")
+					self.receiveResponse(items, dispatch, "Atualizad")
 				})
 		}
 	}

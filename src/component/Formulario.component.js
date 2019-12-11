@@ -9,7 +9,6 @@ import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 
 import { ProvaBase as ProvaBaseModel } from '../model/provaBase.model'
-import { Resposta as RespostaModel } from '../model/resposta.model'
 
 class Formulario extends Component {
 
@@ -169,6 +168,7 @@ class Formulario extends Component {
 								<IconButton onClick={() => {
 									let index = this.state.respostas.indexOf(resposta);
 									resposta.correta = resposta.correta != null ? !resposta.correta : true
+									resposta.meioCorreta = false
 									this.setState(prevState => ({
 										respostas: [
 											...prevState.respostas,
@@ -183,7 +183,7 @@ class Formulario extends Component {
 									<CheckIcon color={resposta.correta || resposta.meioCorreta ? "primary" : "action"} />
 								</IconButton>
 							</Tooltip>
-							<Tooltip title={resposta.correta != null && resposta.correta !== true ? "Marcar como incorreta" : "Marcar como meio correta"}>
+							<Tooltip title={resposta.correta !== true ? "Marcar como incorreta" : "Marcar como meio correta"}>
 								<IconButton onClick={() => {
 									let index = this.state.respostas.indexOf(resposta)
 									if (resposta.correta === true) {

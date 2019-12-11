@@ -85,11 +85,11 @@ function addMensagem(statusCode, conteudo = "", mensagem = "") {
 					break
 				default:
 					dispatch(statusAction(false))
-					/*dispatch(addAction({
+					dispatch(addAction({
 						open: true,
 						variant: 'error',
 						message: `Problema de conexão com o servidor de dados`
-					}))*/
+					}))
 					break
 			}
 		}

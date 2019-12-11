@@ -49,8 +49,10 @@ const mapStateToProps = (state) => {
 		usuario_id: state.usuario.usuario._id,
 		turmas: state.turma.turmas.turmas,
 		turmas_ids: state.turma.turmas.ids,
+		turmas_isFetching: state.turma.isFetching,
 		provasBases: state.provaBase.provasBases.provasBases,
-		provasBases_ids: state.provaBase.provasBases.ids
+		provasBases_ids: state.provaBase.provasBases.ids,
+		provasBases_isFetching: state.provaBase.isFetching,
 	};
 }
 

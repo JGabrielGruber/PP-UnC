@@ -365,7 +365,7 @@ const AppBreadCrumb = (path, history) => {
 					{titles[key]}
 				</Button>
 			))
-		} else if ((key % 2) == 0) {
+		} else if ((key % 2) === 0) {
 			breads.push((
 				<Button
 					title={"Voltar para " + titles[key]}

@@ -55,8 +55,10 @@ const mapStateToProps = (state) => {
 		models: state.turma.turmas.turmas,
 		alunos: state.aluno.alunos.alunos,
 		alunos_ids: state.aluno.alunos.ids,
+		alunos_isFetching: state.aluno.isFetching,
 		provas: state.prova.provas.provas,
 		provas_ids: state.prova.provas.ids,
+		provas_isFetching: state.prova.isFetching,
 	};
 }
 
